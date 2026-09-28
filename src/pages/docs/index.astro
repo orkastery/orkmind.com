@@ -4,11 +4,9 @@ import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
 import Externo from '../../components/Externo.astro';
 import { externos } from '../../data/externos';
-const instalar = `git clone https://github.com/orkastery/orkmind.git
-cd orkmind
-python3 -m venv .venv
+const instalar = `python3 -m venv .venv
 source .venv/bin/activate
-pip install -e .`;
+pip install orkmind`;
 const configurar = `# Use os dados do seu banco, sem guardar senhas no Git
 export ORKMIND_DATABASE_URL="postgresql://<usuario>:<senha>@<host>:5432/<banco>"
 orkmind store info
