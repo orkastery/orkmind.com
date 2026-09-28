@@ -1,0 +1,131 @@
+---
+import Icone from "./Icone.astro";
+import Externo from "./Externo.astro";
+import { externos } from "../data/externos";
+---
+
+<footer class="rodape">
+  <div class="container">
+    <div class="rodape-grade">
+      <div class="rodape-marca">
+        <span class="marca-linha">
+          <span class="marca-ponto" aria-hidden="true"></span>
+          <span class="marca-nome">OrkMind</span>
+        </span>
+        <p class="prosa rodape-frase">
+          A camada de memória dos sistemas agênticos: o que o sistema sabe vive
+          em um lugar só, tipado e recuperável.
+        </p>
+      </div>
+
+      <nav class="rodape-col" aria-label="Links do produto">
+        <h2>Produto</h2>
+        <a href="/docs/">Docs para usuários</a>
+        <Externo destino="orkmind">
+          OrkMind core {externos.orkmind.aberto && <Icone nome="arrow-up-right" tamanho={14} />}
+        </Externo>
+        <Externo destino="orkmindWeb">
+          OrkMind Web {externos.orkmindWeb.aberto && <Icone nome="arrow-up-right" tamanho={14} />}
+        </Externo>
+        <a href="https://pypi.org/project/orkmind/" rel="noopener" target="_blank">
+          Pacote no PyPI <Icone nome="arrow-up-right" tamanho={14} />
+        </a>
+      </nav>
+
+      <nav class="rodape-col" aria-label="Links da organização">
+        <h2>Organização</h2>
+        <a href="https://orkastery.com" rel="noopener" target="_blank">
+          Site da Orkastery <Icone nome="arrow-up-right" tamanho={14} />
+        </a>
+        <a href="https://github.com/orkastery" rel="noopener" target="_blank">
+          GitHub da Orkastery <Icone nome="arrow-up-right" tamanho={14} />
+        </a>
+        <a href="mailto:maestro@orkastery.com">maestro@orkastery.com</a>
+      </nav>
+    </div>
+
+    <div class="rodape-base">
+      <p>OrkMind é um produto da Orkastery. Código aberto sob licença Apache 2.0.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .rodape {
+    border-top: 1px solid var(--linha);
+    background: var(--fundo-2);
+    padding-block: 4rem 2.5rem;
+  }
+
+  .rodape-grade {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  .marca-linha {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--fonte-display);
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+
+  .marca-ponto {
+    width: 10px;
+    height: 10px;
+    border-radius: var(--raio-pill);
+    background: var(--verde);
+    box-shadow: 0 0 0 4px var(--verde-tinta);
+  }
+
+  .rodape-frase {
+    margin-top: 0.9rem;
+    font-size: 0.95rem;
+    max-width: 34ch;
+  }
+
+  .rodape-col {
+    display: grid;
+    align-content: start;
+    gap: 0.65rem;
+  }
+
+  .rodape-col h2 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--texto-3);
+    margin-bottom: 0.35rem;
+  }
+
+  .rodape-col a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    text-decoration: none;
+    color: var(--texto-2);
+    font-size: 0.95rem;
+    transition: color var(--dur-micro) var(--ease-suave);
+  }
+
+  .rodape-col a:hover {
+    color: var(--verde);
+  }
+
+  .rodape-base {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--linha);
+    color: var(--texto-3);
+    font-size: 0.88rem;
+  }
+
+  @media (min-width: 760px) {
+    .rodape-grade {
+      grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

@@ -1,0 +1,504 @@
+---
+import Icone from "./Icone.astro";
+
+const capacidadesCore = [
+  {
+    icone: "shield-check",
+    titulo: "Governança acima do backend",
+    desc: "Proteção de entradas, ACL e ordenação constitucional valem em qualquer backend, sem exceção.",
+  },
+  {
+    icone: "git-branch",
+    titulo: "Histórico e escrita concorrente",
+    desc: "Versões append-only e compare-and-swap impedem que uma edição obsoleta vença em silêncio.",
+  },
+  {
+    icone: "lock-key",
+    titulo: "Criptografia seletiva",
+    desc: "AES-256-GCM em repouso para coleções sensíveis como contatos, arquivos e docs.",
+  },
+  {
+    icone: "shield-check",
+    titulo: "Anti-injection",
+    desc: "Detecção em 5 categorias: entrada suspeita fica retida e fora da injeção automática.",
+  },
+  {
+    icone: "stack",
+    titulo: "Snapshots globais",
+    desc: "Commit, diff e restore da árvore de memória inteira, com embeddings preservados.",
+  },
+  {
+    icone: "hard-drives",
+    titulo: "Proveniência e receipts",
+    desc: "Fonte, revisão e recibos permitem readback, reconciliação e rollback sem fabricar sucesso.",
+  },
+];
+
+const capacidadesWeb = [
+  {
+    icone: "file-code",
+    titulo: "Biblioteca governada",
+    desc: "Documentos, memórias e entidades convivem sem apagar a diferença entre tipo, coleção e origem.",
+  },
+  {
+    icone: "graph",
+    titulo: "Grafo interativo",
+    desc: "As conexões da memória renderizadas em WebGL, com filtros por coleção e data.",
+  },
+  {
+    icone: "stack",
+    titulo: "Camadas E1, E2 e E3",
+    desc: "Da essência ao conteúdo completo, o detalhe cresce só quando você pede.",
+  },
+  {
+    icone: "browser",
+    titulo: "PWA instalável",
+    desc: "A memória do sistema no bolso, com cache offline.",
+  },
+  {
+    icone: "flow-arrow",
+    titulo: "Workspace de conhecimento",
+    desc: "Escrever, localizar, investigar e decidir sobre o estado autorizado do Company Brain.",
+  },
+];
+
+const paraAgentes = [
+  "Servidor MCP com 7 tools para runtimes de agentes",
+  "Provider de memória plugável no orquestrador",
+  "API idempotente com fila local: escrita nunca se perde",
+  "Contexto da factory com identidade e evidência",
+];
+
+const paraHumanos = [
+  "Escrever e revisar documentos persistentes",
+  "Localizar entidades, decisões e referências",
+  "Investigar relações sem furar permissões",
+  "Examinar produtos, projetos e iniciativas como conhecimento",
+];
+
+const numeros = [
+  { valor: "23", rotulo: "coleções tipadas" },
+  { valor: "11", rotulo: "dimensões de contexto" },
+  { valor: "4", rotulo: "hosts com contrato comum" },
+  { valor: "1", rotulo: "identidade por registro" },
+];
+---
+
+<section class="secao produto" id="produto" aria-labelledby="produto-titulo">
+  <div class="container">
+    <div class="produto-cabeca">
+      <h2 class="titulo-display" id="produto-titulo">Um Company Brain, duas superfícies</h2>
+      <p class="prosa">
+        O core em Python governa identidade, histórico e acesso. A interface web
+        transforma o mesmo conhecimento em trabalho cotidiano para pessoas.
+      </p>
+    </div>
+
+    <div class="metade" data-revelar>
+      <div class="metade-texto">
+        <p class="metade-selo"><Icone nome="package" tamanho={16} /> OrkMind core</p>
+        <h3 class="titulo-display">A base que governa</h3>
+        <p class="prosa">
+          Biblioteca Python com PostgreSQL e pgvector. Publicada no PyPI,
+          licenciada Apache 2.0.
+        </p>
+        <ul class="capacidades" role="list">
+          {capacidadesCore.map((c) => (
+            <li>
+              <Icone nome={c.icone} tamanho={20} classe="capacidade-icone" />
+              <div>
+                <strong>{c.titulo}</strong>
+                <p>{c.desc}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="metade-visual metade-visual-core">
+        <pre
+          class="core-terminal"><code><span class="t-cmd">$ orkmind add --collection rule \</span>
+<span class="t-cmd">    --content "Nunca usar rm -rf em produção" \</span>
+<span class="t-cmd">    --tags '&#123;"skill": ["deploy"]&#125;' --mandatory</span>
+<span class="t-ok">memória gravada: coleção rule, mandatória</span>
+
+<span class="t-cmd">$ orkmind search --tags '&#123;"skill": ["deploy"]&#125;'</span>
+<span class="t-ok">1. [rule] Nunca usar rm -rf em produção</span>
+<span class="t-dim">   mandatória, prioridade critical</span>
+
+<span class="t-cmd">$ orkmind store info</span>
+<span class="t-ok">backend ativo: pgvector</span>
+<span class="t-dim">capacidades completas, nenhum aviso</span></code></pre>
+      </div>
+    </div>
+
+    <div class="metade metade-invertida" data-revelar>
+      <div class="metade-texto">
+        <p class="metade-selo"><Icone nome="browser" tamanho={16} /> OrkMind Web</p>
+        <h3 class="titulo-display">O conhecimento que se usa</h3>
+        <p class="prosa">
+          A Biblioteca em <code>/knowledge</code> reúne o conhecimento autorizado
+          sem copiá-lo: tipos ontológicos, coleções de memória e fontes aparecem
+          como dimensões separadas. Agentes e pessoas veem o mesmo estado autorizado;
+          a execução de ciclos acontece exclusivamente nos hosts de agentes.
+        </p>
+        <ul class="capacidades" role="list">
+          {capacidadesWeb.map((c) => (
+            <li>
+              <Icone nome={c.icone} tamanho={20} classe="capacidade-icone" />
+              <div>
+                <strong>{c.titulo}</strong>
+                <p>{c.desc}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="metade-visual">
+        <figure class="capturas">
+          <img
+            src="/screenshots/orkmind-web-lista.png"
+            alt="OrkMind Web em tema escuro: lista de memórias com coleções, camadas E3 e tags de domínio"
+            width="1280"
+            height="720"
+            loading="lazy"
+            class="captura captura-tras"
+          />
+          <img
+            src="/screenshots/orkmind-web-detalhe.png"
+            alt="OrkMind Web em tema escuro: detalhe de uma memória com markdown estruturado, código e metadados"
+            width="1280"
+            height="876"
+            loading="lazy"
+            class="captura captura-frente"
+          />
+          <figcaption class="visually-hidden">
+            Telas reais do OrkMind Web no tema escuro
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="separacao" data-revelar>
+      <h3 class="titulo-display separacao-titulo">
+        Dados para agentes, dados para humanos
+      </h3>
+      <p class="prosa separacao-frase">
+        Alguns dados de um sistema agêntico são para agentes lerem. Outros são
+        para seres humanos. Cada metade do OrkMind serve a um dos dois, sem
+        atrapalhar o outro.
+      </p>
+      <div class="separacao-colunas">
+        <div class="lado lado-agentes">
+          <p class="lado-cabeca">
+            <Icone nome="robot" tamanho={20} />
+            Para agentes
+          </p>
+          <ul role="list">
+            {paraAgentes.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div class="lado lado-humanos">
+          <p class="lado-cabeca">
+            <Icone nome="user-circle" tamanho={20} />
+            Para humanos
+          </p>
+          <ul role="list">
+            {paraHumanos.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <dl class="numeros" data-revelar>
+      {numeros.map((n) => (
+        <div class="numero">
+          <dt>{n.rotulo}</dt>
+          <dd>{n.valor}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
+
+<style>
+  .produto {
+    background: var(--fundo);
+  }
+
+  .produto-cabeca {
+    max-width: 60ch;
+    display: grid;
+    gap: 1.1rem;
+    margin-bottom: 4rem;
+  }
+
+  .produto-cabeca h2 {
+    font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+  }
+
+  [data-revelar] {
+    opacity: 0;
+    transform: translateY(26px);
+    transition:
+      opacity 0.75s var(--ease-suave),
+      transform 0.75s var(--ease-suave);
+  }
+
+  [data-revelar].visivel {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-revelar] {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .metade {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+    margin-bottom: 5rem;
+  }
+
+  .metade-selo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--fonte-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--verde);
+    margin-bottom: 1rem;
+  }
+
+  .metade-texto h3 {
+    font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+    margin-bottom: 0.9rem;
+  }
+
+  .capacidades {
+    list-style: none;
+    padding: 0;
+    margin-top: 1.8rem;
+    display: grid;
+    gap: 1.15rem;
+  }
+
+  .capacidades li {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+  }
+
+  .capacidades :global(.capacidade-icone) {
+    color: var(--verde);
+    margin-top: 0.15rem;
+  }
+
+  .capacidades strong {
+    display: block;
+    font-weight: 600;
+    font-size: 0.98rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .capacidades p {
+    color: var(--texto-2);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    max-width: 46ch;
+  }
+
+  .core-terminal {
+    background: var(--fundo-3);
+    border: 1px solid var(--linha-forte);
+    border-radius: var(--raio-painel);
+    padding: 1.5rem 1.6rem;
+    overflow-x: auto;
+    font-size: 0.84rem;
+    line-height: 1.75;
+    margin: 0;
+  }
+
+  .t-cmd {
+    color: var(--texto);
+  }
+
+  .t-ok {
+    color: var(--verde-forte);
+  }
+
+  .t-dim {
+    color: var(--texto-3);
+  }
+
+  .capturas {
+    position: relative;
+    margin: 0;
+    padding-bottom: 3rem;
+  }
+
+  .captura {
+    border-radius: var(--raio-painel);
+    border: 1px solid var(--linha-forte);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  }
+
+  .captura-tras {
+    position: absolute;
+    inset: auto 0 0 clamp(2rem, 6vw, 4rem);
+    width: calc(100% - clamp(2rem, 6vw, 4rem));
+    opacity: 0.75;
+  }
+
+  .captura-frente {
+    position: relative;
+    width: calc(100% - clamp(1rem, 4vw, 3rem));
+  }
+
+  .separacao {
+    border: 1px solid var(--linha);
+    border-radius: var(--raio-painel);
+    background: var(--fundo-2);
+    padding: clamp(1.6rem, 4vw, 3rem);
+    margin-bottom: 4rem;
+  }
+
+  .separacao-titulo {
+    font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+    margin-bottom: 0.9rem;
+  }
+
+  .separacao-frase {
+    margin-bottom: 2.2rem;
+  }
+
+  .separacao-colunas {
+    display: grid;
+    gap: 1.2rem;
+  }
+
+  .lado {
+    border-radius: var(--raio-painel);
+    padding: 1.5rem 1.6rem;
+    border: 1px solid var(--linha);
+  }
+
+  .lado-agentes {
+    background: var(--verde-tinta);
+    border-color: var(--verde-linha);
+  }
+
+  .lado-humanos {
+    background: var(--humano-tinta);
+    border-color: rgba(232, 176, 75, 0.32);
+  }
+
+  .lado-cabeca {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .lado-agentes .lado-cabeca {
+    color: var(--verde-forte);
+  }
+
+  .lado-humanos .lado-cabeca {
+    color: var(--humano);
+  }
+
+  .lado ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .lado li {
+    color: var(--texto-2);
+    font-size: 0.95rem;
+    padding-left: 1.1rem;
+    position: relative;
+  }
+
+  .lado li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 5px;
+    height: 5px;
+    border-radius: var(--raio-pill);
+    background: currentColor;
+    opacity: 0.55;
+  }
+
+  .numeros {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 0;
+  }
+
+  .numero {
+    border-top: 1px solid var(--linha-forte);
+    padding-top: 1.1rem;
+  }
+
+  .numero dd {
+    font-family: var(--fonte-mono);
+    font-size: clamp(2rem, 4vw, 2.9rem);
+    font-weight: 500;
+    color: var(--texto);
+    margin: 0;
+    order: -1;
+  }
+
+  .numero dt {
+    color: var(--texto-3);
+    font-size: 0.88rem;
+    margin-top: 0.3rem;
+  }
+
+  @media (min-width: 900px) {
+    .metade {
+      grid-template-columns: 1fr 1.1fr;
+      gap: 4rem;
+    }
+    .metade-invertida .metade-texto {
+      order: 2;
+    }
+    .metade-invertida .metade-visual {
+      order: 1;
+    }
+    .separacao-colunas {
+      grid-template-columns: 1fr 1fr;
+    }
+    .numeros {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>
+
+<script>
+  const blocos = document.querySelectorAll<HTMLElement>("#produto [data-revelar]");
+  const io = new IntersectionObserver(
+    (entradas) => {
+      for (const e of entradas) {
+        if (e.isIntersecting) {
+          e.target.classList.add("visivel");
+          io.unobserve(e.target);
+        }
+      }
+    },
+    { threshold: 0.12 },
+  );
+  blocos.forEach((b) => io.observe(b));
+</script>

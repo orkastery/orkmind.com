@@ -1,0 +1,33 @@
+---
+import { icones } from "../data/icones";
+
+interface Props {
+  nome: string;
+  tamanho?: number;
+  classe?: string;
+}
+
+const { nome, tamanho = 20, classe = "" } = Astro.props;
+const svg = icones[nome];
+if (!svg) {
+  throw new Error(`Ícone desconhecido: ${nome}`);
+}
+---
+
+<span
+  class={`icone ${classe}`}
+  style={`--icone-tamanho:${tamanho}px`}
+  aria-hidden="true"
+  set:html={svg}
+/>
+
+<style>
+  .icone {
+    display: inline-flex;
+    flex: none;
+  }
+  .icone :global(svg) {
+    width: var(--icone-tamanho);
+    height: var(--icone-tamanho);
+  }
+</style>

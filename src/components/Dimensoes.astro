@@ -1,0 +1,382 @@
+---
+import Icone from "./Icone.astro";
+import {
+  dimensoes,
+  tagsSelecionaveis,
+  memoriasExemplo,
+} from "../data/dimensoes";
+
+const memoriasJson = JSON.stringify(memoriasExemplo);
+---
+
+<section class="secao busca" id="busca" aria-labelledby="busca-titulo">
+  <div class="container">
+    <div class="busca-cabeca">
+      <h2 class="titulo-display" id="busca-titulo">
+        A mesma consulta devolve o mesmo contexto
+      </h2>
+      <p class="prosa">
+        Oito dimensões de tags cobrem os eixos de contexto de um sistema
+        multiagente. O casamento é exato, sem ranking probabilístico: regra
+        mandatória que casa com as tags sempre chega ao agente.
+      </p>
+    </div>
+
+    <ul class="dimensoes" role="list">
+      {dimensoes.map((d) => (
+        <li class="dimensao">
+          <code>{d.chave}</code>
+          <strong>{d.nome}</strong>
+          <p>{d.desc}</p>
+        </li>
+      ))}
+    </ul>
+
+    <div class="simulador" data-simulador data-memorias={memoriasJson}>
+      <p class="simulador-rotulo">
+        Simulador com um conjunto de exemplo de 8 memórias. Selecione tags e
+        veja o casamento exato:
+      </p>
+
+      <div class="simulador-tags" role="group" aria-label="Tags da consulta">
+        {tagsSelecionaveis.map((t) => (
+          <button
+            type="button"
+            class="tag"
+            aria-pressed={t.dimensao === "skill" && t.valor === "deploy"
+              ? "true"
+              : "false"}
+            data-tag
+            data-dimensao={t.dimensao}
+            data-valor={t.valor}
+          >
+            <span class="tag-dimensao">{t.dimensao}:</span>{t.valor}
+          </button>
+        ))}
+      </div>
+
+      <p class="simulador-consulta">
+        <Icone nome="magnifying-glass" tamanho={16} />
+        <code data-consulta>orkmind search --tags '&#123;"skill": ["deploy"]&#125;'</code>
+      </p>
+
+      <div class="simulador-resultado">
+        <p class="resultado-contagem" data-contagem aria-live="polite"></p>
+        <ul class="resultado-lista" data-resultados role="list"></ul>
+        <p class="resultado-vazio" data-vazio hidden>
+          Nenhuma tag selecionada. A consulta vazia não injeta nada: contexto
+          no OrkMind é sempre pedido, nunca adivinhado.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .busca {
+    background: var(--fundo);
+  }
+
+  .busca-cabeca {
+    max-width: 62ch;
+    display: grid;
+    gap: 1.1rem;
+    margin-bottom: 3rem;
+  }
+
+  .busca-cabeca h2 {
+    font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+  }
+
+  .dimensoes {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 3.2rem;
+  }
+
+  .dimensao {
+    border: 1px solid var(--linha);
+    border-radius: var(--raio-painel);
+    padding: 1.1rem 1.2rem;
+    display: grid;
+    gap: 0.3rem;
+    background: var(--fundo-2);
+  }
+
+  .dimensao code {
+    color: var(--verde);
+    font-size: 0.85rem;
+  }
+
+  .dimensao strong {
+    font-weight: 600;
+    font-size: 0.98rem;
+  }
+
+  .dimensao p {
+    color: var(--texto-2);
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .simulador {
+    border: 1px solid var(--linha-forte);
+    border-radius: var(--raio-painel);
+    background: var(--fundo-2);
+    padding: clamp(1.2rem, 3vw, 2.2rem);
+    display: grid;
+    gap: 1.4rem;
+  }
+
+  .simulador-rotulo {
+    color: var(--texto-2);
+    font-size: 0.95rem;
+    max-width: 58ch;
+  }
+
+  .simulador-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-family: var(--fonte-mono);
+    font-size: 0.82rem;
+    color: var(--texto-2);
+    background: var(--fundo-3);
+    border: 1px solid var(--linha);
+    border-radius: var(--raio-pill);
+    padding: 0.5rem 0.85rem;
+    transition:
+      color var(--dur-micro) var(--ease-suave),
+      border-color var(--dur-micro) var(--ease-suave),
+      background var(--dur-micro) var(--ease-suave);
+  }
+
+  .tag-dimensao {
+    color: var(--texto-3);
+  }
+
+  .tag:hover {
+    border-color: var(--linha-forte);
+    color: var(--texto);
+  }
+
+  .tag[aria-pressed="true"] {
+    background: var(--verde-tinta);
+    border-color: var(--verde-linha);
+    color: var(--verde-forte);
+  }
+
+  .tag[aria-pressed="true"] .tag-dimensao {
+    color: var(--verde);
+  }
+
+  .simulador-consulta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--texto-3);
+    border-top: 1px solid var(--linha);
+    padding-top: 1.2rem;
+    overflow-x: auto;
+  }
+
+  .simulador-consulta code {
+    font-size: 0.86rem;
+    color: var(--texto-2);
+    white-space: nowrap;
+  }
+
+  .resultado-contagem {
+    font-family: var(--fonte-mono);
+    font-size: 0.8rem;
+    color: var(--texto-3);
+    margin-bottom: 0.8rem;
+  }
+
+  .resultado-lista {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .resultado-lista :global(li) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.7rem;
+    border: 1px solid var(--linha);
+    border-radius: var(--raio-chip);
+    background: var(--fundo-3);
+    padding: 0.75rem 0.95rem;
+    animation: resultado-entrar 0.35s var(--ease-suave) both;
+  }
+
+  @keyframes resultado-entrar {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .resultado-lista :global(li.mandatoria) {
+    border-color: var(--verde-linha);
+  }
+
+  .resultado-lista :global(code) {
+    color: var(--verde);
+    font-size: 0.8rem;
+  }
+
+  .resultado-lista :global(.resultado-texto) {
+    color: var(--texto);
+    font-size: 0.92rem;
+    flex: 1 1 24ch;
+  }
+
+  .resultado-lista :global(.selo) {
+    font-family: var(--fonte-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: var(--raio-pill);
+    padding: 0.22rem 0.6rem;
+  }
+
+  .resultado-lista :global(.selo-mandatoria) {
+    color: #05261a;
+    background: var(--verde);
+  }
+
+  .resultado-lista :global(.selo-prioridade) {
+    color: var(--texto-2);
+    border: 1px solid var(--linha-forte);
+  }
+
+  .resultado-vazio {
+    color: var(--texto-2);
+    font-size: 0.95rem;
+    border: 1px dashed var(--linha-forte);
+    border-radius: var(--raio-chip);
+    padding: 1.1rem 1.2rem;
+    max-width: 58ch;
+  }
+
+  .resultado-vazio[hidden] {
+    display: none;
+  }
+</style>
+
+<script>
+  interface Memoria {
+    colecao: string;
+    conteudo: string;
+    mandatoria: boolean;
+    prioridade: string;
+    tags: Record<string, string[]>;
+  }
+
+  const raiz = document.querySelector<HTMLElement>("[data-simulador]");
+  if (raiz) {
+    const memorias: Memoria[] = JSON.parse(raiz.dataset.memorias ?? "[]");
+    const botoes = Array.from(raiz.querySelectorAll<HTMLButtonElement>("[data-tag]"));
+    const consulta = raiz.querySelector<HTMLElement>("[data-consulta]");
+    const lista = raiz.querySelector<HTMLElement>("[data-resultados]");
+    const contagem = raiz.querySelector<HTMLElement>("[data-contagem]");
+    const vazio = raiz.querySelector<HTMLElement>("[data-vazio]");
+
+    const selecionadas = () => {
+      const tags: Record<string, string[]> = {};
+      for (const b of botoes) {
+        if (b.getAttribute("aria-pressed") === "true") {
+          const d = b.dataset.dimensao ?? "";
+          (tags[d] ??= []).push(b.dataset.valor ?? "");
+        }
+      }
+      return tags;
+    };
+
+    const casa = (m: Memoria, tags: Record<string, string[]>) => {
+      for (const [dim, valores] of Object.entries(tags)) {
+        const doRegistro = m.tags[dim] ?? [];
+        if (!valores.every((v) => doRegistro.includes(v))) return false;
+      }
+      return true;
+    };
+
+    const atualizar = () => {
+      const tags = selecionadas();
+      const temTags = Object.keys(tags).length > 0;
+
+      if (consulta) {
+        consulta.textContent = temTags
+          ? `orkmind search --tags '${JSON.stringify(tags)}'`
+          : "orkmind search --tags '{}'";
+      }
+
+      if (!lista || !contagem || !vazio) return;
+
+      if (!temTags) {
+        lista.innerHTML = "";
+        contagem.textContent = "";
+        vazio.hidden = false;
+        return;
+      }
+      vazio.hidden = true;
+
+      const casadas = memorias
+        .filter((m) => casa(m, tags))
+        .sort(
+          (a, b) =>
+            Number(b.mandatoria) - Number(a.mandatoria) ||
+            a.colecao.localeCompare(b.colecao),
+        );
+
+      contagem.textContent = `${casadas.length} de ${memorias.length} memórias casam com a consulta`;
+      lista.innerHTML = "";
+      for (const m of casadas) {
+        const item = document.createElement("li");
+        if (m.mandatoria) item.classList.add("mandatoria");
+        const cod = document.createElement("code");
+        cod.textContent = m.colecao;
+        const texto = document.createElement("span");
+        texto.className = "resultado-texto";
+        texto.textContent = m.conteudo;
+        item.append(cod, texto);
+        if (m.mandatoria) {
+          const selo = document.createElement("span");
+          selo.className = "selo selo-mandatoria";
+          selo.textContent = "mandatória";
+          item.append(selo);
+        }
+        const prio = document.createElement("span");
+        prio.className = "selo selo-prioridade";
+        prio.textContent = m.prioridade;
+        item.append(prio);
+        lista.append(item);
+      }
+    };
+
+    for (const b of botoes) {
+      b.addEventListener("click", () => {
+        const ativo = b.getAttribute("aria-pressed") === "true";
+        b.setAttribute("aria-pressed", String(!ativo));
+        atualizar();
+      });
+    }
+    atualizar();
+  }
+</script>

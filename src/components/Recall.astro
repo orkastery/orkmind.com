@@ -1,0 +1,385 @@
+---
+const etapas = [
+  {
+    titulo: "Detectar o contexto",
+    desc: "A consulta nasce das tags explícitas ou dos detectores de contexto: palavras-chave e caminhos de arquivo.",
+  },
+  {
+    titulo: "Casar exato",
+    desc: "As tags casam por igualdade, dimensão a dimensão. Nada de score: casou, entrou.",
+  },
+  {
+    titulo: "Garantir as regras",
+    desc: "Entradas mandatórias que casam furam qualquer fila. Governança chega sempre ao agente.",
+  },
+  {
+    titulo: "Respeitar o orçamento",
+    desc: "O contexto cabe em um orçamento de tokens: prioridade critical primeiro, camadas E1, E2 e E3 conforme couber.",
+  },
+  {
+    titulo: "Injetar o contexto",
+    desc: "O mesmo bloco, na mesma ordem, para a mesma consulta. Reprodutível de ponta a ponta.",
+  },
+];
+
+const chips = [
+  { colecao: "rule", texto: "Nunca usar rm -rf em produção", casa: true, mandatoria: true, baixa: false },
+  { colecao: "instruction", texto: "CI obrigatória para deploy", casa: true, mandatoria: false, baixa: false },
+  { colecao: "fact", texto: "Banco de produção: PostgreSQL 16", casa: true, mandatoria: false, baixa: false },
+  { colecao: "learning", texto: "Mocks falharam nos testes de auth", casa: false, mandatoria: false, baixa: false },
+  { colecao: "preference", texto: "Commits atômicos, PRs pequenos", casa: true, mandatoria: false, baixa: true },
+  { colecao: "decision", texto: "pgvector é o backend padrão", casa: false, mandatoria: false, baixa: false },
+  { colecao: "handoff", texto: "Migração 007 parou no meio", casa: false, mandatoria: false, baixa: false },
+];
+---
+
+<section class="secao recall" id="recall" aria-labelledby="recall-titulo">
+  <div class="container recall-conteudo" data-recall>
+    <div class="recall-texto">
+      <h2 class="titulo-display" id="recall-titulo">
+        O caminho de um recall determinístico
+      </h2>
+      <ol class="etapas" role="list">
+        {etapas.map((e, i) => (
+          <li class="etapa" data-etapa-item={i}>
+            <h3>{e.titulo}</h3>
+            <p class="prosa">{e.desc}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <div class="recall-visual" data-visual data-etapa="0" aria-hidden="true">
+      <div class="visual-moldura">
+        <p class="visual-legenda" data-legenda>memórias no store</p>
+        <div class="visual-chips">
+          {chips.map((c, i) => (
+            <div
+              class:list={[
+                "vchip",
+                { casa: c.casa, mandatoria: c.mandatoria, baixa: c.baixa },
+              ]}
+              style={`--i:${i}`}
+            >
+              <code>{c.colecao}</code>
+              <span>{c.texto}</span>
+              {c.mandatoria && <em class="vchip-selo">mandatória</em>}
+            </div>
+          ))}
+        </div>
+        <div class="visual-orcamento">
+          <span>orçamento de tokens</span>
+          <span class="orcamento-trilha" aria-hidden="true"><i></i></span>
+        </div>
+        <p class="visual-rodape">mesma consulta, mesmo bloco</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .recall {
+    background: var(--fundo-2);
+    border-block: 1px solid var(--linha);
+  }
+
+  .recall-conteudo {
+    display: grid;
+    gap: 3rem;
+  }
+
+  .recall-texto h2 {
+    font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+    max-width: 16ch;
+    margin-bottom: 2.4rem;
+  }
+
+  .etapas {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 1.6rem;
+    counter-reset: etapa;
+  }
+
+  .etapa {
+    border-left: 2px solid var(--linha-forte);
+    padding-left: 1.3rem;
+    transition:
+      border-color var(--dur-media) var(--ease-suave),
+      opacity var(--dur-media) var(--ease-suave);
+  }
+
+  .etapa h3 {
+    font-family: var(--fonte-display);
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .etapa .prosa {
+    font-size: 0.95rem;
+    max-width: 44ch;
+  }
+
+  [data-pinado] .etapa {
+    opacity: 0.38;
+  }
+
+  [data-pinado] .etapa.ativa {
+    opacity: 1;
+    border-color: var(--verde);
+  }
+
+  .recall-visual {
+    align-self: stretch;
+  }
+
+  .visual-moldura {
+    position: sticky;
+    top: 96px;
+    background: var(--fundo-3);
+    border: 1px solid var(--linha-forte);
+    border-radius: var(--raio-painel);
+    padding: 1.6rem;
+    display: grid;
+    gap: 1rem;
+    min-height: 430px;
+    align-content: start;
+    transition: border-color var(--dur-media) var(--ease-suave);
+  }
+
+  [data-etapa="4"] .visual-moldura {
+    border-color: var(--verde-linha);
+  }
+
+  .visual-legenda {
+    font-family: var(--fonte-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--texto-3);
+  }
+
+  .visual-chips {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .vchip {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border: 1px solid var(--linha);
+    border-radius: var(--raio-chip);
+    background: var(--fundo-2);
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+    color: var(--texto-2);
+    opacity: 0.55;
+    transform: translateX(calc((var(--i) - 3) * 4px));
+    transition:
+      opacity 0.5s var(--ease-suave),
+      transform 0.5s var(--ease-suave),
+      border-color 0.5s var(--ease-suave),
+      max-height 0.5s var(--ease-suave);
+  }
+
+  .vchip code {
+    color: var(--texto-3);
+    font-size: 0.76rem;
+    transition: color 0.4s var(--ease-suave);
+  }
+
+  .vchip-selo {
+    margin-left: auto;
+    font-style: normal;
+    font-family: var(--fonte-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #05261a;
+    background: var(--verde);
+    border-radius: var(--raio-pill);
+    padding: 0.18rem 0.55rem;
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-suave);
+  }
+
+  /* etapa 1+: casadas acendem, não casadas apagam */
+  [data-etapa="1"] .vchip.casa,
+  [data-etapa="2"] .vchip.casa,
+  [data-etapa="3"] .vchip.casa,
+  [data-etapa="4"] .vchip.casa {
+    opacity: 1;
+    border-color: var(--verde-linha);
+    transform: translateX(0);
+  }
+
+  [data-etapa="1"] .vchip:not(.casa),
+  [data-etapa="2"] .vchip:not(.casa),
+  [data-etapa="3"] .vchip:not(.casa),
+  [data-etapa="4"] .vchip:not(.casa) {
+    opacity: 0.16;
+    transform: translateX(0) scale(0.985);
+  }
+
+  [data-etapa="1"] .vchip.casa code {
+    color: var(--verde);
+  }
+
+  /* etapa 2+: mandatória sobe e ganha selo */
+  [data-etapa="2"] .vchip.mandatoria,
+  [data-etapa="3"] .vchip.mandatoria,
+  [data-etapa="4"] .vchip.mandatoria {
+    order: -1;
+    border-color: var(--verde);
+    box-shadow: 0 0 24px rgba(52, 211, 153, 0.12);
+  }
+
+  [data-etapa="2"] .vchip-selo,
+  [data-etapa="3"] .vchip-selo,
+  [data-etapa="4"] .vchip-selo {
+    opacity: 1;
+  }
+
+  /* etapa 3+: baixa prioridade sai do orçamento */
+  [data-etapa="3"] .vchip.baixa,
+  [data-etapa="4"] .vchip.baixa {
+    opacity: 0.14;
+    transform: scale(0.96);
+    text-decoration: line-through;
+  }
+
+  .visual-orcamento {
+    display: grid;
+    gap: 0.45rem;
+    font-family: var(--fonte-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--texto-3);
+    opacity: 0;
+    transition: opacity 0.5s var(--ease-suave);
+  }
+
+  .orcamento-trilha {
+    display: block;
+    height: 4px;
+    border-radius: var(--raio-pill);
+    background: var(--fundo-4);
+    overflow: hidden;
+  }
+
+  .orcamento-trilha i {
+    display: block;
+    height: 100%;
+    width: 30%;
+    border-radius: inherit;
+    background: var(--verde);
+    transition: width 0.7s var(--ease-suave);
+  }
+
+  [data-etapa="3"] .visual-orcamento,
+  [data-etapa="4"] .visual-orcamento {
+    opacity: 1;
+  }
+
+  [data-etapa="3"] .orcamento-trilha i {
+    width: 72%;
+  }
+
+  [data-etapa="4"] .orcamento-trilha i {
+    width: 100%;
+  }
+
+  .visual-rodape {
+    font-family: var(--fonte-mono);
+    font-size: 0.78rem;
+    color: var(--verde);
+    opacity: 0;
+    transition: opacity 0.5s var(--ease-suave);
+  }
+
+  [data-etapa="4"] .visual-rodape {
+    opacity: 1;
+  }
+
+  @media (min-width: 1024px) {
+    .recall-conteudo {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  const raiz = document.querySelector<HTMLElement>("[data-recall]");
+  if (raiz) {
+    const visual = raiz.querySelector<HTMLElement>("[data-visual]");
+    const legenda = raiz.querySelector<HTMLElement>("[data-legenda]");
+    const itens = Array.from(
+      raiz.querySelectorAll<HTMLElement>("[data-etapa-item]"),
+    );
+    const legendas = [
+      "memórias no store",
+      "casamento exato por tags",
+      "mandatórias garantidas",
+      "orçamento de tokens",
+      "contexto injetado",
+    ];
+
+    const irParaEtapa = (n: number) => {
+      visual?.setAttribute("data-etapa", String(n));
+      if (legenda) legenda.textContent = legendas[n] ?? legendas[0]!;
+      itens.forEach((el, i) => el.classList.toggle("ativa", i === n));
+    };
+
+    const reduzir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduzir) {
+      // sem animação: mostra o estado final, todas as etapas legíveis
+      irParaEtapa(4);
+      itens.forEach((el) => el.classList.add("ativa"));
+    } else {
+      gsap.registerPlugin(ScrollTrigger);
+      const mm = gsap.matchMedia();
+
+      mm.add("(min-width: 1024px)", () => {
+        raiz.setAttribute("data-pinado", "");
+        const st = ScrollTrigger.create({
+          trigger: raiz,
+          start: "top top",
+          end: "+=2400",
+          pin: true,
+          scrub: true,
+          onUpdate: (self) => {
+            const etapa = Math.min(4, Math.floor(self.progress * 5));
+            irParaEtapa(etapa);
+          },
+        });
+        return () => {
+          st.kill();
+          raiz.removeAttribute("data-pinado");
+        };
+      });
+
+      mm.add("(max-width: 1023px)", () => {
+        // sem pin no mobile: cada etapa ativa o visual ao entrar na tela
+        const gatilhos = itens.map((el, i) =>
+          ScrollTrigger.create({
+            trigger: el,
+            start: "top 70%",
+            onEnter: () => irParaEtapa(i),
+            onEnterBack: () => irParaEtapa(i),
+          }),
+        );
+        return () => gatilhos.forEach((g) => g.kill());
+      });
+    }
+  }
+</script>

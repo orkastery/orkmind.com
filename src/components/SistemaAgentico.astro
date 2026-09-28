@@ -1,0 +1,386 @@
+---
+import Icone from "./Icone.astro";
+
+interface No {
+  id: string;
+  rotulo: string;
+  icone: string;
+  desc: string;
+  fluxo: string;
+}
+
+const nos: No[] = [
+  {
+    id: "orquestrador",
+    rotulo: "Orquestrador",
+    icone: "tree-structure",
+    desc: "Coordena o trabalho com contexto citável do Company Brain e devolve fases, decisões, claims e artefatos à memória empresarial.",
+    fluxo: "Lê contexto autorizado, devolve evidências",
+  },
+  {
+    id: "subagentes",
+    rotulo: "Sub-agentes",
+    icone: "robot",
+    desc: "Executam tarefas especializadas. Recebem contexto sob medida pelas tags e devolvem aprendizados ao sistema.",
+    fluxo: "Leem contexto, gravam aprendizados",
+  },
+  {
+    id: "runtimes",
+    rotulo: "Runtimes e sessões",
+    icone: "cpu",
+    desc: "Cada sessão nasce e morre, mas o que ela descobriu fica. O estado de sessão é uma coleção tipada da ontologia.",
+    fluxo: "Gravam estado e histórico de sessão",
+  },
+  {
+    id: "temporarios",
+    rotulo: "Agentes temporários",
+    icone: "clock-countdown",
+    desc: "Vivem minutos e desaparecem. Sem memória externa, tudo o que viram sumiria junto com eles.",
+    fluxo: "Herdam contexto, deixam registro",
+  },
+  {
+    id: "skills",
+    rotulo: "Skills",
+    icone: "lightning",
+    desc: "Capacidades reutilizáveis do sistema. O conhecimento sobre quando e como usá-las mora na coleção de tools.",
+    fluxo: "Consultam instruções de uso",
+  },
+  {
+    id: "plugins",
+    rotulo: "Plugins",
+    icone: "puzzle-piece",
+    desc: "Estendem os runtimes por dentro. Os plugins do OrkMind injetam regras mandatórias em todo turno de conversa.",
+    fluxo: "Injetam regras em cada turno",
+  },
+  {
+    id: "integracoes",
+    rotulo: "Integrações",
+    icone: "plugs-connected",
+    desc: "MCP, provider de memória e API idempotente: caminhos oficiais para qualquer runtime falar com a memória.",
+    fluxo: "Transportam leitura e escrita",
+  },
+  {
+    id: "ambiente",
+    rotulo: "Ambiente",
+    icone: "globe-simple",
+    desc: "Repositórios, serviços e infraestrutura. Fatos verificáveis sobre o ambiente viram memória consultável.",
+    fluxo: "Vira fatos e referências",
+  },
+];
+
+// posições na elipse (percentuais do contêiner)
+const posicoes = nos.map((_, i) => {
+  const ang = (i / nos.length) * Math.PI * 2 - Math.PI / 2;
+  return {
+    x: 50 + Math.cos(ang) * 42,
+    y: 50 + Math.sin(ang) * 40,
+  };
+});
+---
+
+<section class="secao sistema" id="sistema" aria-labelledby="sistema-titulo">
+  <div class="container">
+    <div class="sistema-cabeca">
+      <h2 class="titulo-display" id="sistema-titulo">
+        Uma fonte de verdade para o sistema inteiro
+      </h2>
+      <p class="prosa">
+        Orquestrador, sub-agentes, sessões, documentos e integrações compartilham
+        identidades estáveis. O conhecimento sobrevive à sessão sem perder fonte ou permissão.
+      </p>
+    </div>
+
+    <div class="sistema-grade">
+      <div class="orbita" data-orbita>
+        <svg class="orbita-linhas" data-orbita-linhas aria-hidden="true">
+          {nos.map((no) => (
+            <line data-linha={no.id} x1="0" y1="0" x2="0" y2="0" />
+          ))}
+        </svg>
+
+        <div class="no-centro" data-no-centro>
+          <span class="no-centro-ponto" aria-hidden="true"></span>
+          <span class="no-centro-nome">OrkMind</span>
+          <span class="no-centro-sub">company brain</span>
+        </div>
+
+        {nos.map((no, i) => (
+          <button
+            class="no"
+            type="button"
+            data-no={no.id}
+            aria-pressed="false"
+            style={`--x:${posicoes[i]!.x};--y:${posicoes[i]!.y}`}
+          >
+            <Icone nome={no.icone} tamanho={19} />
+            <span>{no.rotulo}</span>
+          </button>
+        ))}
+      </div>
+
+      <aside class="painel" aria-live="polite">
+        {nos.map((no, i) => (
+          <div class="painel-item" data-painel={no.id} hidden={i !== 0}>
+            <h3>{no.rotulo}</h3>
+            <p class="prosa">{no.desc}</p>
+            <p class="painel-fluxo">
+              <Icone nome="flow-arrow" tamanho={16} />
+              {no.fluxo}
+            </p>
+          </div>
+        ))}
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sistema {
+    background: var(--fundo);
+  }
+
+  .sistema-cabeca {
+    max-width: 60ch;
+    display: grid;
+    gap: 1.1rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .sistema-cabeca h2 {
+    font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+  }
+
+  .sistema-grade {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  .orbita {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    max-width: 620px;
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  .orbita-linhas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .orbita-linhas line {
+    stroke: var(--linha-forte);
+    stroke-width: 1;
+    transition: stroke var(--dur-media) var(--ease-suave);
+  }
+
+  .orbita-linhas line.ativa {
+    stroke: var(--verde);
+    stroke-width: 1.5;
+    stroke-dasharray: 6 8;
+    animation: fluir 1.2s linear infinite;
+  }
+
+  @keyframes fluir {
+    to {
+      stroke-dashoffset: -14;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .orbita-linhas line.ativa {
+      animation: none;
+      stroke-dasharray: none;
+    }
+  }
+
+  .no-centro {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: grid;
+    justify-items: center;
+    gap: 0.15rem;
+    background: var(--fundo-3);
+    border: 1px solid var(--verde-linha);
+    border-radius: var(--raio-pill);
+    padding: 1.6rem 2.1rem;
+    box-shadow: 0 0 60px rgba(52, 211, 153, 0.12);
+  }
+
+  .no-centro-ponto {
+    width: 11px;
+    height: 11px;
+    border-radius: var(--raio-pill);
+    background: var(--verde);
+    box-shadow: 0 0 0 5px var(--verde-tinta);
+    margin-bottom: 0.3rem;
+  }
+
+  .no-centro-nome {
+    font-family: var(--fonte-display);
+    font-weight: 600;
+    font-size: 1.25rem;
+  }
+
+  .no-centro-sub {
+    font-family: var(--fonte-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--texto-3);
+  }
+
+  .no {
+    position: absolute;
+    left: calc(var(--x) * 1%);
+    top: calc(var(--y) * 1%);
+    transform: translate(-50%, -50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--fundo-2);
+    border: 1px solid var(--linha-forte);
+    border-radius: var(--raio-pill);
+    color: var(--texto-2);
+    font-size: 0.82rem;
+    padding: 0.55rem 0.9rem;
+    white-space: nowrap;
+    transition:
+      color var(--dur-micro) var(--ease-suave),
+      border-color var(--dur-micro) var(--ease-suave),
+      background var(--dur-micro) var(--ease-suave);
+  }
+
+  .no:hover,
+  .no[aria-pressed="true"] {
+    color: var(--texto);
+    border-color: var(--verde-linha);
+    background: var(--verde-tinta);
+  }
+
+  .painel {
+    background: var(--fundo-2);
+    border: 1px solid var(--linha);
+    border-radius: var(--raio-painel);
+    padding: 1.8rem;
+    min-height: 220px;
+  }
+
+  .painel-item {
+    display: grid;
+    gap: 0.8rem;
+    align-content: start;
+  }
+
+  .painel-item[hidden] {
+    display: none;
+  }
+
+  .painel-item h3 {
+    font-family: var(--fonte-display);
+    font-weight: 600;
+    font-size: 1.3rem;
+  }
+
+  .painel-item .prosa {
+    font-size: 0.98rem;
+  }
+
+  .painel-fluxo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--verde);
+    font-family: var(--fonte-mono);
+    font-size: 0.82rem;
+  }
+
+  @media (min-width: 980px) {
+    .sistema-grade {
+      grid-template-columns: 1.35fr 1fr;
+      gap: 3.5rem;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .no {
+      /* comprime a elipse para caber na tela e deixa o rótulo quebrar */
+      left: calc(50% + (var(--x) - 50) * 0.9%);
+      top: calc(50% + (var(--y) - 50) * 0.94%);
+      font-size: 0.7rem;
+      padding: 0.4rem 0.6rem;
+      gap: 0.3rem;
+      white-space: normal;
+      max-width: 104px;
+      text-align: left;
+      line-height: 1.25;
+    }
+    .no-centro {
+      padding: 1.1rem 1.5rem;
+    }
+    .painel {
+      padding: 1.3rem;
+    }
+  }
+</style>
+
+<script>
+  const orbita = document.querySelector<HTMLElement>("[data-orbita]");
+  if (orbita) {
+    const svg = orbita.querySelector<SVGSVGElement>("[data-orbita-linhas]");
+    const centro = orbita.querySelector<HTMLElement>("[data-no-centro]");
+    const nos = Array.from(orbita.querySelectorAll<HTMLButtonElement>("[data-no]"));
+    const paineis = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-painel]"),
+    );
+
+    const desenharLinhas = () => {
+      if (!svg || !centro) return;
+      const caixa = orbita.getBoundingClientRect();
+      const c = centro.getBoundingClientRect();
+      const cx = c.left - caixa.left + c.width / 2;
+      const cy = c.top - caixa.top + c.height / 2;
+      for (const no of nos) {
+        const linha = svg.querySelector<SVGLineElement>(
+          `[data-linha="${no.dataset.no}"]`,
+        );
+        if (!linha) continue;
+        const r = no.getBoundingClientRect();
+        linha.setAttribute("x1", String(r.left - caixa.left + r.width / 2));
+        linha.setAttribute("y1", String(r.top - caixa.top + r.height / 2));
+        linha.setAttribute("x2", String(cx));
+        linha.setAttribute("y2", String(cy));
+      }
+    };
+
+    const ativar = (id: string) => {
+      for (const no of nos) {
+        no.setAttribute("aria-pressed", String(no.dataset.no === id));
+      }
+      for (const painel of paineis) {
+        painel.hidden = painel.dataset.painel !== id;
+      }
+      svg
+        ?.querySelectorAll("line")
+        .forEach((l) =>
+          l.classList.toggle("ativa", l.getAttribute("data-linha") === id),
+        );
+    };
+
+    for (const no of nos) {
+      no.addEventListener("click", () => ativar(no.dataset.no ?? ""));
+      no.addEventListener("pointerenter", () => ativar(no.dataset.no ?? ""));
+    }
+
+    const ro = new ResizeObserver(desenharLinhas);
+    ro.observe(orbita);
+    desenharLinhas();
+    ativar("orquestrador");
+  }
+</script>

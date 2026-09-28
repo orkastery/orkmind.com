@@ -1,0 +1,75 @@
+/* Design tokens do site OrkMind.
+   Identidade herdada do produto (OrkMind Web): base escura fria e acento verde único.
+   Contraste AA verificado sobre --fundo (relatório em deploy/README.md). */
+
+@font-face {
+  font-family: "Clash Display";
+  src: url("/fonts/clash-display-500.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Clash Display";
+  src: url("/fonts/clash-display-600.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Clash Display";
+  src: url("/fonts/clash-display-700.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+  font-style: normal;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* superfícies */
+  --fundo: #07090e;
+  --fundo-2: #0b0e15;
+  --fundo-3: #10141d;
+  --fundo-4: #161b26;
+  --linha: rgba(231, 236, 239, 0.08);
+  --linha-forte: rgba(231, 236, 239, 0.18);
+
+  /* texto */
+  --texto: #e7ecef;
+  --texto-2: #9aa7b4;
+  --texto-3: #7d8894;
+
+  /* marca (acento único da página) */
+  --verde: #34d399;
+  --verde-forte: #6ee7b7;
+  --verde-tinta: rgba(52, 211, 153, 0.1);
+  --verde-linha: rgba(52, 211, 153, 0.32);
+
+  /* cor semântica dos diagramas: lado humano */
+  --humano: #e8b04b;
+  --humano-tinta: rgba(232, 176, 75, 0.1);
+
+  /* tipografia */
+  --fonte-display: "Clash Display", "Geist Sans", system-ui, sans-serif;
+  --fonte-texto: "Geist Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --fonte-mono: "Geist Mono", "SFMono-Regular", ui-monospace, "Cascadia Mono", monospace;
+
+  /* raios: sistema único (interativos 999px, painéis 16px, chips 8px) */
+  --raio-painel: 16px;
+  --raio-chip: 8px;
+  --raio-pill: 999px;
+
+  /* movimento */
+  --ease-suave: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-micro: 180ms;
+  --dur-media: 420ms;
+
+  /* camadas (escala única de z-index) */
+  --z-nav: 40;
+  --z-overlay: 50;
+
+  /* ritmo */
+  --secao-y: clamp(96px, 14vh, 160px);
+  --container: 1200px;
+}

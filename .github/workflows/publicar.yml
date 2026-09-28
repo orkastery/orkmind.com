@@ -1,0 +1,64 @@
+# Publica o site em producao (GitHub Pages) SO por promocao explicita de uma versao.
+# Um push na main nao publica nada: a main vai para o ambiente de teste, e a producao so recebe
+# o commit que foi aprovado la. Cada promocao e uma tag `producao-AAAAMMDD-HHMM` apontando para
+# esse commit, o que deixa o historico de producao no proprio repositorio. Para desfazer, crie
+# uma tag nova no commit anterior (ou rode este workflow a mao com o ref desejado).
+name: Publicar em producao
+
+on:
+  push:
+    tags: ['producao-*']
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Tag producao-* ou SHA a publicar'
+        required: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  compilar:
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.versao.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - id: versao
+        name: Conferir a versao no artefato
+        run: |
+          esperado="$(git rev-parse HEAD)"
+          publicado="$(node -p "require('./dist/versao.json').sha")"
+          echo "sha=$esperado" >> "$GITHUB_OUTPUT"
+          if [ "$esperado" != "$publicado" ]; then
+            echo "::error::dist/versao.json diz $publicado, mas o checkout e $esperado"
+            exit 1
+          fi
+          echo "Publicando $esperado"
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  publicar:
+    needs: compilar
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

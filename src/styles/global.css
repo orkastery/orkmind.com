@@ -1,0 +1,176 @@
+@import "./tokens.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+body {
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: var(--fonte-texto);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+::selection {
+  background: var(--verde);
+  color: var(--fundo);
+}
+
+:focus-visible {
+  outline: 2px solid var(--verde);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--fonte-mono);
+}
+
+.container {
+  width: min(100% - 2.5rem, var(--container));
+  margin-inline: auto;
+}
+
+.secao {
+  padding-block: var(--secao-y);
+  position: relative;
+}
+
+[id] {
+  scroll-margin-top: 84px;
+}
+
+.titulo-display {
+  font-family: var(--fonte-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+.prosa {
+  color: var(--texto-2);
+  max-width: 62ch;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* botões: intenção única por rótulo, raio pill travado */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border-radius: var(--raio-pill);
+  padding: 0.78rem 1.5rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition:
+    transform var(--dur-micro) var(--ease-suave),
+    background var(--dur-micro) var(--ease-suave),
+    border-color var(--dur-micro) var(--ease-suave);
+}
+
+.botao:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+.botao-primario {
+  background: var(--verde);
+  color: #05261a;
+}
+
+.botao-primario:hover {
+  background: var(--verde-forte);
+}
+
+.botao-secundario {
+  border-color: var(--linha-forte);
+  color: var(--texto);
+  background: transparent;
+}
+
+.botao-secundario:hover {
+  border-color: var(--verde-linha);
+  background: var(--verde-tinta);
+}
+
+/* Em breve: destino externo ainda fechado (src/data/externos.ts). Mantem o desenho do
+   link, sem acao, sem hover e com um selo discreto. */
+.em-breve {
+  cursor: default;
+  pointer-events: none;
+}
+
+.selo-em-breve {
+  display: inline-flex;
+  align-items: center;
+  margin-inline-start: 0.5rem;
+  padding: 0.12em 0.6em;
+  border: 1px solid var(--linha-forte);
+  border-radius: var(--raio-pill);
+  font-family: var(--fonte-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-2);
+  white-space: nowrap;
+  vertical-align: middle;
+}

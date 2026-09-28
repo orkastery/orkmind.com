@@ -1,0 +1,237 @@
+---
+import Icone from "./Icone.astro";
+import { externos } from "../data/externos";
+
+const passos = [
+  {
+    verbo: "Instalar",
+    desc: "O core vem do PyPI. Python 3.11 ou mais novo.",
+    codigo: `pip install orkmind`,
+  },
+  {
+    verbo: "Configurar",
+    desc: "Aponte para o PostgreSQL com pgvector, por variável ou por ~/.orkmind/config.toml.",
+    codigo: `export ORKMIND_DATABASE_URL="postgresql://<usuario>:<senha>@localhost:5432/orkmind"`,
+  },
+  {
+    verbo: "Gravar e buscar",
+    desc: "A CLI cobre o ciclo inteiro: gravar, listar, buscar por tags e inspecionar o store.",
+    codigo: `orkmind add --collection rule \\
+  --content "Nunca usar rm -rf em produção" \\
+  --tags '{"skill": ["deploy"]}' --mandatory
+
+orkmind search --tags '{"skill": ["deploy"]}'`,
+  },
+  {
+    verbo: "Plugar no runtime",
+    desc: "No Claude Code, o servidor MCP expõe a memória como tools.",
+    codigo: `{
+  "mcpServers": {
+    "orkmind": {
+      "command": "python",
+      "args": ["-m", "orkmind.mcp"],
+      "env": {
+        "ORKMIND_DATABASE_URL": "postgresql://..."
+      }
+    }
+  }
+}`,
+  },
+  {
+    verbo: "Abrir para humanos",
+    desc: externos.orkmindWeb.aberto
+      ? "O OrkMind Web sobe com Docker e serve a interface de navegação da memória."
+      : "O OrkMind Web sobe com Docker e serve a interface de navegação da memória. O repositório abre em breve.",
+    codigo: `git clone https://github.com/orkastery/orkmind-web
+cd orkmind-web && docker compose up --build`,
+  },
+];
+---
+
+<section class="secao instalar" id="instalar" aria-labelledby="instalar-titulo">
+  <div class="container">
+    <div class="instalar-cabeca">
+      <h2 class="titulo-display" id="instalar-titulo">
+        Do pip install ao primeiro recall
+      </h2>
+      <p class="prosa">
+        Cinco comandos separam um sistema esquecido de uma memória governada.
+        {externos.orkmind.aberto ? "Tudo aqui é real e roda hoje." : "Os comandos são os reais; o repositório abre em breve."}
+      </p>
+    </div>
+
+    <div class="passos">
+      {passos.map((p, i) => (
+        <article class="passo" style={`--i:${i}`} data-passo>
+          <div class="passo-texto">
+            <h3>{p.verbo}</h3>
+            <p class="prosa">{p.desc}</p>
+          </div>
+          <div class="passo-codigo">
+            <pre><code>{p.codigo}</code></pre>
+            <button
+              type="button"
+              class="passo-copiar"
+              data-copiar-codigo
+              aria-label={`Copiar comandos de ${p.verbo}`}
+            >
+              <Icone nome="copy" tamanho={16} classe="icone-copiar" />
+              <Icone nome="check" tamanho={16} classe="icone-copiado" />
+            </button>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .instalar {
+    background: var(--fundo);
+  }
+
+  .instalar-cabeca {
+    max-width: 60ch;
+    display: grid;
+    gap: 1.1rem;
+    margin-bottom: 3.4rem;
+  }
+
+  .instalar-cabeca h2 {
+    font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+  }
+
+  .passos {
+    display: grid;
+    gap: 2.2rem;
+  }
+
+  .passo {
+    display: grid;
+    gap: 1.1rem;
+    align-items: start;
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 0.65s var(--ease-suave),
+      transform 0.65s var(--ease-suave);
+  }
+
+  .passo.visivel {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .passo {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .passo-texto h3 {
+    font-family: var(--fonte-display);
+    font-weight: 600;
+    font-size: 1.3rem;
+    margin-bottom: 0.45rem;
+  }
+
+  .passo-texto .prosa {
+    font-size: 0.95rem;
+    max-width: 34ch;
+  }
+
+  .passo-codigo {
+    position: relative;
+    background: var(--fundo-3);
+    border: 1px solid var(--linha-forte);
+    border-radius: var(--raio-painel);
+    overflow: hidden;
+  }
+
+  .passo-codigo pre {
+    margin: 0;
+    padding: 1.3rem 3.4rem 1.3rem 1.4rem;
+    overflow-x: auto;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--verde-forte);
+  }
+
+  .passo-copiar {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--raio-chip);
+    border: 1px solid var(--linha-forte);
+    background: var(--fundo-2);
+    color: var(--texto-2);
+    transition:
+      color var(--dur-micro) var(--ease-suave),
+      border-color var(--dur-micro) var(--ease-suave);
+  }
+
+  .passo-copiar:hover {
+    color: var(--texto);
+    border-color: var(--verde-linha);
+  }
+
+  .passo-copiar :global(.icone-copiado) {
+    display: none;
+    color: var(--verde);
+  }
+
+  .passo-copiar[data-copiado] :global(.icone-copiar) {
+    display: none;
+  }
+
+  .passo-copiar[data-copiado] :global(.icone-copiado) {
+    display: inline-flex;
+  }
+
+  @media (min-width: 900px) {
+    .passo {
+      grid-template-columns: 260px 1fr;
+      gap: 2.5rem;
+    }
+  }
+</style>
+
+<script>
+  const passos = Array.from(document.querySelectorAll<HTMLElement>("[data-passo]"));
+  const io = new IntersectionObserver(
+    (entradas) => {
+      for (const e of entradas) {
+        if (e.isIntersecting) {
+          e.target.classList.add("visivel");
+          io.unobserve(e.target);
+        }
+      }
+    },
+    { threshold: 0.15 },
+  );
+  passos.forEach((p) => io.observe(p));
+
+  document
+    .querySelectorAll<HTMLButtonElement>("[data-copiar-codigo]")
+    .forEach((botao) => {
+      botao.addEventListener("click", async () => {
+        const codigo = botao
+          .closest(".passo-codigo")
+          ?.querySelector("code")?.textContent;
+        if (!codigo) return;
+        try {
+          await navigator.clipboard.writeText(codigo);
+          botao.setAttribute("data-copiado", "");
+          window.setTimeout(() => botao.removeAttribute("data-copiado"), 2000);
+        } catch {
+          /* clipboard indisponível: o texto segue selecionável */
+        }
+      });
+    });
+</script>

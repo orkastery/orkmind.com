@@ -1,0 +1,20 @@
+# build e tipos gerados
+dist/
+.astro/
+
+# dependencias
+node_modules/
+
+# logs
+npm-debug.log*
+
+# ambiente
+.env
+.env.*
+
+# sistema e ferramentas locais
+.DS_Store
+.idea/
+.claude/
+.worktrees/
+.orkastery/
