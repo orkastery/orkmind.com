@@ -240,7 +240,11 @@ const posicoes = nos.map((_, i) => {
     position: absolute;
     left: calc(var(--x) * 1%);
     top: calc(var(--y) * 1%);
-    transform: translate(-50%, -50%);
+    /* A caixa tem a largura do proprio rotulo: posicionada perto da borda, ela nao pode encolher
+       para o espaco que sobra ate a borda (era o que fazia o texto vazar). E quanto mais para o
+       lado, mais ela se desloca para dentro, para nao sair do desenho. */
+    width: max-content;
+    transform: translate(calc(-50% - (var(--x) - 50) * 0.83%), -50%);
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -320,9 +324,18 @@ const posicoes = nos.map((_, i) => {
       max-width: 104px;
       text-align: left;
       line-height: 1.25;
+      /* na tela estreita o deslocamento para dentro e menor, para nao encostar no centro */
+      transform: translate(calc(-50% - (var(--x) - 50) * 0.3%), -50%);
     }
     .no-centro {
-      padding: 1.1rem 1.5rem;
+      padding: 0.75rem 1rem;
+    }
+    .no-centro-nome {
+      font-size: 1.05rem;
+    }
+    .no-centro-sub {
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
     }
     .painel {
       padding: 1.3rem;
