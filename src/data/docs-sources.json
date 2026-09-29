@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "product": "orkmind",
+  "sources": [
+    {
+      "path": "README.md",
+      "sha256": "175b9a0a9ce164cbee117e4ebbdf869dc90610c8e2320d93fc636b5e78cab889",
+      "category": "root",
+      "treatment": "article",
+      "targets": []
+    },
+    {
+      "path": "README.pt-BR.md",
+      "sha256": "4fe00b14a44146ceca31d9db8a612cb41a2875cd3ee6c617aa816f5091dfff9d",
+      "category": "root",
+      "treatment": "article",
+      "targets": []
+    },
+    {
+      "path": "docs/federation.md",
+      "sha256": "3132a1308991569abc317f1e73d9adbb772259b5e3829a06086ad3b541e6533a",
+      "category": "federation.md",
+      "treatment": "article",
+      "targets": []
+    },
+    {
+      "path": "docs/hermes-setup.md",
+      "sha256": "d5175bb3e10316e04b296060f22ede04a401b19ba6b473be6d45142596128940",
+      "category": "hermes-setup.md",
+      "treatment": "article",
+      "targets": []
+    },
+    {
+      "path": "docs/integration-guide.md",
+      "sha256": "62e16e9ecb7aa2ee85cc21adfe0df412ac25cce96904ff2ae9da96f8e9890fa9",
+      "category": "integration-guide.md",
+      "treatment": "article",
+      "targets": []
+    },
+    {
+      "path": "docs/mcp-setup.md",
+      "sha256": "b608354c3b990efddb3b861577547fe1fa96aec1f593a7df0a0a3cf0d341e454",
+      "category": "mcp-setup.md",
+      "treatment": "article",
+      "targets": []
+    },
+    {
+      "path": "docs/memory-provider/README.md",
+      "sha256": "2f0984baa60968615a1fc7b882ebc3e1ea7f9e8e98b618eac3831cc86ce9ff02",
+      "category": "memory-provider",
+      "treatment": "index",
+      "targets": [
+        "padroes"
+      ]
+    },
+    {
+      "path": "docs/ontologia.md",
+      "sha256": "d0eb5c895e0e55accfe8cfde8abd05a53e5191d5aec4f34a68053eaf96f5531f",
+      "category": "ontologia.md",
+      "treatment": "article",
+      "targets": []
+    },
+    {
+      "path": "docs/sempre-gravar.md",
+      "sha256": "bf3a2734a00078228cb45715e4071dace6b1cb3ff91869911f47c8af0381222f",
+      "category": "sempre-gravar.md",
+      "treatment": "article",
+      "targets": []
+    },
+    {
+      "path": "docs/storage-backends/GUIA-BACKENDS.md",
+      "sha256": "59521a525bbfbaea8beddde196f5a0ff61f5b911692f303c741faf7aa17ede34",
+      "category": "storage-backends",
+      "treatment": "article",
+      "targets": []
+    },
+    {
+      "path": "docs/storage-backends/MATRIZ-BACKENDS.md",
+      "sha256": "58cc7be6572e8eb1fc70e94846ed141c9a570a552db7f10450c954606dbd8529",
+      "category": "storage-backends",
+      "treatment": "article",
+      "targets": []
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "bb4ffbbf9d27b226f3ead55f031b369455815c207d0aa984cccd7df0094ae85d",
+      "category": "root",
+      "treatment": "article",
+      "targets": []
+    }
+  ],
+  "inventoryHash": "88d417ac7f8ce76b433138cc404eac19698090f0d23c36a518f0c837423da3dd",
+  "reviews": {}
+}
