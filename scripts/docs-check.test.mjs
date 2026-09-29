@@ -30,3 +30,45 @@ test('new upstream document requires synchronization',()=>fixture(({root})=>{
  writeFileSync(resolve(source,'docs/new.md'),'new source');
  assert.throws(()=>validate(root,{source}),/upstream changed/);
 }));
+
+import {cpSync,readFileSync} from 'node:fs';
+import {checkLinks,root as siteRoot} from './check-links.mjs';
+import {checkI18n} from './check-i18n.mjs';
+import {checkPublic} from './check-public.mjs';
+import {checkContent} from './check-content.mjs';
+function outputFixture(run){
+ const dir=mkdtempSync(resolve(tmpdir(),'docs-output-canary-'));
+ try{cpSync(resolve(siteRoot,'dist'),dir,{recursive:true});run(dir);}finally{rmSync(dir,{recursive:true,force:true});}
+}
+function edit(dir,path,change){const file=resolve(dir,path);writeFileSync(file,change(readFileSync(file,'utf8')));}
+test('built output passes links, locale, content and public checks',()=>{
+ assert.ok(checkLinks().checked>0);assert.equal(checkI18n().locales,3);assert.equal(checkPublic().findings,0);assert.ok(checkContent().accessibleDiagrams>0);
+});
+test('missing internal destination fails',()=>outputFixture(dir=>{
+ edit(dir,'index.html',s=>s.replace('</main>','<a href="/missing-canary/">Broken</a></main>'));
+ assert.throws(()=>checkLinks(dir),/Missing target/);
+}));
+test('missing fragment fails',()=>outputFixture(dir=>{
+ edit(dir,'index.html',s=>s.replace('</main>','<a href="#missing-canary">Broken</a></main>'));
+ assert.throws(()=>checkLinks(dir),/Missing fragment/);
+}));
+test('duplicate IDs fail',()=>outputFixture(dir=>{
+ edit(dir,'index.html',s=>s.replace('</main>','<span id="conteudo"></span></main>'));
+ assert.throws(()=>checkLinks(dir),/Duplicate ID/);
+}));
+test('wrong language fails',()=>outputFixture(dir=>{
+ edit(dir,'en/index.html',s=>s.replace('lang="en"','lang="pt-BR"'));
+ assert.throws(()=>checkI18n(dir),/Wrong html language/);
+}));
+test('missing selector fails',()=>outputFixture(dir=>{
+ edit(dir,'es/index.html',s=>s.replace('data-language-selector','data-missing-selector'));
+ assert.throws(()=>checkI18n(dir),/Missing language selector/);
+}));
+test('personal data canary is rejected without printing its value',()=>outputFixture(dir=>{
+ edit(dir,'index.html',s=>s.replace('</main>','<p>sample.person@example.invalid</p></main>'));
+ assert.throws(()=>checkPublic(dir),e=>/Unreviewed email/.test(e.message)&&!e.message.includes('sample.person'));
+}));
+test('unlinked SVG description fails',()=>outputFixture(dir=>{
+ edit(dir,'docs/arquitetura/index.html',s=>s.replace('<desc id="diagram-','<desc id="unlinked-diagram-'));
+ assert.throws(()=>checkContent(dir),/Inaccessible diagram/);
+}));
