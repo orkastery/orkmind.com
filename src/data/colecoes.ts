@@ -64,7 +64,7 @@ export const colecoes: Colecao[] = [
     id: "contacts",
     nome: "Contatos",
     proposito: "Pessoas, papéis e contextos em que elas aparecem.",
-    exemplo: "Alice, líder do time de DevOps",
+    exemplo: "Pessoa de exemplo, líder do time de DevOps",
   },
   {
     id: "handoff",
@@ -108,7 +108,7 @@ export const colecoes: Colecao[] = [
     id: "users",
     nome: "Usuários",
     proposito: "Identidades, papéis e permissões de quem usa o sistema.",
-    exemplo: "julio, admin do workspace orkmind",
+    exemplo: "Pessoa de exemplo, admin do workspace orkmind",
   },
   {
     id: "session",
