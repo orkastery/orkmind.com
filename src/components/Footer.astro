@@ -5,7 +5,7 @@ const locale=localeFor(Astro.url.pathname),text=ui(locale);
 ---
 <footer class="site-footer"><div class="footer-inner">
  <div><p class="footer-brand">OrkMind</p><p>{text.openSource} · {text.license}</p><a href="mailto:maestro@orkastery.com">maestro@orkastery.com</a></div>
- <nav aria-label={text.docs}><a href={localize('/docs/',locale)}>{text.docs}</a><a href={localize('/docs/arquitetura/',locale)}>{text.concepts}</a><a href={localize('/docs/roadmap/',locale)}>{text.roadmap}</a></nav>
+ <nav aria-label={text.docs}><a href={localize('/docs/',locale)}>{text.docs}</a><a href={localize('/docs/contribuir/',locale)}>{text.contribute}</a><a href={localize('/docs/arquitetura/',locale)}>{text.concepts}</a><a href={localize('/docs/roadmap/',locale)}>{text.roadmap}</a></nav>
  <nav aria-label={text.openSource}><a href={externos.orkastery.url}>Orkastery · GitHub</a><a href={externos.orkmind.url}>OrkMind · GitHub</a><a href={'https://orkastery.com'+localize('/',locale)}>Orkastery</a></nav>
  </div></footer>
 <style>
