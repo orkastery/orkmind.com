@@ -16,18 +16,24 @@ export function pages(dist=distArg()) {
  if(!list.length)throw Error('No built HTML pages');return list;
 }
 export function checkLinks(dist=distArg()) {
- const all=pages(dist),byFile=new Map(all.map(p=>[p.file,p]));let checked=0,external=0;
+ const all=pages(dist),byFile=new Map(all.map(p=>[p.file,p]));let checked=0,external=0,peerChecked=0;
  const catalog=JSON.parse(readFileSync(resolve(root,'src/data/docs-catalog.ts'),'utf8').replace(/^export default /,'').replace(/;\s*$/,''));
  const origin='https://'+catalog.repository.split('/').at(-1)+'.com';
+ const peerDomain=origin.includes('orkastery.com')?'orkmind.com':'orkastery.com',peerDist=resolve(root,'..',peerDomain,'dist');
+ const peerPages=existsSync(peerDist)?new Map(pages(peerDist).map(p=>[p.file,p])):null;
  function target(raw,base) {
   if(!raw||/^(mailto:|tel:|data:|javascript:)/.test(raw)){if(raw?.startsWith('javascript:'))throw Error('Executable URL');return;}
   const url=new URL(raw,origin+base);
-  if(url.origin!==origin){external++;return;}
-  let path=decodeURIComponent(url.pathname),file=resolve(dist,'.'+path);
-  if(file!==resolve(dist)&&!file.startsWith(resolve(dist)+'/'))throw Error('Path escapes output');
+  let targetRoot=dist,targetPages=byFile;
+  if(url.origin!==origin){
+   if(url.origin==='https://'+peerDomain&&peerPages){targetRoot=peerDist;targetPages=peerPages;peerChecked++;}
+   else{external++;return;}
+  }
+  let path=decodeURIComponent(url.pathname),file=resolve(targetRoot,'.'+path);
+  if(file!==resolve(targetRoot)&&!file.startsWith(resolve(targetRoot)+'/'))throw Error('Path escapes output');
   if(existsSync(file)&&statSync(file).isDirectory())file=resolve(file,'index.html');
   if(!existsSync(file))throw Error('Missing target: '+base+' → '+raw);
-  if(url.hash&&byFile.has(file)&&!byFile.get(file).ids.includes(decodeURIComponent(url.hash.slice(1))))throw Error('Missing fragment: '+base+' → '+raw);
+  if(url.hash&&targetPages.has(file)&&!targetPages.get(file).ids.includes(decodeURIComponent(url.hash.slice(1))))throw Error('Missing fragment: '+base+' → '+raw);
   checked++;
  }
  for(const p of all) {
@@ -37,6 +43,6 @@ export function checkLinks(dist=distArg()) {
   }
  }
  for(const file of files(dist).filter(f=>f.endsWith('.css')))for(const match of readFileSync(file,'utf8').matchAll(/url\(\s*(?:"([^"]*)"|'([^']*)'|([^\s)]+))\s*\)/g)) target(match[1]??match[2]??match[3],'/'+relative(dist,file).replaceAll('\\','/'));
- return {pages:all.length,checked,externalUnchecked:external};
+ return {pages:all.length,checked,peerChecked,externalUnchecked:external};
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)){try{console.log(JSON.stringify(checkLinks()));}catch(e){console.error(e.message);process.exitCode=1;}}

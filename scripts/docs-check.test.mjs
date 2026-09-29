@@ -72,3 +72,8 @@ test('unlinked SVG description fails',()=>outputFixture(dir=>{
  edit(dir,'docs/arquitetura/index.html',s=>s.replace('<desc id="diagram-','<desc id="unlinked-diagram-'));
  assert.throws(()=>checkContent(dir),/Inaccessible diagram/);
 }));
+
+test('ordinary navigation must preserve language',()=>outputFixture(dir=>{
+ edit(dir,'en/index.html',s=>s.replace('href="/en/docs/','href="/docs/'));
+ assert.throws(()=>checkI18n(dir),/Navigation loses locale/);
+}));
