@@ -8,7 +8,17 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "serve": "serve dist -l tcp://127.0.0.1:8981 --no-clipboard"
+    "serve": "serve dist -l tcp://127.0.0.1:8981 --no-clipboard",
+    "docs:sync": "node scripts/sync-docs.mjs",
+    "docs:check": "node scripts/check-docs.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "check:i18n": "node scripts/check-i18n.mjs",
+    "check:public": "node scripts/check-public.mjs",
+    "check:content": "node scripts/check-content.mjs",
+    "check:visual": "node scripts/check-visual.mjs",
+    "test:docs": "node scripts/docs-schema.test.mjs && node scripts/docs-check.test.mjs",
+    "prebuild": "npm run docs:check",
+    "postbuild": "npm run check:links && npm run check:i18n && npm run check:public && npm run check:content && npm run test:docs"
   },
   "dependencies": {
     "@fontsource/geist-mono": "^5.3.0",
@@ -17,5 +27,8 @@
     "astro": "^5.0.0",
     "gsap": "^3.15.0",
     "serve": "^14.2.6"
+  },
+  "devDependencies": {
+    "parse5": "7.3.0"
   }
 }
