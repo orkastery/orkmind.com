@@ -5,39 +5,46 @@ import "@fontsource/geist-sans/600.css";
 import "@fontsource/geist-mono/400.css";
 import "@fontsource/geist-mono/500.css";
 import "../styles/global.css";
-
-interface Props {
-  titulo?: string;
-  descricao?: string;
-}
-
-const {
-  titulo = "OrkMind | Memória para sistemas agênticos",
-  descricao = "OrkMind conecta memória governada e Company Brain: 23 coleções, tipos ontológicos explícitos, busca determinística e proveniência para agentes e pessoas.",
-} = Astro.props;
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import {localeFor,localize,locales,languageTag,ui} from '../data/i18n';
+interface Props { titulo?: string; descricao?: string; }
+const locale=localeFor(Astro.url.pathname),text=ui(locale);
+const {titulo='OrkMind',descricao=text.indexDescription}=Astro.props;
+const origin='https://orkmind.com';
 ---
+<!doctype html>
+<html lang={languageTag[locale]}>
+<head>
+ <meta charset="utf-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <title>{titulo}</title>
+ <meta name="description" content={descricao} />
+ <link rel="canonical" href={origin+Astro.url.pathname} />
+ {locales.map(l=><link rel="alternate" hreflang={languageTag[l]} href={origin+localize(Astro.url.pathname,l)} />)}
+ <link rel="alternate" hreflang="x-default" href={origin+localize(Astro.url.pathname,'pt')} />
+ <meta property="og:title" content={titulo} />
+ <meta property="og:description" content={descricao} />
+ <meta property="og:type" content="website" />
+ <meta property="og:url" content={origin+Astro.url.pathname} />
+ <meta property="og:locale" content={{pt:'pt_BR',en:'en_US',es:'es_ES'}[locale]} />
+ <meta property="og:image" content={origin+'/og.png'} />
+ <meta name="twitter:card" content="summary_large_image" />
+ <meta name="theme-color" content="#07090e" />
+ <link rel="icon" href="/favicon.ico" sizes="32x32" />
+ <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+ <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+ <link rel="manifest" href="/site.webmanifest" />
 
-<html lang="pt-BR">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{titulo}</title>
-    <meta name="description" content={descricao} />
-    <meta name="theme-color" content="#07090e" />
-    <link rel="icon" href="/favicon.ico" sizes="32x32" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={titulo} />
-    <meta property="og:description" content={descricao} />
-    <meta property="og:locale" content="pt_BR" />
-    <meta property="og:site_name" content="OrkMind" />
-    <meta property="og:image" content="/og.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-  </head>
-  <body>
-    <slot />
-  </body>
+</head>
+<body>
+ <a class="skip-content" href="#conteudo">{text.skip}</a>
+ <Nav />
+ <main id="conteudo"><slot /></main>
+ <Footer />
+</body>
 </html>
+<style>
+.skip-content{position:fixed;z-index:1000;left:1rem;top:1rem;transform:translateY(-200%);padding:1rem;background:var(--tinta,var(--texto));color:var(--poco,var(--fundo));}
+.skip-content:focus{transform:none;}
+</style>

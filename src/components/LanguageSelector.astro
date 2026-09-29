@@ -1,0 +1,14 @@
+---
+import { locales, languageName, languageTag, localeFor, localize, ui } from '../data/i18n';
+const locale=localeFor(Astro.url.pathname), text=ui(locale);
+---
+<nav class="language-selector" aria-label={text.language} data-language-selector>
+ {locales.map(l=><a href={localize(Astro.url.pathname,l)} hreflang={languageTag[l]} lang={languageTag[l]} aria-current={l===locale?'page':undefined}>{languageName[l]}</a>)}
+</nav>
+<style>
+.language-selector{display:flex;flex-wrap:wrap;gap:.25rem;align-items:center;font:500 .85rem/1.4 var(--f-texto,var(--fonte-texto));}
+.language-selector a{padding:.5rem .65rem;color:inherit;text-decoration:none;border:1px solid transparent;border-radius:6px;min-height:38px;}
+.language-selector a[aria-current]{border-color:currentColor;}
+.language-selector a:hover{text-decoration:underline;}
+.language-selector a:focus-visible{outline:2px solid currentColor;outline-offset:3px;}
+</style>
