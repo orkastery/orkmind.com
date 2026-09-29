@@ -207,7 +207,7 @@ export default [
         ]
       },
       "es": {
-        "title": "Contribuir",
+        "title": "Cómo contribuir",
         "description": "Elija una contribución, prepare las pruebas y encuentre la guía de su tarea.",
         "sections": [
           {
