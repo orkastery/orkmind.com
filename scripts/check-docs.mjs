@@ -13,7 +13,7 @@ export function articles(dir = root) {
   return read(resolve(dir, 'src/data', file));
  });
 }
-export function inventory(source, product) {
+export function inventory(source, product, externalSources = [], orkasterySource) {
  const files = [];
  function walk(dir) {
   for (const e of readdirSync(dir, {withFileTypes:true})) {
@@ -23,17 +23,26 @@ export function inventory(source, product) {
   }
  }
  walk(resolve(source,'docs'));
- for(const file of product==='orkastery' ? ['README.md','core/package.json'] : ['README.md','README.pt-BR.md','pyproject.toml']) {
+ for(const file of product==='orkastery' ? ['README.md','CONTRIBUTING.md','core/package.json'] : ['README.md','README.pt-BR.md','CONTRIBUTING.md','pyproject.toml']) {
   if(existsSync(resolve(source,file))) files.push(resolve(source,file));
  }
- return files.sort().map(file=>({path:relative(source,file).replaceAll('\\','/'),sha256:hash(readFileSync(file))}));
+ return [...files.map(file=>({path:relative(source,file).replaceAll('\\','/'),sha256:hash(readFileSync(file))})), ...externalSources.map(s=>({path:s.path,sha256:hash(readFileSync(resolve(orkasterySource || resolve(source,s.sourceRoot),s.sourcePath)))}))].sort((a,b)=>a.path<b.path?-1:a.path>b.path?1:0);
 }
 export const sourceHash = (a,snapshot) => hash(JSON.stringify(a.sources.map(p=>{
  const entry=snapshot.sources.find(s=>s.path===p);
  if(!entry) throw Error('missing source: '+p);
  return [p,entry.sha256];
 })));
-export function validate(dir=root,{schemaOnly=false,section,source}={}) {
+export function reviewArticles(all, snapshot, {slugs, locales, reviewer}) {
+ if(!reviewer?.trim()) throw Error('An explicit reviewer is required');
+ if(!slugs?.length || slugs.some(slug=>!all.some(a=>a.slug===slug))) throw Error('Select existing article slugs with --articles');
+ if(!locales?.length || locales.some(locale=>!['pt','en','es'].includes(locale))) throw Error('Invalid review locale');
+ for(const a of all.filter(a=>slugs.includes(a.slug))) for(const locale of locales) {
+  snapshot.reviews[a.slug]??={};
+  snapshot.reviews[a.slug][locale]={sourceHash:sourceHash(a,snapshot),contentHash:hash(JSON.stringify(a.translations[locale])),reviewer,date:new Date().toISOString().slice(0,10)};
+ }
+}
+export function validate(dir=root,{schemaOnly=false,section,source,orkasterySource}={}) {
  const all=articles(dir), selected=section ? all.filter(a=>a.group===section) : all;
  const snapshot=read(resolve(dir,'src/data/docs-sources.json'));
  if(snapshot.schemaVersion!==1 || !Array.isArray(snapshot.sources)) throw Error('invalid snapshot');
@@ -71,12 +80,12 @@ export function validate(dir=root,{schemaOnly=false,section,source}={}) {
   if(s.treatment==='article' && s.targets.some(t=>!all.find(a=>a.slug===t).sources.includes(s.path))) throw Error('false coverage: '+s.path);
  }
  if(source) {
-  const live=inventory(source,snapshot.product);
+  const live=inventory(source,snapshot.product,read(resolve(dir,'src/data/docs-catalog.ts')).externalSources||[],orkasterySource);
   if(JSON.stringify(live)!==JSON.stringify(snapshot.sources.map(({path,sha256})=>({path,sha256})))) throw Error('upstream changed: synchronize and review');
  }
  return {articles:selected.length,sources:snapshot.sources.length,locales:3,sourceCompared:Boolean(source),schemaOnly};
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)) {
- try {const args=process.argv.slice(2);console.log(JSON.stringify(validate(root,{schemaOnly:args.includes('--validate-schema'),section:args[args.indexOf('--section')+1] && args.includes('--section')?args[args.indexOf('--section')+1]:undefined,source:args.includes('--source')?args[args.indexOf('--source')+1]:undefined})));}
+ try {const args=process.argv.slice(2);console.log(JSON.stringify(validate(root,{schemaOnly:args.includes('--validate-schema'),section:args[args.indexOf('--section')+1] && args.includes('--section')?args[args.indexOf('--section')+1]:undefined,orkasterySource:args.includes('--orkastery-source')?args[args.indexOf('--orkastery-source')+1]:undefined,source:args.includes('--source')?args[args.indexOf('--source')+1]:undefined})));}
  catch(e){console.error(e.message);process.exitCode=1;}
 }

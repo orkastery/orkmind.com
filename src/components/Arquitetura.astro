@@ -1,52 +1,217 @@
 ---
+import {localeFor, localize} from '../data/i18n';
+const locale=localeFor(Astro.url.pathname);
+const translations={
+  "t0": {
+    "pt": "Quem consome",
+    "en": "Who consumes it",
+    "es": "Quién lo consume"
+  },
+  "t1": {
+    "pt": "Os hosts usam contratos oficiais; a identidade vem do transporte autenticado.",
+    "en": "Hosts use official contracts; identity comes from the authenticated transport.",
+    "es": "Los hosts usan contratos oficiales; la identidad procede del transporte autenticado."
+  },
+  "t2": {
+    "pt": "integrações",
+    "en": "integrations",
+    "es": "integraciones"
+  },
+  "t3": {
+    "pt": "Como chega",
+    "en": "How it arrives",
+    "es": "Cómo llega"
+  },
+  "t4": {
+    "pt": "Servidor MCP",
+    "en": "MCP server",
+    "es": "Servidor MCP"
+  },
+  "t5": {
+    "pt": "Provider de memória",
+    "en": "Memory provider",
+    "es": "Provider de memoria"
+  },
+  "t6": {
+    "pt": "API idempotente",
+    "en": "Idempotent API",
+    "es": "API idempotente"
+  },
+  "t7": {
+    "pt": "Company Brain B1",
+    "en": "Company Brain B1",
+    "es": "Company Brain B1"
+  },
+  "t8": {
+    "pt": "Adaptadores permanecem finos: regras de identidade, ACL, captura e consulta ficam nos núcleos.",
+    "en": "Adapters stay thin: identity, ACL, capture and query rules live in the cores.",
+    "es": "Los adaptadores se mantienen ligeros: identidad, ACL, captura y consulta residen en los núcleos."
+  },
+  "t9": {
+    "pt": "semântica",
+    "en": "semantics",
+    "es": "semántica"
+  },
+  "t10": {
+    "pt": "Onde decide",
+    "en": "Where context is selected",
+    "es": "Dónde se selecciona el contexto"
+  },
+  "t11": {
+    "pt": "Casamento exato de tags",
+    "en": "Exact tag matching",
+    "es": "Coincidencia exacta de etiquetas"
+  },
+  "t12": {
+    "pt": "Detectores de contexto",
+    "en": "Context detectors",
+    "es": "Detectores de contexto"
+  },
+  "t13": {
+    "pt": "Orçamento de tokens",
+    "en": "Token budget",
+    "es": "Presupuesto de tokens"
+  },
+  "t14": {
+    "pt": "Camadas E1, E2, E3",
+    "en": "E1, E2, E3 layers",
+    "es": "Capas E1, E2, E3"
+  },
+  "t15": {
+    "pt": "Rerank RRF opcional",
+    "en": "Optional RRF reranking",
+    "es": "Reranking RRF opcional"
+  },
+  "t16": {
+    "pt": "A SemanticLayer resolve o que entra no contexto: exato por padrão, semântico como aditivo.",
+    "en": "SemanticLayer selects context: exact matching by default, semantic retrieval as an addition.",
+    "es": "SemanticLayer selecciona el contexto: coincidencia exacta por defecto, recuperación semántica como complemento."
+  },
+  "t17": {
+    "pt": "governança",
+    "en": "governance",
+    "es": "gobernanza"
+  },
+  "t18": {
+    "pt": "O que protege",
+    "en": "What protects it",
+    "es": "Qué lo protege"
+  },
+  "t19": {
+    "pt": "Proteção de entradas",
+    "en": "Entry protection",
+    "es": "Protección de entradas"
+  },
+  "t20": {
+    "pt": "ACL por tags de acesso",
+    "en": "ACL through access tags",
+    "es": "ACL mediante etiquetas de acceso"
+  },
+  "t21": {
+    "pt": "Versionamento append-only",
+    "en": "Append-only versioning",
+    "es": "Versionado append-only"
+  },
+  "t22": {
+    "pt": "Ordenação constitucional",
+    "en": "Constitutional ordering",
+    "es": "Orden constitucional"
+  },
+  "t23": {
+    "pt": "CAS e referências fixadas",
+    "en": "CAS and pinned references",
+    "es": "CAS y referencias fijadas"
+  },
+  "t24": {
+    "pt": "A GovernedStore mora acima do adaptador: nenhum backend consegue afrouxar as garantias.",
+    "en": "GovernedStore sits above the adapter, preserving guarantees across backends.",
+    "es": "GovernedStore está por encima del adaptador y conserva las garantías entre backends."
+  },
+  "t25": {
+    "pt": "persistência",
+    "en": "persistence",
+    "es": "persistencia"
+  },
+  "t26": {
+    "pt": "Onde vive",
+    "en": "Where it lives",
+    "es": "Dónde reside"
+  },
+  "t27": {
+    "pt": "memory (testes)",
+    "en": "memory (tests)",
+    "es": "memory (pruebas)"
+  },
+  "t28": {
+    "pt": "qdrant (opcional)",
+    "en": "qdrant (optional)",
+    "es": "qdrant (opcional)"
+  },
+  "t29": {
+    "pt": "Persistência real inclui histórico, readback e reconciliação; fixture e fallback não fingem produção.",
+    "en": "Persistence includes history, readback and reconciliation. Fixtures and fallbacks remain explicit.",
+    "es": "La persistencia incluye historial, readback y reconciliación. Fixtures y alternativas quedan explícitos."
+  },
+  "t30": {
+    "pt": "Governança acima do adaptador",
+    "en": "Governance above the adapter",
+    "es": "Gobernanza por encima del adaptador"
+  },
+  "t31": {
+    "pt": "Da chamada do runtime ao disco, cada camada tem um dever só. É por isso\n        que as garantias valem em qualquer backend.",
+    "en": "From the runtime call to disk, each layer has a specific responsibility. Governance remains above storage.",
+    "es": "Desde la llamada del runtime hasta el disco, cada capa tiene una responsabilidad concreta. La gobernanza permanece por encima del almacenamiento."
+  }
+};
+const t=(key:keyof typeof translations)=>translations[key][locale];
 const camadas = [
   {
     rotulo: "runtimes",
-    titulo: "Quem consome",
+    titulo: t("t0"),
     itens: ["Claude Code", "Codex", "Hermes", "OpenClaw"],
-    desc: "Os quatro hosts usam contratos oficiais; a identidade vem do transporte autenticado.",
+    desc: t("t1"),
   },
   {
-    rotulo: "integrações",
-    titulo: "Como chega",
+    rotulo: t("t2"),
+    titulo: t("t3"),
     itens: [
-      "Servidor MCP com 7 tools",
-      "Provider de memória",
-      "API idempotente",
-      "Company Brain B1",
+      t("t4"),
+      t("t5"),
+      t("t6"),
+      t("t7"),
     ],
-    desc: "Adaptadores permanecem finos: regras de identidade, ACL, captura e consulta ficam nos núcleos.",
+    desc: t("t8"),
   },
   {
-    rotulo: "semântica",
-    titulo: "Onde decide",
+    rotulo: t("t9"),
+    titulo: t("t10"),
     itens: [
-      "Casamento exato de tags",
-      "Detectores de contexto",
-      "Orçamento de tokens",
-      "Camadas E1, E2, E3",
-      "Rerank RRF opcional",
+      t("t11"),
+      t("t12"),
+      t("t13"),
+      t("t14"),
+      t("t15"),
       "prod → proj → init",
     ],
-    desc: "A SemanticLayer resolve o que entra no contexto: exato por padrão, semântico como aditivo.",
+    desc: t("t16"),
   },
   {
-    rotulo: "governança",
-    titulo: "O que protege",
+    rotulo: t("t17"),
+    titulo: t("t18"),
     itens: [
-      "Proteção de entradas",
-      "ACL por tags de acesso",
-      "Versionamento append-only",
-      "Ordenação constitucional",
-      "CAS e referências fixadas",
+      t("t19"),
+      t("t20"),
+      t("t21"),
+      t("t22"),
+      t("t23"),
     ],
-    desc: "A GovernedStore mora acima do adaptador: nenhum backend consegue afrouxar as garantias.",
+    desc: t("t24"),
   },
   {
-    rotulo: "persistência",
-    titulo: "Onde vive",
-    itens: ["PostgreSQL + pgvector", "memory (testes)", "qdrant (opcional)", "receipts + outbox"],
-    desc: "Persistência real inclui histórico, readback e reconciliação; fixture e fallback não fingem produção.",
+    rotulo: t("t25"),
+    titulo: t("t26"),
+    itens: ["PostgreSQL + pgvector", t("t27"), t("t28"), "receipts + outbox"],
+    desc: t("t29"),
   },
 ];
 ---
@@ -55,11 +220,10 @@ const camadas = [
   <div class="container">
     <div class="arq-cabeca">
       <h2 class="titulo-display" id="arq-titulo">
-        Governança acima do adaptador
+        {t("t30")}
       </h2>
       <p class="prosa">
-        Da chamada do runtime ao disco, cada camada tem um dever só. É por isso
-        que as garantias valem em qualquer backend.
+        {t("t31")}
       </p>
     </div>
 
@@ -115,8 +279,8 @@ const camadas = [
     border-radius: var(--raio-painel);
     background: var(--fundo-3);
     padding: 1.5rem 1.7rem;
-    opacity: 0;
-    transform: translateY(24px);
+    opacity: 1;
+    transform: none;
     transition:
       opacity 0.7s var(--ease-suave),
       transform 0.7s var(--ease-suave),

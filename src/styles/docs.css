@@ -27,6 +27,7 @@
 .docs-reading code{font-family:var(--f-mono,var(--fonte-mono));font-size:.84em;overflow-wrap:anywhere;}
 .docs-reading pre{padding:1.25rem;background:var(--doc-panel);border:1px solid var(--linha-forte);border-radius:10px;overflow:auto;line-height:1.65;margin:1.5rem 0;max-width:100%;}
 .docs-reading pre code{overflow-wrap:normal;}
+.docs-surface :is(p,li,dd) code{white-space:normal;overflow-wrap:anywhere;}
 .docs-toc{background:var(--doc-panel);border-left:3px solid var(--doc-accent);padding:.8rem 1.3rem;margin:2rem 0;font-size:.95rem;}
 .docs-toc>p{font-weight:600;margin:.25rem 0;}
 .docs-toc ul{columns:2;column-gap:2rem;}

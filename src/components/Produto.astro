@@ -1,64 +1,147 @@
 ---
+import {localeFor, localize} from '../data/i18n';
+const locale=localeFor(Astro.url.pathname);
+const translations={
+  "t0": {
+    "pt": "Governança acima do backend",
+    "en": "Governance above the backend",
+    "es": "Gobernanza por encima del backend"
+  },
+  "t1": {
+    "pt": "Proteção de entradas, ACL e ordenação constitucional valem em qualquer backend, sem exceção.",
+    "en": "Entry protection, ACL and constitutional ordering apply above every backend.",
+    "es": "La protección de entradas, ACL y el orden constitucional se aplican por encima de cada backend."
+  },
+  "t2": {
+    "pt": "Histórico e escrita concorrente",
+    "en": "History and concurrent writes",
+    "es": "Historial y escritura concurrente"
+  },
+  "t3": {
+    "pt": "Versões append-only e compare-and-swap impedem que uma edição obsoleta vença em silêncio.",
+    "en": "Append-only versions and compare-and-swap prevent stale edits from silently overwriting newer work.",
+    "es": "Las versiones append-only y compare-and-swap impiden que una edición obsoleta sobrescriba cambios en silencio."
+  },
+  "t4": {
+    "pt": "Criptografia seletiva",
+    "en": "Selective encryption",
+    "es": "Cifrado selectivo"
+  },
+  "t5": {
+    "pt": "AES-256-GCM em repouso para coleções sensíveis como contatos, arquivos e docs.",
+    "en": "AES-256-GCM at rest for sensitive collections such as contacts, files and docs.",
+    "es": "AES-256-GCM en reposo para colecciones sensibles como contactos, archivos y docs."
+  },
+  "t6": {
+    "pt": "Anti-injection",
+    "en": "Injection detection",
+    "es": "Detección de inyección"
+  },
+  "t7": {
+    "pt": "Detecção de conteúdo suspeito: entrada suspeita fica retida e fora da injeção automática.",
+    "en": "Suspicious content is held for review and excluded from automatic context injection.",
+    "es": "El contenido sospechoso queda retenido para revisión y fuera de la inyección automática de contexto."
+  },
+  "t8": {
+    "pt": "Snapshots globais",
+    "en": "Global snapshots",
+    "es": "Snapshots globales"
+  },
+  "t9": {
+    "pt": "Commit, diff e restore da árvore de memória inteira, com embeddings preservados.",
+    "en": "Commit, diff and restore the memory tree while preserving embeddings.",
+    "es": "Commit, diff y restore del árbol de memoria, conservando embeddings."
+  },
+  "t10": {
+    "pt": "Proveniência e receipts",
+    "en": "Provenance and receipts",
+    "es": "Procedencia y recibos"
+  },
+  "t11": {
+    "pt": "Fonte, revisão e recibos permitem readback, reconciliação e rollback sem fabricar sucesso.",
+    "en": "Sources, revisions and receipts support readback, reconciliation and rollback with evidence.",
+    "es": "Fuentes, revisiones y recibos permiten readback, reconciliación y rollback con pruebas."
+  },
+  "t12": {
+    "pt": "Um Company Brain governado",
+    "en": "A governed Company Brain",
+    "es": "Un Company Brain gobernado"
+  },
+  "t13": {
+    "pt": "O core em Python governa identidade, histórico e acesso. Agentes e pessoas\n        chegam ao mesmo conhecimento pela CLI, pelo servidor MCP e pelos hosts que já usam.",
+    "en": "The Python core governs identity, history and access. Agents and people reach the same knowledge through the CLI, MCP server and their existing hosts.",
+    "es": "El núcleo en Python gobierna identidad, historial y acceso. Agentes y personas llegan al mismo conocimiento mediante el CLI, el servidor MCP y sus hosts habituales."
+  },
+  "t14": {
+    "pt": "A base que governa",
+    "en": "The foundation for governance",
+    "es": "La base que gobierna"
+  },
+  "t15": {
+    "pt": "Biblioteca Python com PostgreSQL e pgvector. Publicada no PyPI,\n          licenciada MIT.",
+    "en": "A Python library with PostgreSQL and pgvector. Published on PyPI under the MIT license.",
+    "es": "Una biblioteca Python con PostgreSQL y pgvector. Publicada en PyPI bajo la licencia MIT."
+  },
+  "t16": {
+    "pt": "Confira sua instalação, sem depender de uma contagem publicada.",
+    "en": "Inspect your own installation with these commands.",
+    "es": "Consulte su propia instalación con estos comandos."
+  }
+};
+const t=(key:keyof typeof translations)=>translations[key][locale];
 import Icone from "./Icone.astro";
 
 const capacidadesCore = [
   {
     icone: "shield-check",
-    titulo: "Governança acima do backend",
-    desc: "Proteção de entradas, ACL e ordenação constitucional valem em qualquer backend, sem exceção.",
+    titulo: t("t0"),
+    desc: t("t1"),
   },
   {
     icone: "git-branch",
-    titulo: "Histórico e escrita concorrente",
-    desc: "Versões append-only e compare-and-swap impedem que uma edição obsoleta vença em silêncio.",
+    titulo: t("t2"),
+    desc: t("t3"),
   },
   {
     icone: "lock-key",
-    titulo: "Criptografia seletiva",
-    desc: "AES-256-GCM em repouso para coleções sensíveis como contatos, arquivos e docs.",
+    titulo: t("t4"),
+    desc: t("t5"),
   },
   {
     icone: "shield-check",
-    titulo: "Anti-injection",
-    desc: "Detecção em 5 categorias: entrada suspeita fica retida e fora da injeção automática.",
+    titulo: t("t6"),
+    desc: t("t7"),
   },
   {
     icone: "stack",
-    titulo: "Snapshots globais",
-    desc: "Commit, diff e restore da árvore de memória inteira, com embeddings preservados.",
+    titulo: t("t8"),
+    desc: t("t9"),
   },
   {
     icone: "hard-drives",
-    titulo: "Proveniência e receipts",
-    desc: "Fonte, revisão e recibos permitem readback, reconciliação e rollback sem fabricar sucesso.",
+    titulo: t("t10"),
+    desc: t("t11"),
   },
 ];
 
-const numeros = [
-  { valor: "23", rotulo: "coleções tipadas" },
-  { valor: "11", rotulo: "dimensões de contexto" },
-  { valor: "4", rotulo: "hosts com contrato comum" },
-  { valor: "1", rotulo: "identidade por registro" },
-];
+
 ---
 
 <section class="secao produto" id="produto" aria-labelledby="produto-titulo">
   <div class="container">
     <div class="produto-cabeca">
-      <h2 class="titulo-display" id="produto-titulo">Um Company Brain governado</h2>
+      <h2 class="titulo-display" id="produto-titulo">{t("t12")}</h2>
       <p class="prosa">
-        O core em Python governa identidade, histórico e acesso. Agentes e pessoas
-        chegam ao mesmo conhecimento pela CLI, pelo servidor MCP e pelos hosts que já usam.
+        {t("t13")}
       </p>
     </div>
 
     <div class="metade" data-revelar>
       <div class="metade-texto">
-        <p class="metade-selo"><Icone nome="package" tamanho={16} /> OrkMind core</p>
-        <h3 class="titulo-display">A base que governa</h3>
+        <p class="metade-selo"><Icone nome="package" tamanho={16} /> OrkMind 0.4.0</p>
+        <h3 class="titulo-display">{t("t14")}</h3>
         <p class="prosa">
-          Biblioteca Python com PostgreSQL e pgvector. Publicada no PyPI,
-          licenciada MIT.
+          {t("t15")}
         </p>
         <ul class="capacidades" role="list">
           {capacidadesCore.map((c) => (
@@ -73,30 +156,14 @@ const numeros = [
         </ul>
       </div>
       <div class="metade-visual metade-visual-core">
-        <pre
-          class="core-terminal"><code><span class="t-cmd">$ orkmind add --collection rule \</span>
-<span class="t-cmd">    --content "Nunca usar rm -rf em produção" \</span>
-<span class="t-cmd">    --tags '&#123;"skill": ["deploy"]&#125;' --mandatory</span>
-<span class="t-ok">memória gravada: coleção rule, mandatória</span>
-
-<span class="t-cmd">$ orkmind search --tags '&#123;"skill": ["deploy"]&#125;'</span>
-<span class="t-ok">1. [rule] Nunca usar rm -rf em produção</span>
-<span class="t-dim">   mandatória, prioridade critical</span>
-
-<span class="t-cmd">$ orkmind store info</span>
-<span class="t-ok">backend ativo: pgvector</span>
-<span class="t-dim">capacidades completas, nenhum aviso</span></code></pre>
+        <p class="prosa">{t("t16")}</p>
+        <pre class="core-terminal"><code>pip show orkmind
+orkmind store info
+orkmind --help</code></pre>
       </div>
     </div>
 
-    <dl class="numeros" data-revelar>
-      {numeros.map((n) => (
-        <div class="numero">
-          <dt>{n.rotulo}</dt>
-          <dd>{n.valor}</dd>
-        </div>
-      ))}
-    </dl>
+
   </div>
 </section>
 
@@ -117,8 +184,8 @@ const numeros = [
   }
 
   [data-revelar] {
-    opacity: 0;
-    transform: translateY(26px);
+    opacity: 1;
+    transform: none;
     transition:
       opacity 0.75s var(--ease-suave),
       transform 0.75s var(--ease-suave);

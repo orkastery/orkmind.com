@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
-import { validate, hash, sourceHash } from './check-docs.mjs';
+import { validate, hash, sourceHash, reviewArticles, inventory } from './check-docs.mjs';
 function fixture(run) {
  const root=mkdtempSync(resolve(tmpdir(),'docs-contract-'));
  const data=resolve(root,'src/data');mkdirSync(data,{recursive:true});
@@ -76,4 +76,59 @@ test('unlinked SVG description fails',()=>outputFixture(dir=>{
 test('ordinary navigation must preserve language',()=>outputFixture(dir=>{
  edit(dir,'en/index.html',s=>s.replace('href="/en/docs/','href="/docs/'));
  assert.throws(()=>checkI18n(dir),/Navigation loses locale/);
+}));
+
+test('selective review retains unrelated reviews and leaves other stale articles failing',()=>fixture(({root,article,snapshot,save})=>{
+ const other=structuredClone(article);other.slug='untouched';
+ snapshot.reviews.untouched={pt:{reviewer:'original',date:'2026-09-01'}};
+ const retained=JSON.stringify(snapshot.reviews.untouched);
+ article.translations.en.sections[0].paragraphs=['Changed English meaning'];
+ reviewArticles([article,other],snapshot,{slugs:['untouched'],locales:['en'],reviewer:'executor-editorial'});
+ save();assert.throws(()=>validate(root),/stale/);
+ snapshot.reviews.untouched=JSON.parse(retained);
+ reviewArticles([article,other],snapshot,{slugs:['start'],locales:['en'],reviewer:'executor-editorial'});
+ assert.equal(JSON.stringify(snapshot.reviews.untouched),retained);
+ save();assert.equal(validate(root).articles,1);
+}));
+test('review rejects missing or unknown selection before changing evidence',()=>fixture(({article,snapshot})=>{
+ const before=JSON.stringify(snapshot);
+ for(const slugs of [undefined,[],['missing']]) assert.throws(()=>reviewArticles([article],snapshot,{slugs,locales:['pt'],reviewer:'executor-editorial'}),/slugs/);
+ assert.throws(()=>reviewArticles([article],snapshot,{slugs:['start'],locales:['fr'],reviewer:'executor-editorial'}),/locale/);
+ assert.equal(JSON.stringify(snapshot),before);
+}));
+test('contribution guide is included in source inventory',()=>fixture(({root})=>{
+ const source=resolve(root,'upstream');mkdirSync(resolve(source,'docs'),{recursive:true});
+ writeFileSync(resolve(source,'CONTRIBUTING.md'),'Public contribution contract');
+ for(const product of ['orkastery','orkmind']) assert.ok(inventory(source,product).some(s=>s.path==='CONTRIBUTING.md'));
+}));
+
+test('external guide hashes change when the referenced repository changes',()=>fixture(({root})=>{
+ const source=resolve(root,'memory');mkdirSync(resolve(source,'docs'),{recursive:true});
+ const external=resolve(root,'factory');mkdirSync(external);writeFileSync(resolve(external,'CONTRIBUTING.md'),'original');
+ const refs=[{path:'orkastery/CONTRIBUTING.md',sourceRoot:'../factory',sourcePath:'CONTRIBUTING.md'}];
+ const before=inventory(source,'orkmind',refs);
+ assert.equal(before[0].path,'orkastery/CONTRIBUTING.md');
+ writeFileSync(resolve(external,'CONTRIBUTING.md'),'updated');
+ assert.notEqual(inventory(source,'orkmind',refs)[0].sha256,before[0].sha256);
+}));
+
+test('removing a restored home section fails the content audit',()=>outputFixture(dir=>{
+ edit(dir,'en/index.html',s=>s.replace('A governed Company Brain','A removed section'));
+ assert.throws(()=>checkContent(dir),/restored home section/);
+}));
+test('missing contribution navigation fails the content audit',()=>outputFixture(dir=>{
+ edit(dir,'en/index.html',s=>s.replaceAll('href="/en/docs/contribuir/"','href="/en/docs/"'));
+ assert.throws(()=>checkContent(dir),/contribution navigation/);
+}));
+test('untranslated system label fails the content audit',()=>outputFixture(dir=>{
+ edit(dir,'en/index.html',s=>s.replaceAll('Temporary agents','Agentes temporários'));
+ assert.throws(()=>checkContent(dir),/Untranslated system diagram/);
+}));
+
+test('external source override works outside the default checkout layout',()=>fixture(({root})=>{
+ const source=resolve(root,'memory');mkdirSync(resolve(source,'docs'),{recursive:true});
+ const external=resolve(root,'independent-factory');mkdirSync(external);writeFileSync(resolve(external,'CONTRIBUTING.md'),'guide');
+ const refs=[{path:'orkastery/CONTRIBUTING.md',sourceRoot:'../absent',sourcePath:'CONTRIBUTING.md'}];
+ assert.throws(()=>inventory(source,'orkmind',refs),/ENOENT/);
+ assert.equal(inventory(source,'orkmind',refs,external)[0].sha256,hash('guide'));
 }));
