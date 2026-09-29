@@ -1,0 +1,27 @@
+---
+import Base from './Base.astro';
+import DocsNavigation from '../components/DocsNavigation.astro';
+import DocsArticle from '../components/DocsArticle.astro';
+import catalog from '../data/docs-catalog';
+import {localeFor,ui,localize} from '../data/i18n';
+import '../styles/docs.css';
+const modules=import.meta.glob('../data/docs-*.ts',{eager:true});
+const articles=catalog.modules.flatMap(file=>modules['../data/'+file].default);
+const {slug}=Astro.props,locale=localeFor(Astro.url.pathname),text=ui(locale);
+const article=articles.find(a=>a.slug===slug);
+if(slug&&!article) throw Error('Unknown documentation slug: '+slug);
+const aliases=Astro.props.aliases||{};
+---
+<Base titulo={(article?.translations[locale].title||text.docs)+' · '+(catalog.repository.endsWith('/orkmind')?'OrkMind':'Orkastery')} descricao={article?.translations[locale].description||text.indexDescription}>
+ <div class="docs-surface"><div class="docs-shell">
+ <nav class="docs-breadcrumb" aria-label={text.navigation}><a href={localize('/',locale)}>{text.home}</a><span aria-hidden="true">/</span><a href={localize('/docs/',locale)}>{text.docs}</a>{article&&<><span aria-hidden="true">/</span><span aria-current="page">{article.translations[locale].title}</span></>}</nav>
+ <DocsNavigation {articles} {locale} current={slug}/>
+ <div class="docs-reading">
+ {article?<DocsArticle {article} {articles} {locale}><slot /></DocsArticle>:<>
+ <header><p class="docs-eyebrow">{text.docs}</p><h1>{text.indexTitle}</h1><p class="docs-lead">{text.indexDescription}</p></header>
+ {[...new Set(articles.map(a=>a.group))].map(group=><section class="docs-section"><h2>{text[group]}</h2><div class="docs-cards">{articles.filter(a=>a.group===group).map(a=><a class="docs-card" href={localize('/docs/'+a.slug+'/',locale)}><h3>{a.translations[locale].title}</h3><p>{a.translations[locale].description}</p><span>{text.read} →</span></a>)}</div></section>)}
+ </>}
+ {Object.keys(aliases).length>0&&<aside class="docs-legacy"><h2>{text.legacy}</h2><ul>{Object.entries(aliases).map(([id,target])=>{const a=articles.find(a=>a.slug===target);return <li id={id}><a href={localize('/docs/'+target+'/',locale)}>{a.translations[locale].title}</a></li>})}</ul></aside>}
+ </div>
+ </div></div>
+</Base>

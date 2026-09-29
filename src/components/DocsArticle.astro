@@ -1,0 +1,21 @@
+---
+import {ui,localize} from '../data/i18n';
+import catalog from '../data/docs-catalog';
+import snapshot from '../data/docs-sources.json';
+import roadmap from '../data/roadmap.json';
+const {article,locale,articles}=Astro.props,text=ui(locale),copy=article.translations[locale];
+const position=articles.findIndex(a=>a.slug===article.slug),previous=articles[position-1],next=articles[position+1];
+const review=snapshot.reviews[article.slug]?.[locale];
+---
+<article class="docs-article">
+ <header><p class="docs-eyebrow">{text[article.group]}</p><h1>{copy.title}</h1><p class="docs-lead">{copy.description}</p></header>
+ <nav class="docs-toc" aria-label={text.onThisPage}><p>{text.onThisPage}</p><ul>{copy.sections.map(s=><li><a href={'#'+s.id}>{s.title}</a></li>)}</ul></nav>
+ <slot />
+ {copy.sections.map(s=><section class="docs-section" aria-labelledby={s.id}><h2 id={s.id}><a href={'#'+s.id}>{s.title}</a></h2>{s.paragraphs.map(p=><p>{p}</p>)}{s.items&&<ul>{s.items.map(item=><li>{item}</li>)}</ul>}{s.code&&<pre tabindex="0"><code>{s.code}</code></pre>}</section>)}
+ {article.slug==='roadmap'&&<aside class="docs-note"><p>{roadmap.summary[locale]}</p><p><time datetime={roadmap.updatedAt}>{roadmap.updatedAt}</time> · {text.nextReview}: <time datetime={roadmap.nextReview}>{roadmap.nextReview}</time></p><a href={roadmap.source}>{text.roadmap}</a></aside>}
+ <aside class="docs-sources"><h2>{text.source}</h2><p>{text.provenance}</p><p>{text.reviewed}: <time datetime={review?.date}>{review?.date}</time></p><ul>{article.sources.map(source=><li><a href={catalog.repository+'/blob/main/'+source}><code>{source}</code></a></li>)}</ul></aside>
+ <nav class="docs-pagination" aria-label={text.docs}>
+ {previous?<a rel="prev" href={localize('/docs/'+previous.slug+'/',locale)}><small>{text.previous}</small>{previous.translations[locale].title}</a>:<span/>}
+ {next&&<a rel="next" href={localize('/docs/'+next.slug+'/',locale)}><small>{text.next}</small>{next.translations[locale].title}</a>}
+ </nav>
+</article>
