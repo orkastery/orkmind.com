@@ -1,5 +1,6 @@
 ---
-import Docs from '../../layouts/Docs.astro';
+import Docs from '../../../layouts/Docs.astro';
+export function getStaticPaths(){return ['en','es'].map(lang=>({params:{lang}}));}
 const aliases={"inicio": "comecar", "primeira-memoria": "comecar", "organizar": "ontologia", "portfolio": "ontologia", "recuperar": "recuperacao", "governanca": "governanca", "federacao": "federacao", "integrar": "integracoes", "orkastery": "integracoes", "company-brain": "memory-provider", "workspace": "memory-provider", "orquestracao": "integracoes", "ajuda": "comecar"};
 ---
 <Docs {aliases}/>

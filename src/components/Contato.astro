@@ -1,163 +1,37 @@
 ---
-import Icone from "./Icone.astro";
+import {localeFor,ui} from '../data/i18n';
+const text=ui(localeFor(Astro.url.pathname));
 ---
-
-<section class="secao contato" id="contato" aria-labelledby="contato-titulo">
-  <div class="container contato-grade">
-    <div class="contato-texto">
-      <h2 class="titulo-display" id="contato-titulo">
-        Fale com quem faz o OrkMind
-      </h2>
-      <p class="prosa">
-        Dúvida técnica, proposta de uso ou vontade de contribuir: escreva. A
-        resposta vem de gente, não de fila.
-      </p>
-      <a class="contato-email" href="mailto:maestro@orkastery.com">
-        <Icone nome="envelope-simple" tamanho={19} />
-        maestro@orkastery.com
-      </a>
-    </div>
-
-    <form class="contato-form" data-form-contato>
-      <div class="campo">
-        <label for="contato-nome">Nome</label>
-        <input
-          type="text"
-          id="contato-nome"
-          name="nome"
-          autocomplete="name"
-          required
-        />
-      </div>
-      <div class="campo">
-        <label for="contato-origem">Seu email</label>
-        <input
-          type="email"
-          id="contato-origem"
-          name="email"
-          autocomplete="email"
-          required
-        />
-        <p class="campo-ajuda">Para a resposta chegar até você.</p>
-      </div>
-      <div class="campo">
-        <label for="contato-mensagem">Mensagem</label>
-        <textarea id="contato-mensagem" name="mensagem" rows="5" required
-        ></textarea>
-      </div>
-      <button class="botao botao-primario" type="submit">
-        Enviar mensagem
-      </button>
-      <p class="campo-ajuda">
-        O envio abre o seu aplicativo de email com tudo preenchido.
-      </p>
-    </form>
-  </div>
-</section>
-
-<style>
-  .contato {
-    background: var(--fundo-2);
-    border-top: 1px solid var(--linha);
-  }
-
-  .contato-grade {
-    display: grid;
-    gap: 3rem;
-  }
-
-  .contato-texto h2 {
-    font-size: clamp(1.9rem, 3.6vw, 2.9rem);
-    margin-bottom: 1.1rem;
-    max-width: 14ch;
-  }
-
-  .contato-email {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-top: 1.6rem;
-    color: var(--verde);
-    text-decoration: none;
-    font-family: var(--fonte-mono);
-    font-size: 0.95rem;
-    border-bottom: 1px solid transparent;
-    transition: border-color var(--dur-micro) var(--ease-suave);
-  }
-
-  .contato-email:hover {
-    border-bottom-color: var(--verde);
-  }
-
-  .contato-form {
-    display: grid;
-    gap: 1.3rem;
-    align-content: start;
-  }
-
-  .campo {
-    display: grid;
-    gap: 0.45rem;
-  }
-
-  .campo label {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--texto);
-  }
-
-  .campo input,
-  .campo textarea {
-    font: inherit;
-    color: var(--texto);
-    background: var(--fundo-3);
-    border: 1px solid var(--linha-forte);
-    border-radius: var(--raio-chip);
-    padding: 0.75rem 0.9rem;
-    transition: border-color var(--dur-micro) var(--ease-suave);
-  }
-
-  .campo input:focus-visible,
-  .campo textarea:focus-visible {
-    outline: 2px solid var(--verde);
-    outline-offset: 2px;
-    border-color: var(--verde-linha);
-  }
-
-  .campo textarea {
-    resize: vertical;
-    min-height: 130px;
-  }
-
-  .campo-ajuda {
-    font-size: 0.82rem;
-    color: var(--texto-3);
-  }
-
-  .contato-form .botao {
-    justify-self: start;
-  }
-
-  @media (min-width: 900px) {
-    .contato-grade {
-      grid-template-columns: 1fr 1.1fr;
-      gap: 5rem;
-    }
-  }
-</style>
-
+<section class="site-contact" id="contato" aria-labelledby="contato-titulo"><div class="contact-inner">
+ <div><h2 id="contato-titulo">{text.contact}</h2><p>{text.contactText}</p><a href="mailto:maestro@orkastery.com">maestro@orkastery.com</a></div>
+ <form data-contact-form data-subject={text.contact} action="mailto:maestro@orkastery.com" method="get">
+ <label for="contato-nome">{text.name}</label><input id="contato-nome" name="name" autocomplete="name" required/>
+ <label for="contato-email">{text.email}</label><input id="contato-email" name="email" type="email" autocomplete="email" required/>
+ <label for="contato-mensagem">{text.message}</label><textarea id="contato-mensagem" name="body" rows="5" required></textarea>
+ <button type="submit">{text.send}</button><p class="form-help">{text.mailHelp}</p>
+ </form>
+ </div></section>
 <script>
-  const form = document.querySelector<HTMLFormElement>("[data-form-contato]");
-  if (form) {
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const dados = new FormData(form);
-      const nome = String(dados.get("nome") ?? "");
-      const email = String(dados.get("email") ?? "");
-      const mensagem = String(dados.get("mensagem") ?? "");
-      const assunto = encodeURIComponent(`Contato pelo site do OrkMind: ${nome}`);
-      const corpo = encodeURIComponent(`${mensagem}\n\nDe: ${nome} <${email}>`);
-      window.location.href = `mailto:maestro@orkastery.com?subject=${assunto}&body=${corpo}`;
-    });
-  }
+ document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach(form=>{
+  form.addEventListener('submit',event=>{
+   event.preventDefault();if(!form.reportValidity())return;
+   const data=new FormData(form);
+   const query=new URLSearchParams({subject:form.dataset.subject||'',body:`${data.get('name')} <${data.get('email')}>\n\n${data.get('body')}`});
+   window.location.href='mailto:maestro@orkastery.com?'+query.toString();
+  });
+ });
 </script>
+<style>
+.site-contact{padding:4rem 1.5rem;background:var(--palco,var(--fundo-2));border-top:1px solid var(--linha-forte);}
+.contact-inner{max-width:1160px;margin:auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;}
+h2{font:500 clamp(1.8rem,3vw,2.8rem)/1.2 var(--f-display,var(--fonte-display));}
+p{line-height:1.65;margin:1rem 0;color:var(--tinta-2,var(--texto-2));}
+a{color:var(--latao,var(--verde));text-underline-offset:.3em;}
+form{display:grid;gap:.55rem;min-width:0;}
+label{margin-top:.5rem;font-size:.95rem;}
+input,textarea{width:100%;padding:.8rem 1rem;border:1px solid var(--linha-forte);border-radius:8px;background:var(--painel,var(--fundo-3));color:var(--tinta,var(--texto));font:inherit;box-sizing:border-box;}
+button{margin-top:.75rem;justify-self:start;background:var(--latao,var(--verde));color:var(--sobre-latao,var(--fundo));border:0;border-radius:999px;padding:.9rem 1.4rem;font:600 1rem var(--f-texto,var(--fonte-texto));cursor:pointer;}
+.form-help{font-size:.85rem;margin:.4rem 0;}
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--latao,var(--verde));outline-offset:4px;}
+@media(max-width:760px){.contact-inner{grid-template-columns:1fr;gap:2rem;}}
+</style>

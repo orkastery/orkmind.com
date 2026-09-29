@@ -1,0 +1,16 @@
+---
+import Docs from '../../layouts/Docs.astro';
+import DocsDiagram from '../../components/DocsDiagram.astro';
+import catalog from '../../data/docs-catalog';
+import {localeFor} from '../../data/i18n';
+export function getStaticPaths(){
+ const modules=import.meta.glob('../../data/docs-*.ts',{eager:true});
+ const articles=catalog.modules.flatMap(file=>modules['../../data/'+file].default);
+ return articles.map(article=>({params:{slug:article.slug},props:{article}}));
+}
+const {article}=Astro.props,locale=localeFor(Astro.url.pathname);
+const aliases={};
+---
+<Docs slug={article.slug} aliases={article.slug==='arquitetura'?aliases:{}}>
+ {article.diagram&&<DocsDiagram name={article.diagram} {locale}/>}
+</Docs>

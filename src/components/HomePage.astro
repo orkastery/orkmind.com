@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import Contato from './Contato.astro';
+import DocsDiagram from './DocsDiagram.astro';
+import home from '../data/home';
+import {localeFor,localize,ui} from '../data/i18n';
+import catalog from '../data/docs-catalog';
+const locale=localeFor(Astro.url.pathname),text=ui(locale),copy=Astro.props.content||home[locale];
+const legacy={"topo": ["hero-titulo"], "memoria": ["ontologia-titulo", "sistema", "sistema-titulo"], "busca": ["busca-titulo", "recall", "recall-titulo"], "produto": ["produto-titulo"], "arquitetura": ["arq-titulo"], "instalar": ["instalar-titulo"]};
+const aliasesFor=(id:string)=>legacy[id]||[];
+const diagram=Astro.props.diagram===false?null:'memory';
+---
+<Base titulo={(Astro.props.product||'OrkMind')+' · '+copy.description} descricao={copy.description}>
+ <section class="editorial-hero" id="topo"><div class="home-container">
+ <p class="home-kicker">{text.openSource} · {text.license}</p>
+ {aliasesFor('topo').map(id=><span {id} aria-hidden="true"/>)}<h1>{copy.title}</h1><p class="home-lead">{copy.lead}</p>
+ <div class="home-actions"><a class="home-primary" href={localize('/docs/comecar/',locale)}>{text.start} →</a><a href={catalog.repository}>GitHub ↗</a></div>
+ </div></section>
+ <div class="home-container home-main">
+ <div class="home-grid">{copy.sections.map(s=><section class="home-card" id={s.id}>{aliasesFor(s.id).map(id=><span {id} aria-hidden="true"/>)}<h2>{s.title}</h2><p>{s.text}</p><a href={s.href.startsWith('https:')?s.href:localize(s.href,locale)}>{text.read} →</a></section>)}</div>
+ <section class="home-mechanism" id="arquitetura"><div>{aliasesFor('arquitetura').map(id=><span {id} aria-hidden="true"/>)}<p class="home-kicker">{text.concepts}</p><h2>{copy.mechanism}</h2><p>{copy.mechanismText}</p><a href={localize('/docs/arquitetura/',locale)}>{text.read} →</a></div>{diagram&&<DocsDiagram name={diagram} {locale}/>}</section>
+ <section class="home-install" id="instalar"><div>{aliasesFor('instalar').map(id=><span {id} aria-hidden="true"/>)}<h2>{copy.install}</h2><p>{copy.installText}</p><a href={localize('/docs/comecar/',locale)}>{text.docs} →</a></div><pre tabindex="0"><code>{copy.command}</code></pre></section>
+ </div>
+ <Contato/>
+</Base>
+<style>
+.home-container{max-width:1160px;margin:auto;padding-inline:1.5rem;}
+.editorial-hero{padding:clamp(4rem,10vw,8rem) 0;background:radial-gradient(ellipse at 85% 95%,var(--latao-fraco,var(--verde-tinta)),transparent 60%);border-bottom:1px solid var(--linha-forte);}
+.home-kicker{color:var(--latao,var(--verde));font-size:.94rem;line-height:1.5;margin-bottom:1.5rem;}
+h1,h2{font-family:var(--f-display,var(--fonte-display));line-height:1.1;letter-spacing:-.035em;font-weight:500;text-transform:none;}
+h1{font-size:clamp(2.8rem,6.5vw,5.4rem);max-width:19ch;}
+.home-lead{max-width:57ch;font-size:clamp(1.15rem,2vw,1.45rem);line-height:1.65;color:var(--tinta-2,var(--texto-2));margin-top:2rem;}
+.home-actions{display:flex;gap:1.75rem;flex-wrap:wrap;align-items:center;margin-top:2.5rem;}
+a{color:var(--latao,var(--verde));text-underline-offset:.25em;}
+a:focus-visible{outline:2px solid currentColor;outline-offset:5px;}
+.home-primary{padding:.85rem 1.3rem;background:var(--latao,var(--verde));color:var(--sobre-latao,var(--fundo));border-radius:999px;text-decoration:none;font-weight:600;}
+.home-main{padding-block:4rem;}
+.home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.25rem;}
+.home-card{padding:2rem;border:1px solid var(--linha-forte);border-radius:16px;background:var(--painel,var(--fundo-2));}
+h2{font-size:clamp(1.6rem,2.8vw,2.5rem);max-width:25ch;}
+p{line-height:1.75;margin:1rem 0;color:var(--tinta-2,var(--texto-2));}
+.home-mechanism,.home-install{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin-top:5rem;}
+pre{padding:1.5rem;border:1px solid var(--linha-forte);border-radius:12px;overflow:auto;max-width:100%;background:var(--painel,var(--fundo-3));font:.9rem/1.8 var(--f-mono,var(--fonte-mono));}
+@media(max-width:760px){.home-grid,.home-mechanism,.home-install{grid-template-columns:minmax(0,1fr);}.home-card{padding:1.5rem;}.home-mechanism,.home-install{gap:1rem;margin-top:3rem;}}
+</style>

@@ -1,244 +1,29 @@
 ---
-import Icone from "./Icone.astro";
-import Externo from "./Externo.astro";
-
-const links = [
-  { href: "/docs/", rotulo: "Docs" },
-  { href: "/#memoria", rotulo: "Memória" },
-  { href: "/#busca", rotulo: "Busca" },
-  { href: "/#produto", rotulo: "Produto" },
-  { href: "/#arquitetura", rotulo: "Arquitetura" },
-  { href: "/#instalar", rotulo: "Instalar" },
-  { href: "/#contato", rotulo: "Contato" },
-];
+import LanguageSelector from './LanguageSelector.astro';
+import {localeFor,localize,ui} from '../data/i18n';
+const locale=localeFor(Astro.url.pathname),text=ui(locale);
+const links=[{href:'/',label:text.home},{href:'/docs/',label:text.docs},{href:'/docs/arquitetura/',label:text.concepts},{href:'/#contato',label:text.contact}];
 ---
-
-<header class="nav" data-nav>
-  <div class="container nav-linha">
-    <a class="marca" href="/#topo" aria-label="OrkMind, voltar ao topo">
-      <span class="marca-ponto" aria-hidden="true"></span>
-      <span class="marca-nome">OrkMind</span>
-    </a>
-
-    <nav class="nav-links" aria-label="Seções do site">
-      {links.map((l) => <a href={l.href} aria-current={Astro.url.pathname.startsWith("/docs") && l.href === "/docs/" ? "page" : undefined}>{l.rotulo}</a>)}
-    </nav>
-
-    <div class="nav-acoes">
-      <Externo destino="orkmind" class="nav-github">
-        <Icone nome="github-logo" tamanho={18} />
-        <span>GitHub</span>
-      </Externo>
-      <button
-        class="nav-menu"
-        type="button"
-        aria-expanded="false"
-        aria-controls="menu-mobile"
-        data-menu-botao
-      >
-        <span class="visually-hidden">Abrir menu</span>
-        <Icone nome="list" tamanho={22} classe="icone-abrir" />
-        <Icone nome="x" tamanho={22} classe="icone-fechar" />
-      </button>
-    </div>
-  </div>
-
-  <div class="menu-mobile" id="menu-mobile" data-menu hidden>
-    <nav aria-label="Seções do site (menu)">
-      {links.map((l) => <a href={l.href} data-menu-link>{l.rotulo}</a>)}
-      <Externo destino="orkmind" data-menu-link class="menu-mobile-github">GitHub do OrkMind</Externo>
-    </nav>
-  </div>
+<header class="site-header">
+ <div class="site-header-inner">
+ <a class="site-brand" href={localize('/',locale)} aria-label={'OrkMind · '+text.home}><span aria-hidden="true"><span class="brand-dot" aria-hidden="true"></span></span><span>OrkMind</span></a>
+ <nav class="site-links" aria-label={text.navigation}>{links.map(link=><a href={localize(link.href,locale)} aria-current={Astro.url.pathname===localize(link.href,locale)?'page':undefined}>{link.label}</a>)}</nav>
+ <LanguageSelector/>
+ </div>
 </header>
-
 <style>
-  .nav {
-    position: fixed;
-    inset-inline: 0;
-    top: 0;
-    z-index: var(--z-nav);
-    background: color-mix(in srgb, var(--fundo) 72%, transparent);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-bottom: 1px solid transparent;
-    transition: border-color var(--dur-media) var(--ease-suave);
-  }
-
-  .nav[data-rolado] {
-    border-bottom-color: var(--linha);
-  }
-
-  .nav-linha {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-    height: 68px;
-  }
-
-  .marca {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    text-decoration: none;
-    font-family: var(--fonte-display);
-    font-weight: 600;
-    font-size: 1.15rem;
-    letter-spacing: -0.01em;
-  }
-
-  .marca-ponto {
-    width: 10px;
-    height: 10px;
-    border-radius: var(--raio-pill);
-    background: var(--verde);
-    box-shadow: 0 0 0 4px var(--verde-tinta);
-  }
-
-  .nav-links {
-    display: none;
-    gap: clamp(.75rem, 1.4vw, 1.5rem);
-  }
-
-  .nav-links a {
-    text-decoration: none;
-    color: var(--texto-2);
-    font-size: 0.92rem;
-    transition: color var(--dur-micro) var(--ease-suave);
-  }
-
-  .nav-links a:hover {
-    color: var(--texto);
-  }
-
-  .nav-acoes {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .nav-github {
-    display: none;
-    align-items: center;
-    gap: 0.5rem;
-    text-decoration: none;
-    color: var(--texto);
-    font-size: 0.92rem;
-    border: 1px solid var(--linha-forte);
-    border-radius: var(--raio-pill);
-    padding: 0.5rem 1rem;
-    transition:
-      border-color var(--dur-micro) var(--ease-suave),
-      background var(--dur-micro) var(--ease-suave);
-  }
-
-  .nav-github:hover {
-    border-color: var(--verde-linha);
-    background: var(--verde-tinta);
-  }
-
-  .nav-menu {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: var(--raio-pill);
-    border: 1px solid var(--linha-forte);
-    background: transparent;
-    color: var(--texto);
-  }
-
-  .nav-menu :global(.icone-fechar) {
-    display: none;
-  }
-
-  .nav-menu[aria-expanded="true"] :global(.icone-abrir) {
-    display: none;
-  }
-
-  .nav-menu[aria-expanded="true"] :global(.icone-fechar) {
-    display: inline-flex;
-  }
-
-  .menu-mobile {
-    border-top: 1px solid var(--linha);
-    background: var(--fundo-2);
-  }
-
-  .menu-mobile nav {
-    display: grid;
-    padding: 0.75rem 1.25rem 1.25rem;
-  }
-
-  .menu-mobile a {
-    text-decoration: none;
-    color: var(--texto);
-    padding: 0.85rem 0.5rem;
-    border-bottom: 1px solid var(--linha);
-    font-size: 1.05rem;
-  }
-
-  .menu-mobile a:last-child {
-    border-bottom: 0;
-  }
-
-  .menu-mobile-github {
-    color: var(--verde);
-  }
-
-  @media (min-width: 900px) {
-    .nav-links {
-      display: flex;
-    }
-    .nav-github {
-      display: inline-flex;
-    }
-    .nav-menu {
-      display: none;
-    }
-    .menu-mobile {
-      display: none;
-    }
-  }
+.site-header{position:relative;z-index:50;border-bottom:1px solid var(--linha-forte);background:var(--poco,var(--fundo));color:var(--tinta,var(--texto));}
+.site-header-inner{max-width:1280px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:1.25rem;padding:1.2rem 1.5rem;flex-wrap:wrap;}
+.site-brand{display:inline-flex;align-items:center;gap:.65rem;font:500 1.3rem var(--f-display,var(--fonte-display));text-decoration:none;color:inherit;}
+.site-brand>span{display:inline-flex;}
+.site-brand svg{color:var(--latao);}
+.selo-orbita{fill:none;stroke:currentColor;stroke-width:1.1;opacity:.55;}
+.selo-batuta,.selo-naipe{fill:currentColor;}
+.brand-dot{width:10px;height:10px;border-radius:50%;background:var(--verde);box-shadow:0 0 0 4px var(--verde-tinta);}
+.site-links{display:flex;flex-wrap:wrap;gap:.35rem 1rem;align-items:center;font-size:.93rem;}
+.site-links a{padding:.5rem .2rem;color:inherit;text-decoration:none;text-underline-offset:.35em;}
+.site-links a[aria-current],.site-links a:hover{text-decoration:underline;}
+a:focus-visible{outline:2px solid currentColor;outline-offset:4px;}
+@media(max-width:760px){.site-header-inner{gap:1rem;padding:1rem 1.25rem;}.site-links{order:3;flex-basis:100%;}.site-brand{font-size:1.2rem;}}
+@media(max-width:480px){.site-header-inner{display:grid;grid-template-columns:1fr;gap:.5rem;}.site-links{gap:.25rem .85rem;}}
 </style>
-
-<script>
-  const nav = document.querySelector<HTMLElement>("[data-nav]");
-  const botao = document.querySelector<HTMLButtonElement>("[data-menu-botao]");
-  const menu = document.querySelector<HTMLElement>("[data-menu]");
-
-  if (nav) {
-    const sentinela = document.createElement("div");
-    sentinela.setAttribute("aria-hidden", "true");
-    sentinela.style.cssText =
-      "position:absolute;top:0;left:0;width:1px;height:10px;pointer-events:none;";
-    document.body.prepend(sentinela);
-    const observador = new IntersectionObserver(([entrada]) => {
-      if (entrada && entrada.isIntersecting) {
-        nav.removeAttribute("data-rolado");
-      } else {
-        nav.setAttribute("data-rolado", "");
-      }
-    });
-    observador.observe(sentinela);
-  }
-
-  if (botao && menu) {
-    const fechar = () => {
-      botao.setAttribute("aria-expanded", "false");
-      menu.hidden = true;
-    };
-    botao.addEventListener("click", () => {
-      const aberto = botao.getAttribute("aria-expanded") === "true";
-      botao.setAttribute("aria-expanded", String(!aberto));
-      menu.hidden = aberto;
-    });
-    menu.querySelectorAll("[data-menu-link]").forEach((l) => {
-      l.addEventListener("click", fechar);
-    });
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") fechar();
-    });
-  }
-</script>

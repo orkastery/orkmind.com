@@ -1,0 +1,326 @@
+{
+  "schemaVersion": 1,
+  "product": "orkmind",
+  "sources": [
+    {
+      "path": "README.md",
+      "sha256": "175b9a0a9ce164cbee117e4ebbdf869dc90610c8e2320d93fc636b5e78cab889",
+      "category": "root",
+      "treatment": "article",
+      "targets": [
+        "comecar",
+        "arquitetura",
+        "integracoes",
+        "governanca",
+        "recuperacao",
+        "roadmap"
+      ]
+    },
+    {
+      "path": "README.pt-BR.md",
+      "sha256": "4fe00b14a44146ceca31d9db8a612cb41a2875cd3ee6c617aa816f5091dfff9d",
+      "category": "root",
+      "treatment": "article",
+      "targets": [
+        "comecar"
+      ]
+    },
+    {
+      "path": "docs/federation.md",
+      "sha256": "3132a1308991569abc317f1e73d9adbb772259b5e3829a06086ad3b541e6533a",
+      "category": "federation.md",
+      "treatment": "article",
+      "targets": [
+        "federacao"
+      ]
+    },
+    {
+      "path": "docs/hermes-setup.md",
+      "sha256": "d5175bb3e10316e04b296060f22ede04a401b19ba6b473be6d45142596128940",
+      "category": "hermes-setup.md",
+      "treatment": "article",
+      "targets": [
+        "integracoes"
+      ]
+    },
+    {
+      "path": "docs/integration-guide.md",
+      "sha256": "62e16e9ecb7aa2ee85cc21adfe0df412ac25cce96904ff2ae9da96f8e9890fa9",
+      "category": "integration-guide.md",
+      "treatment": "article",
+      "targets": [
+        "arquitetura",
+        "integracoes"
+      ]
+    },
+    {
+      "path": "docs/mcp-setup.md",
+      "sha256": "b608354c3b990efddb3b861577547fe1fa96aec1f593a7df0a0a3cf0d341e454",
+      "category": "mcp-setup.md",
+      "treatment": "article",
+      "targets": [
+        "integracoes"
+      ]
+    },
+    {
+      "path": "docs/memory-provider/README.md",
+      "sha256": "0d549bf97f39accf25b7e9f7695cdb5a4ff1814ffff72256266596fbd550c48a",
+      "category": "memory-provider",
+      "treatment": "index",
+      "targets": [
+        "memory-provider"
+      ]
+    },
+    {
+      "path": "docs/ontologia.md",
+      "sha256": "d0eb5c895e0e55accfe8cfde8abd05a53e5191d5aec4f34a68053eaf96f5531f",
+      "category": "ontologia.md",
+      "treatment": "article",
+      "targets": [
+        "arquitetura",
+        "ontologia",
+        "governanca",
+        "recuperacao"
+      ]
+    },
+    {
+      "path": "docs/sempre-gravar.md",
+      "sha256": "bf3a2734a00078228cb45715e4071dace6b1cb3ff91869911f47c8af0381222f",
+      "category": "sempre-gravar.md",
+      "treatment": "article",
+      "targets": [
+        "governanca"
+      ]
+    },
+    {
+      "path": "docs/storage-backends/GUIA-BACKENDS.md",
+      "sha256": "59521a525bbfbaea8beddde196f5a0ff61f5b911692f303c741faf7aa17ede34",
+      "category": "storage-backends",
+      "treatment": "article",
+      "targets": [
+        "armazenamento"
+      ]
+    },
+    {
+      "path": "docs/storage-backends/MATRIZ-BACKENDS.md",
+      "sha256": "58cc7be6572e8eb1fc70e94846ed141c9a570a552db7f10450c954606dbd8529",
+      "category": "storage-backends",
+      "treatment": "article",
+      "targets": [
+        "armazenamento"
+      ]
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "bb4ffbbf9d27b226f3ead55f031b369455815c207d0aa984cccd7df0094ae85d",
+      "category": "root",
+      "treatment": "article",
+      "targets": [
+        "comecar"
+      ]
+    }
+  ],
+  "inventoryHash": "138273a4973569b7677e4eff9a446921015add986a876b9799860ee1afff1dc8",
+  "reviews": {
+    "comecar": {
+      "pt": {
+        "sourceHash": "38ace7c9b2c954eb62d4bb2ee0c6eb34ea3647daa76150ca89c859a11d23f344",
+        "contentHash": "afe4d9ad102e4c5a1e6e34ea1203bbc680e217a66790d152fd052144e1839111",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "en": {
+        "sourceHash": "38ace7c9b2c954eb62d4bb2ee0c6eb34ea3647daa76150ca89c859a11d23f344",
+        "contentHash": "876b3877957c8110a2be8bcf43e59b2602647c1f1dd7efb0d247f9f22735af96",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "es": {
+        "sourceHash": "38ace7c9b2c954eb62d4bb2ee0c6eb34ea3647daa76150ca89c859a11d23f344",
+        "contentHash": "5e267c984df9bf379ad6ab45e3b95d663b2e786d325716dcd096782ab1e20059",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      }
+    },
+    "arquitetura": {
+      "pt": {
+        "sourceHash": "6ac435798e2bcd13794ab23fdb1b21191fe6783b8c2c619c9f7149d376f26d5d",
+        "contentHash": "a75edf3b37f4968b369d0e99a511e1bbc94272c6ead061b20da4b184a18a30fb",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "en": {
+        "sourceHash": "6ac435798e2bcd13794ab23fdb1b21191fe6783b8c2c619c9f7149d376f26d5d",
+        "contentHash": "6888b1f2a855f45568da27bb87b2bad69e141125b59eebfa1fb19fd622ad676e",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "es": {
+        "sourceHash": "6ac435798e2bcd13794ab23fdb1b21191fe6783b8c2c619c9f7149d376f26d5d",
+        "contentHash": "9bc508a2fe35c9f3ef3936cf7f23da84f0a627b4ca57a43afb02edb6a0cf4bf8",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      }
+    },
+    "ontologia": {
+      "pt": {
+        "sourceHash": "1f36a4fa458b62dc856246c6f345048953961c6362f21c72e1f755bca9b84b49",
+        "contentHash": "7ea61a56107b9bae2e916bb5212e3765700275f9b813cd47d0262635cccacfaa",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "en": {
+        "sourceHash": "1f36a4fa458b62dc856246c6f345048953961c6362f21c72e1f755bca9b84b49",
+        "contentHash": "ede234cb1e16ad4a4d8d7db14671ecc8405e357340b7ba57fbaee57fb31eb7c9",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "es": {
+        "sourceHash": "1f36a4fa458b62dc856246c6f345048953961c6362f21c72e1f755bca9b84b49",
+        "contentHash": "50e19ea56ef220dee08fe92421895c8513eac9e9a54c759b8f3714736d42419a",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      }
+    },
+    "integracoes": {
+      "pt": {
+        "sourceHash": "5768a5a8645b283c37a083caec17baaacc6f0fa8f3929180b43312798454347e",
+        "contentHash": "676f93bf9df480fe36556f392def7e54ad8d9175353c7c584f35564dab38165d",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "en": {
+        "sourceHash": "5768a5a8645b283c37a083caec17baaacc6f0fa8f3929180b43312798454347e",
+        "contentHash": "209aae5ac989b05bcf641505404a3bc4681c35f55689c55e3498f415879a8f73",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "es": {
+        "sourceHash": "5768a5a8645b283c37a083caec17baaacc6f0fa8f3929180b43312798454347e",
+        "contentHash": "bbed49d05ad14c15fe728d4e7f6208172f85125616aca44e3d5d00fa6bdbed86",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      }
+    },
+    "memory-provider": {
+      "pt": {
+        "sourceHash": "308ae2a76bf57c6aad234a88b5b714bfac38ce152a57e4a3b5f88e46091d30da",
+        "contentHash": "a277ddbe83ed49475db3ffff0851b4ca805c462e9398bcd46a1f71c3eaff054f",
+        "reviewer": "condutor-editorial",
+        "date": "2026-09-28"
+      },
+      "en": {
+        "sourceHash": "308ae2a76bf57c6aad234a88b5b714bfac38ce152a57e4a3b5f88e46091d30da",
+        "contentHash": "4a6013770abd805c93e5114f281cf5d99151f7b410e8bb43eec4ad245f32ae60",
+        "reviewer": "condutor-editorial",
+        "date": "2026-09-28"
+      },
+      "es": {
+        "sourceHash": "308ae2a76bf57c6aad234a88b5b714bfac38ce152a57e4a3b5f88e46091d30da",
+        "contentHash": "44a92f8aed0a62f51840f538ddd043f90d6f0589175e268ebd7b3fc74ca99c70",
+        "reviewer": "condutor-editorial",
+        "date": "2026-09-28"
+      }
+    },
+    "governanca": {
+      "pt": {
+        "sourceHash": "c99649f7de6d13edf0e610a3c7d1e4e0472a2fb11d4ef73bab3dbeeb1e7bd669",
+        "contentHash": "7e312856292ab0ef891ae628e30ac28f2dd899af966d5c1d4ed2aff58152af0a",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "en": {
+        "sourceHash": "c99649f7de6d13edf0e610a3c7d1e4e0472a2fb11d4ef73bab3dbeeb1e7bd669",
+        "contentHash": "04237fec30dacb8cbff5a318a75c738ae6f7ee9dd2e74dbf354add3acf85b182",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "es": {
+        "sourceHash": "c99649f7de6d13edf0e610a3c7d1e4e0472a2fb11d4ef73bab3dbeeb1e7bd669",
+        "contentHash": "d8a5db2b78806520a2f855f17473995364bd28d16783360695c2b6deb0567d31",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      }
+    },
+    "armazenamento": {
+      "pt": {
+        "sourceHash": "f368e2473b7f8ea3196998958876420f306aea28482c45ffad3ac7e439d2857d",
+        "contentHash": "da996aa323d7c9ce8e850445c8d2a4c9873554e0ba238ecc626aa48ff6f2f89b",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "en": {
+        "sourceHash": "f368e2473b7f8ea3196998958876420f306aea28482c45ffad3ac7e439d2857d",
+        "contentHash": "d93b398e9cadba2e36a903d390a2fd2315284a04b3348678152c95c98af5722b",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "es": {
+        "sourceHash": "f368e2473b7f8ea3196998958876420f306aea28482c45ffad3ac7e439d2857d",
+        "contentHash": "62d84c15541c02d53ecc93be5ed98b554afc333c761ec49acdda465db1f93434",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      }
+    },
+    "recuperacao": {
+      "pt": {
+        "sourceHash": "a116a9a7966b66e7eb90aa214d62135de773585754692064e35b413f2af49685",
+        "contentHash": "d4e8ee5b4cf507d8aac7be4959eedf405f37eefe319d3bce16b11b5614c08cf3",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "en": {
+        "sourceHash": "a116a9a7966b66e7eb90aa214d62135de773585754692064e35b413f2af49685",
+        "contentHash": "2ec8a150da8bbc41626b22e704267fc93bb79fa381c26b9e2395e7e2a1b5f275",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "es": {
+        "sourceHash": "a116a9a7966b66e7eb90aa214d62135de773585754692064e35b413f2af49685",
+        "contentHash": "e59b10c2df7e9499798d073bfb5322161365cd85b094d45d749dffc19d26ef81",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      }
+    },
+    "federacao": {
+      "pt": {
+        "sourceHash": "32d94532e4d974b6e639072b288b429f6e3c70511b805ec330c3524fa6a84a3b",
+        "contentHash": "3c2926c61adcdefa0137b63f08fa58534f94fd426588c156d497df6aa9f22eab",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "en": {
+        "sourceHash": "32d94532e4d974b6e639072b288b429f6e3c70511b805ec330c3524fa6a84a3b",
+        "contentHash": "af761388b6b8a826215043aae4759bcff9c7b53961c65709477a4ba3b1cf8a76",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "es": {
+        "sourceHash": "32d94532e4d974b6e639072b288b429f6e3c70511b805ec330c3524fa6a84a3b",
+        "contentHash": "d35b325d18f93b282b72618738d0443d95e3f104bc9ba3414d1f9a0cfe9d86bc",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      }
+    },
+    "roadmap": {
+      "pt": {
+        "sourceHash": "d3732b48b8bffebb04e94ebe85dd6c67b685bb1fadf50974aa6ec5c10cc37662",
+        "contentHash": "375d9a50f30865b74504da3fd0a00970c96c99b9a69bef548db3866dcf8ea102",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "en": {
+        "sourceHash": "d3732b48b8bffebb04e94ebe85dd6c67b685bb1fadf50974aa6ec5c10cc37662",
+        "contentHash": "207de9c8325c5d46567225448d55f7582dddcbd4ba387643dbd4b45ebb50b11b",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "es": {
+        "sourceHash": "d3732b48b8bffebb04e94ebe85dd6c67b685bb1fadf50974aa6ec5c10cc37662",
+        "contentHash": "1c089c9bb736a9091d7e43890780e119937b66254adcca116c9ae0781705d9f3",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      }
+    }
+  }
+}

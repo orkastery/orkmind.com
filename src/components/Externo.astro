@@ -1,25 +1,7 @@
 ---
-// Link para um destino externo que pode ainda estar fechado (ver src/data/externos.ts).
-// Aberto: renderiza o <a> de sempre. Fechado: um <a> sem href (marcador de link, sem destino e
-// fora do foco), que herda o mesmo desenho, com o selo "em breve".
-import { externos, type Destino } from "../data/externos";
-
-interface Props {
-  destino: Destino;
-  caminho?: string;
-  class?: string;
-  selo?: boolean;
-  [atributo: string]: unknown;
-}
-
-const { destino, caminho = "", class: classe, selo = true, ...resto } = Astro.props;
-const alvo = externos[destino];
+import {externos,type Destino} from '../data/externos';
+import {localeFor,ui} from '../data/i18n';
+const {destino,selo=true,...rest}=Astro.props;
+const target=externos[destino as Destino],text=ui(localeFor(Astro.url.pathname));
 ---
-
-{alvo.aberto ? (
-  <a class={classe} href={`${alvo.url}${caminho}`} rel="noopener" target="_blank" {...resto}><slot /></a>
-) : (
-  <a class:list={[classe, "em-breve"]} aria-disabled="true" title="Em breve" {...resto}>
-    <slot />{selo && <span class="selo-em-breve">em breve</span>}
-  </a>
-)}
+{target.aberto?<a href={target.url} rel="noopener" {...rest}><slot/></a>:<span {...rest}><slot/>{selo&&<small> · {text.soon}</small>}</span>}

@@ -169,7 +169,7 @@ kbd {
   font-family: var(--fonte-mono);
   font-size: 0.72rem;
   letter-spacing: 0.1em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--texto-2);
   white-space: nowrap;
   vertical-align: middle;

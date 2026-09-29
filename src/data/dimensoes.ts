@@ -1,4 +1,4 @@
-// As 8 dimensões de tags da ontologia do OrkMind e o conjunto de exemplo
+// As 11 dimensões de tags da ontologia do OrkMind e o conjunto de exemplo
 // do simulador de busca. Dimensões e semântica: docs/ontologia.md do core.
 export interface Dimensao {
   chave: string;
@@ -14,6 +14,9 @@ export const dimensoes: Dimensao[] = [
   { chave: "situation", nome: "Situação", desc: "O momento de uso: debugging, review, refatoração." },
   { chave: "person", nome: "Pessoa", desc: "Quem é citado ou relevante na memória." },
   { chave: "audience", nome: "Audiência", desc: "Quem pode ler a entrada. É controle de acesso." },
+  { chave: "prod", nome: "Produto", desc: "Identidade de negócio; não amplia acesso." },
+  { chave: "proj", nome: "Projeto de produto", desc: "Demanda dentro de um produto." },
+  { chave: "init", nome: "Iniciativa", desc: "Entrega delimitada em um projeto." },
   { chave: "editors", nome: "Editores", desc: "Quem pode alterar a entrada. Também é acesso." },
 ];
 
@@ -32,7 +35,7 @@ export const tagsSelecionaveis: TagSelecionavel[] = [
   { dimensao: "project", valor: "orkmind" },
   { dimensao: "situation", valor: "debugging" },
   { dimensao: "situation", valor: "deploy" },
-  { dimensao: "person", valor: "julio" },
+  { dimensao: "person", valor: "pessoa-exemplo" },
   { dimensao: "audience", valor: "team" },
   { dimensao: "editors", valor: "owner" },
 ];
@@ -80,7 +83,7 @@ export const memoriasExemplo: MemoriaExemplo[] = [
     conteudo: "Preferir commits atômicos e PRs pequenos",
     mandatoria: false,
     prioridade: "medium",
-    tags: { person: ["julio"], audience: ["team"] },
+    tags: { person: ["pessoa-exemplo"], audience: ["team"] },
   },
   {
     colecao: "instruction",
