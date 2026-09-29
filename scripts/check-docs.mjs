@@ -23,7 +23,7 @@ export function inventory(source, product) {
   }
  }
  walk(resolve(source,'docs'));
- for(const file of product==='orkastery' ? ['README.md','core/package.json'] : ['README.md','README.pt-BR.md','pyproject.toml']) {
+ for(const file of product==='orkastery' ? ['README.md','CONTRIBUTING.md','core/package.json'] : ['README.md','README.pt-BR.md','CONTRIBUTING.md','pyproject.toml']) {
   if(existsSync(resolve(source,file))) files.push(resolve(source,file));
  }
  return files.sort().map(file=>({path:relative(source,file).replaceAll('\\','/'),sha256:hash(readFileSync(file))}));
@@ -33,6 +33,15 @@ export const sourceHash = (a,snapshot) => hash(JSON.stringify(a.sources.map(p=>{
  if(!entry) throw Error('missing source: '+p);
  return [p,entry.sha256];
 })));
+export function reviewArticles(all, snapshot, {slugs, locales, reviewer}) {
+ if(!reviewer?.trim()) throw Error('An explicit reviewer is required');
+ if(!slugs?.length || slugs.some(slug=>!all.some(a=>a.slug===slug))) throw Error('Select existing article slugs with --articles');
+ if(!locales?.length || locales.some(locale=>!['pt','en','es'].includes(locale))) throw Error('Invalid review locale');
+ for(const a of all.filter(a=>slugs.includes(a.slug))) for(const locale of locales) {
+  snapshot.reviews[a.slug]??={};
+  snapshot.reviews[a.slug][locale]={sourceHash:sourceHash(a,snapshot),contentHash:hash(JSON.stringify(a.translations[locale])),reviewer,date:new Date().toISOString().slice(0,10)};
+ }
+}
 export function validate(dir=root,{schemaOnly=false,section,source}={}) {
  const all=articles(dir), selected=section ? all.filter(a=>a.group===section) : all;
  const snapshot=read(resolve(dir,'src/data/docs-sources.json'));
