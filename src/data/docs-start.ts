@@ -16,9 +16,9 @@ export default [
             "id": "instalar",
             "title": "Instalação e requisitos",
             "paragraphs": [
-              "OrkMind é software aberto sob licença MIT. As fontes revisadas descrevem a versão 0.3.0, alpha. Use Python 3.11 ou superior e PostgreSQL com pgvector para o backend padrão. Configure ORKMIND_DATABASE_URL no ambiente protegido; não publique o valor."
+              "OrkMind é software aberto sob licença MIT. As fontes revisadas descrevem a versão 0.4.0, alpha. Use Python 3.11 ou superior e PostgreSQL com pgvector para o backend padrão. Configure ORKMIND_DATABASE_URL no ambiente protegido; não publique o valor."
             ],
-            "code": "pip install \"orkmind>=0.3.0\"\norkmind store info\norkmind stats"
+            "code": "pip install \"orkmind>=0.4.0\"\norkmind store info\norkmind stats"
           },
           {
             "id": "primeira-memoria",
@@ -45,9 +45,9 @@ export default [
             "id": "instalar",
             "title": "Installation and requirements",
             "paragraphs": [
-              "OrkMind is open source under the MIT license. The reviewed sources describe version 0.3.0, alpha. Use Python 3.11 or later and PostgreSQL with pgvector for the default backend. Set ORKMIND_DATABASE_URL in the protected environment; do not publish its value."
+              "OrkMind is open source under the MIT license. The reviewed sources describe version 0.4.0, alpha. Use Python 3.11 or later and PostgreSQL with pgvector for the default backend. Set ORKMIND_DATABASE_URL in the protected environment; do not publish its value."
             ],
-            "code": "pip install \"orkmind>=0.3.0\"\norkmind store info\norkmind stats"
+            "code": "pip install \"orkmind>=0.4.0\"\norkmind store info\norkmind stats"
           },
           {
             "id": "primeira-memoria",
@@ -74,9 +74,9 @@ export default [
             "id": "instalar",
             "title": "Instalación y requisitos",
             "paragraphs": [
-              "OrkMind es software abierto bajo licencia MIT. Las fuentes revisadas describen la versión 0.3.0, alpha. Use Python 3.11 o posterior y PostgreSQL con pgvector para el backend predeterminado. Configure ORKMIND_DATABASE_URL en el entorno protegido; no publique su valor."
+              "OrkMind es software abierto bajo licencia MIT. Las fuentes revisadas describen la versión 0.4.0, alpha. Use Python 3.11 o posterior y PostgreSQL con pgvector para el backend predeterminado. Configure ORKMIND_DATABASE_URL en el entorno protegido; no publique su valor."
             ],
-            "code": "pip install \"orkmind>=0.3.0\"\norkmind store info\norkmind stats"
+            "code": "pip install \"orkmind>=0.4.0\"\norkmind store info\norkmind stats"
           },
           {
             "id": "primeira-memoria",
