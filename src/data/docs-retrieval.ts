@@ -51,7 +51,7 @@ export default [
         ]
       },
       "es": {
-        "title": "Recupere contexto relevante",
+        "title": "Recuperación de contexto relevante",
         "description": "Combine filtros deterministas, prioridad y búsqueda semántica opcional.",
         "sections": [
           {
