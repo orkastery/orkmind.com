@@ -5,7 +5,6 @@
 export const externos = {
   orkastery: { url: "https://github.com/orkastery/orkastery", aberto: true },
   orkmind: { url: "https://github.com/orkastery/orkmind", aberto: true },
-  orkmindWeb: { url: "https://github.com/orkastery/orkmind-web", aberto: false },
 } as const;
 
 export type Destino = keyof typeof externos;
