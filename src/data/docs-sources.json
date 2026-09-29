@@ -7,14 +7,19 @@
       "sha256": "175b9a0a9ce164cbee117e4ebbdf869dc90610c8e2320d93fc636b5e78cab889",
       "category": "root",
       "treatment": "article",
-      "targets": []
+      "targets": [
+        "comecar",
+        "arquitetura"
+      ]
     },
     {
       "path": "README.pt-BR.md",
       "sha256": "4fe00b14a44146ceca31d9db8a612cb41a2875cd3ee6c617aa816f5091dfff9d",
       "category": "root",
       "treatment": "article",
-      "targets": []
+      "targets": [
+        "comecar"
+      ]
     },
     {
       "path": "docs/federation.md",
@@ -35,7 +40,9 @@
       "sha256": "62e16e9ecb7aa2ee85cc21adfe0df412ac25cce96904ff2ae9da96f8e9890fa9",
       "category": "integration-guide.md",
       "treatment": "article",
-      "targets": []
+      "targets": [
+        "arquitetura"
+      ]
     },
     {
       "path": "docs/mcp-setup.md",
@@ -58,7 +65,10 @@
       "sha256": "d0eb5c895e0e55accfe8cfde8abd05a53e5191d5aec4f34a68053eaf96f5531f",
       "category": "ontologia.md",
       "treatment": "article",
-      "targets": []
+      "targets": [
+        "arquitetura",
+        "ontologia"
+      ]
     },
     {
       "path": "docs/sempre-gravar.md",
@@ -86,9 +96,72 @@
       "sha256": "bb4ffbbf9d27b226f3ead55f031b369455815c207d0aa984cccd7df0094ae85d",
       "category": "root",
       "treatment": "article",
-      "targets": []
+      "targets": [
+        "comecar"
+      ]
     }
   ],
-  "inventoryHash": "88d417ac7f8ce76b433138cc404eac19698090f0d23c36a518f0c837423da3dd",
-  "reviews": {}
+  "inventoryHash": "3d262a3308487ad5de6b87c772ef617e6518a3b227b3146022ea731c25189db8",
+  "reviews": {
+    "comecar": {
+      "pt": {
+        "sourceHash": "38ace7c9b2c954eb62d4bb2ee0c6eb34ea3647daa76150ca89c859a11d23f344",
+        "contentHash": "afe4d9ad102e4c5a1e6e34ea1203bbc680e217a66790d152fd052144e1839111",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "en": {
+        "sourceHash": "38ace7c9b2c954eb62d4bb2ee0c6eb34ea3647daa76150ca89c859a11d23f344",
+        "contentHash": "876b3877957c8110a2be8bcf43e59b2602647c1f1dd7efb0d247f9f22735af96",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "es": {
+        "sourceHash": "38ace7c9b2c954eb62d4bb2ee0c6eb34ea3647daa76150ca89c859a11d23f344",
+        "contentHash": "5e267c984df9bf379ad6ab45e3b95d663b2e786d325716dcd096782ab1e20059",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      }
+    },
+    "arquitetura": {
+      "pt": {
+        "sourceHash": "6ac435798e2bcd13794ab23fdb1b21191fe6783b8c2c619c9f7149d376f26d5d",
+        "contentHash": "a75edf3b37f4968b369d0e99a511e1bbc94272c6ead061b20da4b184a18a30fb",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "en": {
+        "sourceHash": "6ac435798e2bcd13794ab23fdb1b21191fe6783b8c2c619c9f7149d376f26d5d",
+        "contentHash": "6888b1f2a855f45568da27bb87b2bad69e141125b59eebfa1fb19fd622ad676e",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "es": {
+        "sourceHash": "6ac435798e2bcd13794ab23fdb1b21191fe6783b8c2c619c9f7149d376f26d5d",
+        "contentHash": "9bc508a2fe35c9f3ef3936cf7f23da84f0a627b4ca57a43afb02edb6a0cf4bf8",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      }
+    },
+    "ontologia": {
+      "pt": {
+        "sourceHash": "1f36a4fa458b62dc856246c6f345048953961c6362f21c72e1f755bca9b84b49",
+        "contentHash": "7ea61a56107b9bae2e916bb5212e3765700275f9b813cd47d0262635cccacfaa",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "en": {
+        "sourceHash": "1f36a4fa458b62dc856246c6f345048953961c6362f21c72e1f755bca9b84b49",
+        "contentHash": "ede234cb1e16ad4a4d8d7db14671ecc8405e357340b7ba57fbaee57fb31eb7c9",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "es": {
+        "sourceHash": "1f36a4fa458b62dc856246c6f345048953961c6362f21c72e1f755bca9b84b49",
+        "contentHash": "50e19ea56ef220dee08fe92421895c8513eac9e9a54c759b8f3714736d42419a",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      }
+    }
+  }
 }
