@@ -6,8 +6,8 @@ export default {
     "mechanism": "Como as peças se conectam",
     "mechanismText": "Da integração ao armazenamento: contexto, recuperação, governança e persistência têm responsabilidades distintas.",
     "install": "Comece pelo ambiente",
-    "installText": "Instale o pacote e configure o backend. As fontes revisadas descrevem OrkMind 0.3.0, alpha, sob licença MIT.",
-    "command": "pip install \"orkmind>=0.3.0\"\norkmind store info",
+    "installText": "Instale o pacote e configure o backend. As fontes revisadas descrevem OrkMind 0.4.0, alpha, sob licença MIT.",
+    "command": "pip install \"orkmind>=0.4.0\"\norkmind store info",
     "sections": [
       {
         "id": "memoria",
@@ -42,8 +42,8 @@ export default {
     "mechanism": "How the pieces connect",
     "mechanismText": "From integration to storage: context, retrieval, governance and persistence have distinct responsibilities.",
     "install": "Start with the environment",
-    "installText": "Install the package and configure the backend. The reviewed sources describe OrkMind 0.3.0, alpha, under the MIT license.",
-    "command": "pip install \"orkmind>=0.3.0\"\norkmind store info",
+    "installText": "Install the package and configure the backend. The reviewed sources describe OrkMind 0.4.0, alpha, under the MIT license.",
+    "command": "pip install \"orkmind>=0.4.0\"\norkmind store info",
     "sections": [
       {
         "id": "memoria",
@@ -78,8 +78,8 @@ export default {
     "mechanism": "Cómo se conectan las piezas",
     "mechanismText": "De la integración al almacenamiento: contexto, recuperación, gobernanza y persistencia tienen responsabilidades distintas.",
     "install": "Empiece por el entorno",
-    "installText": "Instale el paquete y configure el backend. Las fuentes revisadas describen OrkMind 0.3.0, alpha, bajo licencia MIT.",
-    "command": "pip install \"orkmind>=0.3.0\"\norkmind store info",
+    "installText": "Instale el paquete y configure el backend. Las fuentes revisadas describen OrkMind 0.4.0, alpha, bajo licencia MIT.",
+    "command": "pip install \"orkmind>=0.4.0\"\norkmind store info",
     "sections": [
       {
         "id": "memoria",
