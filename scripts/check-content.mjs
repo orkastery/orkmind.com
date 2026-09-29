@@ -17,6 +17,23 @@ export function checkContent(dist=distArg()){
    }
   }
  }
+ for(const locale of ['pt','en','es']) {
+  const prefix=locale==='pt'?'':'/'+locale, home=all.find(p=>p.path===prefix+'/');
+  if(!home)throw Error('Missing translated home: '+locale);
+  const required={"pt": ["Um Company Brain governado", "Uma fonte de verdade para o sistema inteiro", "Governança acima do adaptador"], "en": ["A governed Company Brain", "A shared source of truth for the whole system", "Governance above the adapter"], "es": ["Un Company Brain gobernado", "Una fuente de verdad compartida para todo el sistema", "Gobernanza por encima del adaptador"]}[locale];
+  for(const heading of required)if(!home.nodes.some(n=>n.tagName==='h2'&&content(n).includes(heading)))throw Error('Missing restored home section: '+locale);
+  const labels=home.nodes.filter(n=>'data-node-label' in attrs(n)).map(n=>content(n).trim());
+  if(labels.length!==8||new Set(labels).size!==8)throw Error('Missing system diagram labels: '+locale);
+  const expected={pt:'Agentes temporários',en:'Temporary agents',es:'Agentes temporales'}[locale];
+  if(!labels.includes(expected))throw Error('Untranslated system diagram: '+locale);
+  const contribution=all.find(p=>p.path===prefix+'/docs/contribuir/');
+  if(!contribution)throw Error('Missing contribution page: '+locale);
+  for(const entry of [home,all.find(p=>p.path===prefix+'/docs/')])if(!entry?.nodes.some(n=>n.tagName==='a'&&attrs(n).href===prefix+'/docs/contribuir/'))throw Error('Missing contribution navigation: '+locale);
+  if(!contribution.nodes.some(n=>n.tagName==='a'&&attrs(n).href?.endsWith('/discussions')))throw Error('Missing feature discussion link');
+  if(!contribution.nodes.some(n=>n.tagName==='a'&&attrs(n).href?.endsWith('/CONTRIBUTING.md')))throw Error('Missing contribution source');
+  const visible=content(home.nodes.find(n=>n.tagName==='main'));
+  if(/OrkMind Web|Orkastery Web|Orkastery Board|pron[uú]ncia|pronunciation|pronunciación/.test(visible))throw Error('Excluded home content');
+ }
  return {pages:all.length,accessibleDiagrams:diagrams,manualVisualReview:'required'};
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)){try{console.log(JSON.stringify(checkContent()));}catch(e){console.error(e.message);process.exitCode=1;}}

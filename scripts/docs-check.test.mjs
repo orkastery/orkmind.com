@@ -111,3 +111,16 @@ test('external guide hashes change when the referenced repository changes',()=>f
  writeFileSync(resolve(external,'CONTRIBUTING.md'),'updated');
  assert.notEqual(inventory(source,'orkmind',refs)[0].sha256,before[0].sha256);
 }));
+
+test('removing a restored home section fails the content audit',()=>outputFixture(dir=>{
+ edit(dir,'en/index.html',s=>s.replace('A governed Company Brain','A removed section'));
+ assert.throws(()=>checkContent(dir),/restored home section/);
+}));
+test('missing contribution navigation fails the content audit',()=>outputFixture(dir=>{
+ edit(dir,'en/index.html',s=>s.replaceAll('href="/en/docs/contribuir/"','href="/en/docs/"'));
+ assert.throws(()=>checkContent(dir),/contribution navigation/);
+}));
+test('untranslated system label fails the content audit',()=>outputFixture(dir=>{
+ edit(dir,'en/index.html',s=>s.replaceAll('Temporary agents','Agentes temporários'));
+ assert.throws(()=>checkContent(dir),/Untranslated system diagram/);
+}));
