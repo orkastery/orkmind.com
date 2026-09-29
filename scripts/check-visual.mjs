@@ -4,7 +4,7 @@ import {pathToFileURL} from 'node:url';
 const args=process.argv.slice(2),output=args.includes('--output')?resolve(args[args.indexOf('--output')+1]):null;
 if(!output||!process.env.PLAYWRIGHT_MODULE||!process.env.CHROMIUM_EXECUTABLE)throw Error('Set PLAYWRIGHT_MODULE and CHROMIUM_EXECUTABLE, then pass --output PRIVATE_DIRECTORY');
 const dist=resolve('dist');
-if(output===dist||output.startsWith(dist+'/')||output.startsWith(resolve('src')+'/'))throw Error('Screenshots must stay outside public output');
+if(output===resolve('.')||output.startsWith(resolve('.')+'/'))throw Error('Screenshots must stay outside public output');
 mkdirSync(output,{recursive:true});
 const results=[];let browser;
 try{
