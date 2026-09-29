@@ -11,7 +11,9 @@
         "comecar",
         "arquitetura",
         "integracoes",
-        "governanca"
+        "governanca",
+        "recuperacao",
+        "roadmap"
       ]
     },
     {
@@ -28,7 +30,9 @@
       "sha256": "3132a1308991569abc317f1e73d9adbb772259b5e3829a06086ad3b541e6533a",
       "category": "federation.md",
       "treatment": "article",
-      "targets": []
+      "targets": [
+        "federacao"
+      ]
     },
     {
       "path": "docs/hermes-setup.md",
@@ -75,7 +79,8 @@
       "targets": [
         "arquitetura",
         "ontologia",
-        "governanca"
+        "governanca",
+        "recuperacao"
       ]
     },
     {
@@ -92,14 +97,18 @@
       "sha256": "59521a525bbfbaea8beddde196f5a0ff61f5b911692f303c741faf7aa17ede34",
       "category": "storage-backends",
       "treatment": "article",
-      "targets": []
+      "targets": [
+        "armazenamento"
+      ]
     },
     {
       "path": "docs/storage-backends/MATRIZ-BACKENDS.md",
       "sha256": "58cc7be6572e8eb1fc70e94846ed141c9a570a552db7f10450c954606dbd8529",
       "category": "storage-backends",
       "treatment": "article",
-      "targets": []
+      "targets": [
+        "armazenamento"
+      ]
     },
     {
       "path": "pyproject.toml",
@@ -111,7 +120,7 @@
       ]
     }
   ],
-  "inventoryHash": "747467c6eb02d28e1eae995514cc8b3298598a253731ad3bbc540569ee47ca91",
+  "inventoryHash": "2fee462fbf670b435756762ce08f277d9f8a3e3333fe19e317a809e50d048b77",
   "reviews": {
     "comecar": {
       "pt": {
@@ -229,6 +238,86 @@
       "es": {
         "sourceHash": "c99649f7de6d13edf0e610a3c7d1e4e0472a2fb11d4ef73bab3dbeeb1e7bd669",
         "contentHash": "d8a5db2b78806520a2f855f17473995364bd28d16783360695c2b6deb0567d31",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      }
+    },
+    "armazenamento": {
+      "pt": {
+        "sourceHash": "f368e2473b7f8ea3196998958876420f306aea28482c45ffad3ac7e439d2857d",
+        "contentHash": "da996aa323d7c9ce8e850445c8d2a4c9873554e0ba238ecc626aa48ff6f2f89b",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "en": {
+        "sourceHash": "f368e2473b7f8ea3196998958876420f306aea28482c45ffad3ac7e439d2857d",
+        "contentHash": "d93b398e9cadba2e36a903d390a2fd2315284a04b3348678152c95c98af5722b",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "es": {
+        "sourceHash": "f368e2473b7f8ea3196998958876420f306aea28482c45ffad3ac7e439d2857d",
+        "contentHash": "62d84c15541c02d53ecc93be5ed98b554afc333c761ec49acdda465db1f93434",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      }
+    },
+    "recuperacao": {
+      "pt": {
+        "sourceHash": "a116a9a7966b66e7eb90aa214d62135de773585754692064e35b413f2af49685",
+        "contentHash": "d4e8ee5b4cf507d8aac7be4959eedf405f37eefe319d3bce16b11b5614c08cf3",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "en": {
+        "sourceHash": "a116a9a7966b66e7eb90aa214d62135de773585754692064e35b413f2af49685",
+        "contentHash": "2ec8a150da8bbc41626b22e704267fc93bb79fa381c26b9e2395e7e2a1b5f275",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "es": {
+        "sourceHash": "a116a9a7966b66e7eb90aa214d62135de773585754692064e35b413f2af49685",
+        "contentHash": "3b56fe67aa72560ee437e60a992a3dc58efe09d66bf0c4150fb9f0dd09be72b2",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      }
+    },
+    "federacao": {
+      "pt": {
+        "sourceHash": "32d94532e4d974b6e639072b288b429f6e3c70511b805ec330c3524fa6a84a3b",
+        "contentHash": "3c2926c61adcdefa0137b63f08fa58534f94fd426588c156d497df6aa9f22eab",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "en": {
+        "sourceHash": "32d94532e4d974b6e639072b288b429f6e3c70511b805ec330c3524fa6a84a3b",
+        "contentHash": "af761388b6b8a826215043aae4759bcff9c7b53961c65709477a4ba3b1cf8a76",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "es": {
+        "sourceHash": "32d94532e4d974b6e639072b288b429f6e3c70511b805ec330c3524fa6a84a3b",
+        "contentHash": "d35b325d18f93b282b72618738d0443d95e3f104bc9ba3414d1f9a0cfe9d86bc",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      }
+    },
+    "roadmap": {
+      "pt": {
+        "sourceHash": "d3732b48b8bffebb04e94ebe85dd6c67b685bb1fadf50974aa6ec5c10cc37662",
+        "contentHash": "375d9a50f30865b74504da3fd0a00970c96c99b9a69bef548db3866dcf8ea102",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "en": {
+        "sourceHash": "d3732b48b8bffebb04e94ebe85dd6c67b685bb1fadf50974aa6ec5c10cc37662",
+        "contentHash": "207de9c8325c5d46567225448d55f7582dddcbd4ba387643dbd4b45ebb50b11b",
+        "reviewer": "executor-editorial",
+        "date": "2026-09-29"
+      },
+      "es": {
+        "sourceHash": "d3732b48b8bffebb04e94ebe85dd6c67b685bb1fadf50974aa6ec5c10cc37662",
+        "contentHash": "1c089c9bb736a9091d7e43890780e119937b66254adcca116c9ae0781705d9f3",
         "reviewer": "executor-editorial",
         "date": "2026-09-29"
       }
