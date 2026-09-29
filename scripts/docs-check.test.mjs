@@ -124,3 +124,11 @@ test('untranslated system label fails the content audit',()=>outputFixture(dir=>
  edit(dir,'en/index.html',s=>s.replaceAll('Temporary agents','Agentes temporários'));
  assert.throws(()=>checkContent(dir),/Untranslated system diagram/);
 }));
+
+test('external source override works outside the default checkout layout',()=>fixture(({root})=>{
+ const source=resolve(root,'memory');mkdirSync(resolve(source,'docs'),{recursive:true});
+ const external=resolve(root,'independent-factory');mkdirSync(external);writeFileSync(resolve(external,'CONTRIBUTING.md'),'guide');
+ const refs=[{path:'orkastery/CONTRIBUTING.md',sourceRoot:'../absent',sourcePath:'CONTRIBUTING.md'}];
+ assert.throws(()=>inventory(source,'orkmind',refs),/ENOENT/);
+ assert.equal(inventory(source,'orkmind',refs,external)[0].sha256,hash('guide'));
+}));

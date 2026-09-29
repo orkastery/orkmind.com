@@ -44,18 +44,25 @@ versão; não copia responsáveis pessoais nem conteúdo interno para o site.
 
 ```sh
 # Use um clone local do repositório de produto correspondente.
-npm run docs:sync -- --source /caminho/do/repositorio
-npm run docs:check -- --source /caminho/do/repositorio
+npm run docs:sync -- --source /caminho/do/orkmind --orkastery-source /caminho/do/orkastery
+npm run docs:check -- --source /caminho/do/orkmind --orkastery-source /caminho/do/orkastery
 
 # Depois de revisar de fato as traduções e fontes afetadas:
-npm run docs:sync -- --source /caminho/do/repositorio --review pt,en,es --reviewer editor
+npm run docs:sync -- --source /caminho/do/orkmind --orkastery-source /caminho/do/orkastery --review pt,en,es --reviewer executor-editorial --articles contribuir
 npm run build
 ```
+
+A página Contribuir usa o CONTRIBUTING do OrkMind e os guias do Orkastery.
+`--orkastery-source` informa o checkout externo; seus caminhos locais não entram
+no snapshot público. Sem essa opção, o padrão é o layout `orkastery/fontes/orkmind`,
+com a fonte Orkastery dois níveis acima de `--source`.
 
 A sincronização comum preserva os recibos anteriores, mas uma fonte alterada
 invalida os hashes de revisão; não aprova traduções sozinha. `--review` é uma
 atestação editorial explícita de quem executa o comando, não revisão humana
-independente. Não use a opção antes de ler os textos. Fonte nova sem destino,
+independente. Selecione em `--articles` somente os slugs alterados, separados por vírgula.
+Os artigos fora da seleção preservam o revisor, a data e os hashes.
+Não use a opção antes de ler os textos. Fonte nova sem destino,
 fonte removida ainda referenciada e revisão desatualizada reprovam.
 
 Sem `--source`, o build verifica apenas a integridade e cobertura do snapshot

@@ -3,10 +3,10 @@ import { resolve } from 'node:path';
 import { root, read, hash, articles, inventory, reviewArticles } from './check-docs.mjs';
 const args=process.argv.slice(2), arg=k=>args.includes(k)?args[args.indexOf(k)+1]:undefined;
 const source=arg('--source');
-if(!source) throw Error('Usage: node scripts/sync-docs.mjs --source LOCAL_REPOSITORY [--review pt,en,es --reviewer NAME --articles SLUG,SLUG]');
+if(!source) throw Error('Usage: node scripts/sync-docs.mjs --source LOCAL_REPOSITORY [--orkastery-source LOCAL_ORKASTERY] [--review pt,en,es --reviewer NAME --articles SLUG,SLUG]');
 const catalog=read(resolve(root,'src/data/docs-catalog.ts')), product=catalog.repository.split('/').at(-1);
 const file=resolve(root,'src/data/docs-sources.json'), previous=existsSync(file)?read(file):{reviews:{}};
-const all=articles(), sources=inventory(resolve(source),product,catalog.externalSources||[]).map(s=>{
+const all=articles(), sources=inventory(resolve(source),product,catalog.externalSources||[],arg('--orkastery-source')).map(s=>{
  const special=s.path.includes('/roadmap/')?'roadmap':s.path.includes('/assets/')?'brand':s.path.includes('/_modelo')?'template':s.path.endsWith('README.md')&&s.path!=='README.md'?'index':'article';
  const targets=all.filter(a=>a.sources.includes(s.path)).map(a=>a.slug);
  if(!targets.length && special!=='article') targets.push(special==='roadmap'?'roadmap':'padroes');
