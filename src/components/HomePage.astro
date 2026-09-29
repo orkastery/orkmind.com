@@ -6,18 +6,20 @@ import home from '../data/home';
 import {localeFor,localize,ui} from '../data/i18n';
 import catalog from '../data/docs-catalog';
 const locale=localeFor(Astro.url.pathname),text=ui(locale),copy=Astro.props.content||home[locale];
+const legacy={"topo": ["hero-titulo"], "memoria": ["ontologia-titulo", "sistema", "sistema-titulo"], "busca": ["busca-titulo", "recall", "recall-titulo"], "produto": ["produto-titulo"], "arquitetura": ["arq-titulo"], "instalar": ["instalar-titulo"]};
+const aliasesFor=(id:string)=>legacy[id]||[];
 const diagram=Astro.props.diagram===false?null:'memory';
 ---
 <Base titulo={(Astro.props.product||'OrkMind')+' · '+copy.description} descricao={copy.description}>
  <section class="editorial-hero" id="topo"><div class="home-container">
  <p class="home-kicker">{text.openSource} · {text.license}</p>
- <h1>{copy.title}</h1><p class="home-lead">{copy.lead}</p>
+ {aliasesFor('topo').map(id=><span {id} aria-hidden="true"/>)}<h1>{copy.title}</h1><p class="home-lead">{copy.lead}</p>
  <div class="home-actions"><a class="home-primary" href={localize('/docs/comecar/',locale)}>{text.start} →</a><a href={catalog.repository}>GitHub ↗</a></div>
  </div></section>
  <div class="home-container home-main">
- <div class="home-grid">{copy.sections.map(s=><section class="home-card" id={s.id}><h2>{s.title}</h2><p>{s.text}</p><a href={s.href.startsWith('https:')?s.href:localize(s.href,locale)}>{text.read} →</a></section>)}</div>
- <section class="home-mechanism" id="arquitetura"><div><p class="home-kicker">{text.concepts}</p><h2>{copy.mechanism}</h2><p>{copy.mechanismText}</p><a href={localize('/docs/arquitetura/',locale)}>{text.read} →</a></div>{diagram&&<DocsDiagram name={diagram} {locale}/>}</section>
- <section class="home-install" id="instalar"><div><h2>{copy.install}</h2><p>{copy.installText}</p><a href={localize('/docs/comecar/',locale)}>{text.docs} →</a></div><pre tabindex="0"><code>{copy.command}</code></pre></section>
+ <div class="home-grid">{copy.sections.map(s=><section class="home-card" id={s.id}>{aliasesFor(s.id).map(id=><span {id} aria-hidden="true"/>)}<h2>{s.title}</h2><p>{s.text}</p><a href={s.href.startsWith('https:')?s.href:localize(s.href,locale)}>{text.read} →</a></section>)}</div>
+ <section class="home-mechanism" id="arquitetura"><div>{aliasesFor('arquitetura').map(id=><span {id} aria-hidden="true"/>)}<p class="home-kicker">{text.concepts}</p><h2>{copy.mechanism}</h2><p>{copy.mechanismText}</p><a href={localize('/docs/arquitetura/',locale)}>{text.read} →</a></div>{diagram&&<DocsDiagram name={diagram} {locale}/>}</section>
+ <section class="home-install" id="instalar"><div>{aliasesFor('instalar').map(id=><span {id} aria-hidden="true"/>)}<h2>{copy.install}</h2><p>{copy.installText}</p><a href={localize('/docs/comecar/',locale)}>{text.docs} →</a></div><pre tabindex="0"><code>{copy.command}</code></pre></section>
  </div>
  <Contato/>
 </Base>
