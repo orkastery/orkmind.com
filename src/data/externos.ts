@@ -4,7 +4,6 @@
 // nova pelo fluxo de teste e aprovacao.
 export const externos = {
   orkmind: { url: "https://github.com/orkastery/orkmind", aberto: true },
-  orkmindWeb: { url: "https://github.com/orkastery/orkmind-web", aberto: false },
 } as const;
 
 export type Destino = keyof typeof externos;

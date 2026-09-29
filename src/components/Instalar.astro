@@ -37,14 +37,6 @@ orkmind search --tags '{"skill": ["deploy"]}'`,
   }
 }`,
   },
-  {
-    verbo: "Abrir para humanos",
-    desc: externos.orkmindWeb.aberto
-      ? "O OrkMind Web sobe com Docker e serve a interface de navegação da memória."
-      : "O OrkMind Web sobe com Docker e serve a interface de navegação da memória. O repositório abre em breve.",
-    codigo: `git clone https://github.com/orkastery/orkmind-web
-cd orkmind-web && docker compose up --build`,
-  },
 ];
 ---
 
@@ -55,7 +47,7 @@ cd orkmind-web && docker compose up --build`,
         Do pip install ao primeiro recall
       </h2>
       <p class="prosa">
-        Cinco comandos separam um sistema esquecido de uma memória governada.
+        Quatro passos separam um sistema esquecido de uma memória governada.
         {externos.orkmind.aberto ? "Tudo aqui é real e roda hoje." : "Os comandos são os reais; o repositório abre em breve."}
       </p>
     </div>

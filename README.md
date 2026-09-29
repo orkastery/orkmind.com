@@ -4,8 +4,8 @@ Website oficial do [OrkMind](https://orkmind.com), a camada
 de memória para sistemas agênticos: Biblioteca governada, 23 coleções de
 memória, tipos ontológicos explícitos, busca determinística e proveniência.
 
-Conteúdo em pt-BR, extraído dos repositórios reais do produto (OrkMind e
-orkmind-web, que abrem em breve).
+Conteúdo em pt-BR, extraído do repositório real do produto
+([orkastery/orkmind](https://github.com/orkastery/orkmind)).
 
 ## Docs para usuários
 
@@ -49,5 +49,4 @@ Dois ambientes servem o mesmo build:
 
 ## Licença
 
-O site é do produto OrkMind, da organização Orkastery. O core e o web do
-OrkMind são Apache 2.0.
+O site é do produto OrkMind, da organização Orkastery. O OrkMind é MIT.
