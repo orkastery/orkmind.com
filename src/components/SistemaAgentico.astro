@@ -1,4 +1,139 @@
 ---
+import {localeFor, localize} from '../data/i18n';
+const locale=localeFor(Astro.url.pathname);
+const translations={
+  "t0": {
+    "pt": "Orquestrador",
+    "en": "Orchestrator",
+    "es": "Orquestador"
+  },
+  "t1": {
+    "pt": "Coordena o trabalho com contexto citável do Company Brain e devolve fases, decisões, claims e artefatos à memória empresarial.",
+    "en": "Coordinates work using citable Company Brain context and returns phases, decisions, claims and artifacts to shared memory.",
+    "es": "Coordina el trabajo con contexto citable del Company Brain y devuelve fases, decisiones, claims y artefactos a la memoria compartida."
+  },
+  "t2": {
+    "pt": "Lê contexto autorizado, devolve evidências",
+    "en": "Reads authorized context, returns evidence",
+    "es": "Lee contexto autorizado, devuelve pruebas"
+  },
+  "t3": {
+    "pt": "Sub-agentes",
+    "en": "Subagents",
+    "es": "Subagentes"
+  },
+  "t4": {
+    "pt": "Executam tarefas especializadas. Recebem contexto sob medida pelas tags e devolvem aprendizados ao sistema.",
+    "en": "Run specialized tasks, receive context selected by tags and return lessons to the system.",
+    "es": "Ejecutan tareas especializadas, reciben contexto seleccionado por etiquetas y devuelven aprendizajes al sistema."
+  },
+  "t5": {
+    "pt": "Leem contexto, gravam aprendizados",
+    "en": "Read context, record lessons",
+    "es": "Leen contexto, registran aprendizajes"
+  },
+  "t6": {
+    "pt": "Runtimes e sessões",
+    "en": "Runtimes and sessions",
+    "es": "Runtimes y sesiones"
+  },
+  "t7": {
+    "pt": "Cada sessão nasce e morre, mas o que ela descobriu fica. O estado de sessão é uma coleção tipada da ontologia.",
+    "en": "Sessions end, but their findings can remain. Session state is a typed collection in the ontology.",
+    "es": "Las sesiones terminan, pero sus hallazgos pueden permanecer. El estado de sesión es una colección tipada de la ontología."
+  },
+  "t8": {
+    "pt": "Gravam estado e histórico de sessão",
+    "en": "Record session state and history",
+    "es": "Registran estado e historial de sesión"
+  },
+  "t9": {
+    "pt": "Agentes temporários",
+    "en": "Temporary agents",
+    "es": "Agentes temporales"
+  },
+  "t10": {
+    "pt": "Vivem minutos e desaparecem. Sem memória externa, tudo o que viram sumiria junto com eles.",
+    "en": "Short-lived agents can leave findings in external memory for later work.",
+    "es": "Los agentes de corta duración pueden dejar hallazgos en la memoria externa para trabajos posteriores."
+  },
+  "t11": {
+    "pt": "Herdam contexto, deixam registro",
+    "en": "Inherit context, leave a record",
+    "es": "Heredan contexto, dejan un registro"
+  },
+  "t12": {
+    "pt": "Skills",
+    "en": "Skills",
+    "es": "Skills"
+  },
+  "t13": {
+    "pt": "Capacidades reutilizáveis do sistema. O conhecimento sobre quando e como usá-las mora na coleção de tools.",
+    "en": "Reusable capabilities. Knowledge about when and how to use them belongs in the tools collection.",
+    "es": "Capacidades reutilizables. El conocimiento sobre cuándo y cómo usarlas reside en la colección de tools."
+  },
+  "t14": {
+    "pt": "Consultam instruções de uso",
+    "en": "Retrieve usage instructions",
+    "es": "Consultan instrucciones de uso"
+  },
+  "t15": {
+    "pt": "Plugins",
+    "en": "Plugins",
+    "es": "Plugins"
+  },
+  "t16": {
+    "pt": "Estendem os runtimes por dentro. Os plugins do OrkMind injetam regras mandatórias em todo turno de conversa.",
+    "en": "Extend runtimes. Configured OrkMind plugins inject mandatory rules into each conversation turn.",
+    "es": "Extienden los runtimes. Los plugins configurados de OrkMind inyectan reglas obligatorias en cada turno de conversación."
+  },
+  "t17": {
+    "pt": "Injetam regras em cada turno",
+    "en": "Inject rules each turn",
+    "es": "Inyectan reglas en cada turno"
+  },
+  "t18": {
+    "pt": "Integrações",
+    "en": "Integrations",
+    "es": "Integraciones"
+  },
+  "t19": {
+    "pt": "MCP, provider de memória e API idempotente: caminhos oficiais para qualquer runtime falar com a memória.",
+    "en": "MCP, memory provider and idempotent API: official paths for runtimes to access memory.",
+    "es": "MCP, provider de memoria y API idempotente: vías oficiales para acceder a la memoria desde los runtimes."
+  },
+  "t20": {
+    "pt": "Transportam leitura e escrita",
+    "en": "Transport reads and writes",
+    "es": "Transportan lecturas y escrituras"
+  },
+  "t21": {
+    "pt": "Ambiente",
+    "en": "Environment",
+    "es": "Entorno"
+  },
+  "t22": {
+    "pt": "Repositórios, serviços e infraestrutura. Fatos verificáveis sobre o ambiente viram memória consultável.",
+    "en": "Repositories, services and infrastructure. Verifiable environment facts become retrievable memory.",
+    "es": "Repositorios, servicios e infraestructura. Los hechos verificables del entorno se convierten en memoria consultable."
+  },
+  "t23": {
+    "pt": "Vira fatos e referências",
+    "en": "Provides facts and references",
+    "es": "Aporta hechos y referencias"
+  },
+  "t24": {
+    "pt": "Uma fonte de verdade para o sistema inteiro",
+    "en": "A shared source of truth for the whole system",
+    "es": "Una fuente de verdad compartida para todo el sistema"
+  },
+  "t25": {
+    "pt": "Orquestrador, sub-agentes, sessões, documentos e integrações compartilham\n        identidades estáveis. O conhecimento sobrevive à sessão sem perder fonte ou permissão.",
+    "en": "Orchestrators, subagents, sessions, documents and integrations share stable identities. Knowledge outlives a session while retaining provenance and permissions.",
+    "es": "Orquestadores, subagentes, sesiones, documentos e integraciones comparten identidades estables. El conocimiento sobrevive a la sesión sin perder procedencia ni permisos."
+  }
+};
+const t=(key:keyof typeof translations)=>translations[key][locale];
 import Icone from "./Icone.astro";
 
 interface No {
@@ -12,59 +147,59 @@ interface No {
 const nos: No[] = [
   {
     id: "orquestrador",
-    rotulo: "Orquestrador",
+    rotulo: t("t0"),
     icone: "tree-structure",
-    desc: "Coordena o trabalho com contexto citável do Company Brain e devolve fases, decisões, claims e artefatos à memória empresarial.",
-    fluxo: "Lê contexto autorizado, devolve evidências",
+    desc: t("t1"),
+    fluxo: t("t2"),
   },
   {
     id: "subagentes",
-    rotulo: "Sub-agentes",
+    rotulo: t("t3"),
     icone: "robot",
-    desc: "Executam tarefas especializadas. Recebem contexto sob medida pelas tags e devolvem aprendizados ao sistema.",
-    fluxo: "Leem contexto, gravam aprendizados",
+    desc: t("t4"),
+    fluxo: t("t5"),
   },
   {
     id: "runtimes",
-    rotulo: "Runtimes e sessões",
+    rotulo: t("t6"),
     icone: "cpu",
-    desc: "Cada sessão nasce e morre, mas o que ela descobriu fica. O estado de sessão é uma coleção tipada da ontologia.",
-    fluxo: "Gravam estado e histórico de sessão",
+    desc: t("t7"),
+    fluxo: t("t8"),
   },
   {
     id: "temporarios",
-    rotulo: "Agentes temporários",
+    rotulo: t("t9"),
     icone: "clock-countdown",
-    desc: "Vivem minutos e desaparecem. Sem memória externa, tudo o que viram sumiria junto com eles.",
-    fluxo: "Herdam contexto, deixam registro",
+    desc: t("t10"),
+    fluxo: t("t11"),
   },
   {
     id: "skills",
-    rotulo: "Skills",
+    rotulo: t("t12"),
     icone: "lightning",
-    desc: "Capacidades reutilizáveis do sistema. O conhecimento sobre quando e como usá-las mora na coleção de tools.",
-    fluxo: "Consultam instruções de uso",
+    desc: t("t13"),
+    fluxo: t("t14"),
   },
   {
     id: "plugins",
-    rotulo: "Plugins",
+    rotulo: t("t15"),
     icone: "puzzle-piece",
-    desc: "Estendem os runtimes por dentro. Os plugins do OrkMind injetam regras mandatórias em todo turno de conversa.",
-    fluxo: "Injetam regras em cada turno",
+    desc: t("t16"),
+    fluxo: t("t17"),
   },
   {
     id: "integracoes",
-    rotulo: "Integrações",
+    rotulo: t("t18"),
     icone: "plugs-connected",
-    desc: "MCP, provider de memória e API idempotente: caminhos oficiais para qualquer runtime falar com a memória.",
-    fluxo: "Transportam leitura e escrita",
+    desc: t("t19"),
+    fluxo: t("t20"),
   },
   {
     id: "ambiente",
-    rotulo: "Ambiente",
+    rotulo: t("t21"),
     icone: "globe-simple",
-    desc: "Repositórios, serviços e infraestrutura. Fatos verificáveis sobre o ambiente viram memória consultável.",
-    fluxo: "Vira fatos e referências",
+    desc: t("t22"),
+    fluxo: t("t23"),
   },
 ];
 
@@ -82,11 +217,10 @@ const posicoes = nos.map((_, i) => {
   <div class="container">
     <div class="sistema-cabeca">
       <h2 class="titulo-display" id="sistema-titulo">
-        Uma fonte de verdade para o sistema inteiro
+        {t("t24")}
       </h2>
       <p class="prosa">
-        Orquestrador, sub-agentes, sessões, documentos e integrações compartilham
-        identidades estáveis. O conhecimento sobrevive à sessão sem perder fonte ou permissão.
+        {t("t25")}
       </p>
     </div>
 
@@ -108,12 +242,12 @@ const posicoes = nos.map((_, i) => {
           <button
             class="no"
             type="button"
-            data-no={no.id}
+            data-diagram-box data-no={no.id}
             aria-pressed="false"
             style={`--x:${posicoes[i]!.x};--y:${posicoes[i]!.y}`}
           >
             <Icone nome={no.icone} tamanho={19} />
-            <span>{no.rotulo}</span>
+            <span data-node-label>{no.rotulo}</span>
           </button>
         ))}
       </div>
@@ -244,6 +378,7 @@ const posicoes = nos.map((_, i) => {
        para o espaco que sobra ate a borda (era o que fazia o texto vazar). E quanto mais para o
        lado, mais ela se desloca para dentro, para nao sair do desenho. */
     width: max-content;
+    max-width: min(44%, 12rem);
     transform: translate(calc(-50% - (var(--x) - 50) * 0.83%), -50%);
     display: inline-flex;
     align-items: center;
@@ -254,12 +389,16 @@ const posicoes = nos.map((_, i) => {
     color: var(--texto-2);
     font-size: 0.82rem;
     padding: 0.55rem 0.9rem;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
     transition:
       color var(--dur-micro) var(--ease-suave),
       border-color var(--dur-micro) var(--ease-suave),
       background var(--dur-micro) var(--ease-suave);
   }
+
+  .no :global(svg), .no :global(i) { flex-shrink: 0; }
+  .no span { min-width: 0; }
 
   .no:hover,
   .no[aria-pressed="true"] {
