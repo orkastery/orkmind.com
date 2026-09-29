@@ -13,7 +13,7 @@ export function articles(dir = root) {
   return read(resolve(dir, 'src/data', file));
  });
 }
-export function inventory(source, product) {
+export function inventory(source, product, externalSources = []) {
  const files = [];
  function walk(dir) {
   for (const e of readdirSync(dir, {withFileTypes:true})) {
@@ -26,7 +26,7 @@ export function inventory(source, product) {
  for(const file of product==='orkastery' ? ['README.md','CONTRIBUTING.md','core/package.json'] : ['README.md','README.pt-BR.md','CONTRIBUTING.md','pyproject.toml']) {
   if(existsSync(resolve(source,file))) files.push(resolve(source,file));
  }
- return files.sort().map(file=>({path:relative(source,file).replaceAll('\\','/'),sha256:hash(readFileSync(file))}));
+ return [...files.map(file=>({path:relative(source,file).replaceAll('\\','/'),sha256:hash(readFileSync(file))})), ...externalSources.map(s=>({path:s.path,sha256:hash(readFileSync(resolve(source,s.sourceRoot,s.sourcePath)))}))].sort((a,b)=>a.path<b.path?-1:a.path>b.path?1:0);
 }
 export const sourceHash = (a,snapshot) => hash(JSON.stringify(a.sources.map(p=>{
  const entry=snapshot.sources.find(s=>s.path===p);
@@ -80,7 +80,7 @@ export function validate(dir=root,{schemaOnly=false,section,source}={}) {
   if(s.treatment==='article' && s.targets.some(t=>!all.find(a=>a.slug===t).sources.includes(s.path))) throw Error('false coverage: '+s.path);
  }
  if(source) {
-  const live=inventory(source,snapshot.product);
+  const live=inventory(source,snapshot.product,read(resolve(dir,'src/data/docs-catalog.ts')).externalSources||[]);
   if(JSON.stringify(live)!==JSON.stringify(snapshot.sources.map(({path,sha256})=>({path,sha256})))) throw Error('upstream changed: synchronize and review');
  }
  return {articles:selected.length,sources:snapshot.sources.length,locales:3,sourceCompared:Boolean(source),schemaOnly};

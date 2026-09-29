@@ -101,3 +101,13 @@ test('contribution guide is included in source inventory',()=>fixture(({root})=>
  writeFileSync(resolve(source,'CONTRIBUTING.md'),'Public contribution contract');
  for(const product of ['orkastery','orkmind']) assert.ok(inventory(source,product).some(s=>s.path==='CONTRIBUTING.md'));
 }));
+
+test('external guide hashes change when the referenced repository changes',()=>fixture(({root})=>{
+ const source=resolve(root,'memory');mkdirSync(resolve(source,'docs'),{recursive:true});
+ const external=resolve(root,'factory');mkdirSync(external);writeFileSync(resolve(external,'CONTRIBUTING.md'),'original');
+ const refs=[{path:'orkastery/CONTRIBUTING.md',sourceRoot:'../factory',sourcePath:'CONTRIBUTING.md'}];
+ const before=inventory(source,'orkmind',refs);
+ assert.equal(before[0].path,'orkastery/CONTRIBUTING.md');
+ writeFileSync(resolve(external,'CONTRIBUTING.md'),'updated');
+ assert.notEqual(inventory(source,'orkmind',refs)[0].sha256,before[0].sha256);
+}));
