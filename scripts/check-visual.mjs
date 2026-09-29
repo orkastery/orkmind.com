@@ -34,21 +34,7 @@ try{
    if(!found)throw Error('Language selector unreachable by keyboard');
    await page.evaluate(()=>document.fonts.ready);
    await page.locator('details').evaluateAll(nodes=>nodes.forEach(n=>n.open=true));
-   for(const tab of await page.locator('[data-ciclo] [role="tab"]').all()) {
-    await tab.click();
-    if(await tab.getAttribute('aria-selected')!=='true')throw Error('Cycle tab failed');
-    const index=await tab.getAttribute('data-fase');
-    if(!await page.locator(`[data-detalhe="${index}"]`).isVisible())throw Error('Cycle panel missing');
-   }
-   for(const button of await page.locator('[data-modo-linha]').all()) {
-    await button.click();
-    const panel=await button.getAttribute('aria-controls');
-    if(await button.getAttribute('aria-expanded')!=='true'||!await page.locator('#'+panel).isVisible())throw Error('Mode panel missing');
-   }
-   for(const node of await page.locator('[data-diagram-box]').all()) {
-    await node.click();const id=await node.getAttribute('data-no');
-    if(await node.getAttribute('aria-pressed')!=='true'||!await page.locator(`[data-painel="${id}"]`).isVisible())throw Error('System selection failed');
-   }
+   const auditLayout=async()=>{
    const diagram=await page.evaluate(()=>{
     const boxes=[...document.querySelectorAll('[data-diagram-box]')],problems=[];
     for(const box of boxes){
@@ -66,6 +52,28 @@ try{
     const r=el.getBoundingClientRect();return r.width>0&&(r.right>innerWidth+1||r.left < -1);
    }).map(el=>el.tagName+'.'+el.className));
    if(overflow.length)throw Error('Overflow '+localized+' '+width+': '+overflow.join(', '));
+    return diagram;
+   };
+   await auditLayout();
+   for(const tab of await page.locator('[data-ciclo] [role="tab"]').all()) {
+    await tab.click();
+    if(await tab.getAttribute('aria-selected')!=='true')throw Error('Cycle tab failed');
+    const index=await tab.getAttribute('data-fase');
+    if(!await page.locator(`[data-detalhe="${index}"]`).isVisible())throw Error('Cycle panel missing');
+    await auditLayout();
+   }
+   for(const button of await page.locator('[data-modo-linha]').all()) {
+    await button.click();
+    const panel=await button.getAttribute('aria-controls');
+    if(await button.getAttribute('aria-expanded')!=='true'||!await page.locator('#'+panel).isVisible())throw Error('Mode panel missing');
+    await auditLayout();
+   }
+   for(const node of await page.locator('[data-diagram-box]').all()) {
+    await node.click();const id=await node.getAttribute('data-no');
+    if(await node.getAttribute('aria-pressed')!=='true'||!await page.locator(`[data-painel="${id}"]`).isVisible())throw Error('System selection failed');
+    await auditLayout();
+   }
+   const diagram=await auditLayout();
    const shot=`${locale}-${path.replaceAll('/','-')||'home'}-${width}-${scheme}.png`;
    await page.screenshot({path:resolve(output,shot),fullPage:true});
    if(errors.length)throw Error(errors.join('; '));
