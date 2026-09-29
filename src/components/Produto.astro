@@ -34,48 +34,6 @@ const capacidadesCore = [
   },
 ];
 
-const capacidadesWeb = [
-  {
-    icone: "file-code",
-    titulo: "Biblioteca governada",
-    desc: "Documentos, memórias e entidades convivem sem apagar a diferença entre tipo, coleção e origem.",
-  },
-  {
-    icone: "graph",
-    titulo: "Grafo interativo",
-    desc: "As conexões da memória renderizadas em WebGL, com filtros por coleção e data.",
-  },
-  {
-    icone: "stack",
-    titulo: "Camadas E1, E2 e E3",
-    desc: "Da essência ao conteúdo completo, o detalhe cresce só quando você pede.",
-  },
-  {
-    icone: "browser",
-    titulo: "PWA instalável",
-    desc: "A memória do sistema no bolso, com cache offline.",
-  },
-  {
-    icone: "flow-arrow",
-    titulo: "Workspace de conhecimento",
-    desc: "Escrever, localizar, investigar e decidir sobre o estado autorizado do Company Brain.",
-  },
-];
-
-const paraAgentes = [
-  "Servidor MCP com 7 tools para runtimes de agentes",
-  "Provider de memória plugável no orquestrador",
-  "API idempotente com fila local: escrita nunca se perde",
-  "Contexto da factory com identidade e evidência",
-];
-
-const paraHumanos = [
-  "Escrever e revisar documentos persistentes",
-  "Localizar entidades, decisões e referências",
-  "Investigar relações sem furar permissões",
-  "Examinar produtos, projetos e iniciativas como conhecimento",
-];
-
 const numeros = [
   { valor: "23", rotulo: "coleções tipadas" },
   { valor: "11", rotulo: "dimensões de contexto" },
@@ -87,10 +45,10 @@ const numeros = [
 <section class="secao produto" id="produto" aria-labelledby="produto-titulo">
   <div class="container">
     <div class="produto-cabeca">
-      <h2 class="titulo-display" id="produto-titulo">Um Company Brain, duas superfícies</h2>
+      <h2 class="titulo-display" id="produto-titulo">Um Company Brain governado</h2>
       <p class="prosa">
-        O core em Python governa identidade, histórico e acesso. A interface web
-        transforma o mesmo conhecimento em trabalho cotidiano para pessoas.
+        O core em Python governa identidade, histórico e acesso. Agentes e pessoas
+        chegam ao mesmo conhecimento pela CLI, pelo servidor MCP e pelos hosts que já usam.
       </p>
     </div>
 
@@ -100,7 +58,7 @@ const numeros = [
         <h3 class="titulo-display">A base que governa</h3>
         <p class="prosa">
           Biblioteca Python com PostgreSQL e pgvector. Publicada no PyPI,
-          licenciada Apache 2.0.
+          licenciada MIT.
         </p>
         <ul class="capacidades" role="list">
           {capacidadesCore.map((c) => (
@@ -128,84 +86,6 @@ const numeros = [
 <span class="t-cmd">$ orkmind store info</span>
 <span class="t-ok">backend ativo: pgvector</span>
 <span class="t-dim">capacidades completas, nenhum aviso</span></code></pre>
-      </div>
-    </div>
-
-    <div class="metade metade-invertida" data-revelar>
-      <div class="metade-texto">
-        <p class="metade-selo"><Icone nome="browser" tamanho={16} /> OrkMind Web</p>
-        <h3 class="titulo-display">O conhecimento que se usa</h3>
-        <p class="prosa">
-          A Biblioteca em <code>/knowledge</code> reúne o conhecimento autorizado
-          sem copiá-lo: tipos ontológicos, coleções de memória e fontes aparecem
-          como dimensões separadas. Agentes e pessoas veem o mesmo estado autorizado;
-          a execução de ciclos acontece exclusivamente nos hosts de agentes.
-        </p>
-        <ul class="capacidades" role="list">
-          {capacidadesWeb.map((c) => (
-            <li>
-              <Icone nome={c.icone} tamanho={20} classe="capacidade-icone" />
-              <div>
-                <strong>{c.titulo}</strong>
-                <p>{c.desc}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div class="metade-visual">
-        <figure class="capturas">
-          <img
-            src="/screenshots/orkmind-web-lista.png"
-            alt="OrkMind Web em tema escuro: lista de memórias com coleções, camadas E3 e tags de domínio"
-            width="1280"
-            height="720"
-            loading="lazy"
-            class="captura captura-tras"
-          />
-          <img
-            src="/screenshots/orkmind-web-detalhe.png"
-            alt="OrkMind Web em tema escuro: detalhe de uma memória com markdown estruturado, código e metadados"
-            width="1280"
-            height="876"
-            loading="lazy"
-            class="captura captura-frente"
-          />
-          <figcaption class="visually-hidden">
-            Telas reais do OrkMind Web no tema escuro
-          </figcaption>
-        </figure>
-      </div>
-    </div>
-
-    <div class="separacao" data-revelar>
-      <h3 class="titulo-display separacao-titulo">
-        Dados para agentes, dados para humanos
-      </h3>
-      <p class="prosa separacao-frase">
-        Alguns dados de um sistema agêntico são para agentes lerem. Outros são
-        para seres humanos. Cada metade do OrkMind serve a um dos dois, sem
-        atrapalhar o outro.
-      </p>
-      <div class="separacao-colunas">
-        <div class="lado lado-agentes">
-          <p class="lado-cabeca">
-            <Icone nome="robot" tamanho={20} />
-            Para agentes
-          </p>
-          <ul role="list">
-            {paraAgentes.map((item) => <li>{item}</li>)}
-          </ul>
-        </div>
-        <div class="lado lado-humanos">
-          <p class="lado-cabeca">
-            <Icone nome="user-circle" tamanho={20} />
-            Para humanos
-          </p>
-          <ul role="list">
-            {paraHumanos.map((item) => <li>{item}</li>)}
-          </ul>
-        </div>
       </div>
     </div>
 
@@ -336,110 +216,6 @@ const numeros = [
     color: var(--texto-3);
   }
 
-  .capturas {
-    position: relative;
-    margin: 0;
-    padding-bottom: 3rem;
-  }
-
-  .captura {
-    border-radius: var(--raio-painel);
-    border: 1px solid var(--linha-forte);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
-  }
-
-  .captura-tras {
-    position: absolute;
-    inset: auto 0 0 clamp(2rem, 6vw, 4rem);
-    width: calc(100% - clamp(2rem, 6vw, 4rem));
-    opacity: 0.75;
-  }
-
-  .captura-frente {
-    position: relative;
-    width: calc(100% - clamp(1rem, 4vw, 3rem));
-  }
-
-  .separacao {
-    border: 1px solid var(--linha);
-    border-radius: var(--raio-painel);
-    background: var(--fundo-2);
-    padding: clamp(1.6rem, 4vw, 3rem);
-    margin-bottom: 4rem;
-  }
-
-  .separacao-titulo {
-    font-size: clamp(1.5rem, 2.6vw, 2.1rem);
-    margin-bottom: 0.9rem;
-  }
-
-  .separacao-frase {
-    margin-bottom: 2.2rem;
-  }
-
-  .separacao-colunas {
-    display: grid;
-    gap: 1.2rem;
-  }
-
-  .lado {
-    border-radius: var(--raio-painel);
-    padding: 1.5rem 1.6rem;
-    border: 1px solid var(--linha);
-  }
-
-  .lado-agentes {
-    background: var(--verde-tinta);
-    border-color: var(--verde-linha);
-  }
-
-  .lado-humanos {
-    background: var(--humano-tinta);
-    border-color: rgba(232, 176, 75, 0.32);
-  }
-
-  .lado-cabeca {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-  }
-
-  .lado-agentes .lado-cabeca {
-    color: var(--verde-forte);
-  }
-
-  .lado-humanos .lado-cabeca {
-    color: var(--humano);
-  }
-
-  .lado ul {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    gap: 0.6rem;
-  }
-
-  .lado li {
-    color: var(--texto-2);
-    font-size: 0.95rem;
-    padding-left: 1.1rem;
-    position: relative;
-  }
-
-  .lado li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.62em;
-    width: 5px;
-    height: 5px;
-    border-radius: var(--raio-pill);
-    background: currentColor;
-    opacity: 0.55;
-  }
-
   .numeros {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -471,15 +247,6 @@ const numeros = [
     .metade {
       grid-template-columns: 1fr 1.1fr;
       gap: 4rem;
-    }
-    .metade-invertida .metade-texto {
-      order: 2;
-    }
-    .metade-invertida .metade-visual {
-      order: 1;
-    }
-    .separacao-colunas {
-      grid-template-columns: 1fr 1fr;
     }
     .numeros {
       grid-template-columns: repeat(4, 1fr);
