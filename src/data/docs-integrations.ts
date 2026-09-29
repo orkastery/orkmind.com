@@ -133,6 +133,15 @@ export default [
             "paragraphs": [
               "O banco protege histórico e revisões com triggers append-only. A ingestão normaliza conteúdo para deduplicação, prepara chunks e embeddings e grava o documento em transação. Mudança incompatível de dimensão vetorial ou idioma de busca é recusada. Os chunks são derivados e podem ser reconstruídos; o documento íntegro permanece a fonte."
             ]
+          },
+          {
+            "id": "escrita",
+            "title": "Escrita em nome de uma pessoa",
+            "paragraphs": [
+              "A ingestão de sistema não tem dono. Quando a escrita vem de uma pessoa, passe o escopo dela como writer: só é gravado o que ela conseguiria ler. Classificação fora do alcance levanta ClassificationOutOfReachError antes de fatiar ou gerar embeddings; slug de documento que ela não lê levanta SlugUnavailableError, sem revelar nada do documento que o ocupa. As duas recusas herdam de WriteOutOfScopeError.",
+              "A deduplicação por conteúdo só considera o que o escopo alcança, e cada atualização gera uma revisão nova registrada em ingested_by. suggest_documents completa [[link]] apenas com o que o escopo vê."
+            ],
+            "code": "escopo = MemoryScopeFilter.for_user(user_context)\nawait memory.ingest_document(pedido, writer=escopo)"
           }
         ]
       },
@@ -161,6 +170,15 @@ export default [
             "paragraphs": [
               "The database protects history and revisions with append-only triggers. Ingestion normalizes content for deduplication, prepares chunks and embeddings, and writes the document transactionally. Incompatible vector dimension or search language changes are rejected. Chunks are derived and can be rebuilt; the full document remains the source."
             ]
+          },
+          {
+            "id": "escrita",
+            "title": "Writing on behalf of a person",
+            "paragraphs": [
+              "System ingestion has no owner. When a write comes from a person, pass their scope as writer: only what they could read is written. A classification out of reach raises ClassificationOutOfReachError before chunking or embedding; a document slug they cannot read raises SlugUnavailableError without revealing anything about the document that holds it. Both refusals inherit from WriteOutOfScopeError.",
+              "Content deduplication only considers what the scope reaches, and every update creates a new revision recorded in ingested_by. suggest_documents completes [[link]] only with what the scope sees."
+            ],
+            "code": "scope = MemoryScopeFilter.for_user(user_context)\nawait memory.ingest_document(request, writer=scope)"
           }
         ]
       },
@@ -189,6 +207,15 @@ export default [
             "paragraphs": [
               "La base protege historial y revisiones mediante triggers append-only. La ingestión normaliza contenido para deduplicar, prepara chunks y embeddings y guarda el documento en una transacción. Se rechazan cambios incompatibles de dimensión vectorial o idioma de búsqueda. Los chunks son derivados y pueden reconstruirse; el documento íntegro sigue siendo la fuente."
             ]
+          },
+          {
+            "id": "escrita",
+            "title": "Escritura en nombre de una persona",
+            "paragraphs": [
+              "La ingesta de sistema no tiene dueño. Cuando la escritura viene de una persona, pase su alcance como writer: solo se graba lo que esa persona podría leer. Una clasificación fuera de alcance lanza ClassificationOutOfReachError antes de fragmentar o generar embeddings; el slug de un documento que no puede leer lanza SlugUnavailableError, sin revelar nada del documento que lo ocupa. Ambos rechazos heredan de WriteOutOfScopeError.",
+              "La deduplicación por contenido solo considera lo que el alcance permite ver, y cada actualización crea una revisión nueva registrada en ingested_by. suggest_documents completa [[link]] solo con lo que el alcance ve."
+            ],
+            "code": "alcance = MemoryScopeFilter.for_user(user_context)\nawait memory.ingest_document(pedido, writer=alcance)"
           }
         ]
       }

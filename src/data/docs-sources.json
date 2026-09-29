@@ -64,7 +64,7 @@
     },
     {
       "path": "docs/memory-provider/README.md",
-      "sha256": "2f0984baa60968615a1fc7b882ebc3e1ea7f9e8e98b618eac3831cc86ce9ff02",
+      "sha256": "0d549bf97f39accf25b7e9f7695cdb5a4ff1814ffff72256266596fbd550c48a",
       "category": "memory-provider",
       "treatment": "index",
       "targets": [
@@ -120,7 +120,7 @@
       ]
     }
   ],
-  "inventoryHash": "2fee462fbf670b435756762ce08f277d9f8a3e3333fe19e317a809e50d048b77",
+  "inventoryHash": "138273a4973569b7677e4eff9a446921015add986a876b9799860ee1afff1dc8",
   "reviews": {
     "comecar": {
       "pt": {
@@ -204,22 +204,22 @@
     },
     "memory-provider": {
       "pt": {
-        "sourceHash": "06f1ac114ff57d04d0fa813bf8d4867db530704c44410d28db288601454862ae",
-        "contentHash": "8b0afaac17d41b0140e49f6f1169166e9e4327bd6dc8fb3eb69d9ac19d2a1f1e",
-        "reviewer": "executor-editorial",
-        "date": "2026-09-29"
+        "sourceHash": "308ae2a76bf57c6aad234a88b5b714bfac38ce152a57e4a3b5f88e46091d30da",
+        "contentHash": "a277ddbe83ed49475db3ffff0851b4ca805c462e9398bcd46a1f71c3eaff054f",
+        "reviewer": "condutor-editorial",
+        "date": "2026-09-28"
       },
       "en": {
-        "sourceHash": "06f1ac114ff57d04d0fa813bf8d4867db530704c44410d28db288601454862ae",
-        "contentHash": "8b85570fddd05a86d16b4a1025e1f450875da65895456af0cc122bfa7bdefd53",
-        "reviewer": "executor-editorial",
-        "date": "2026-09-29"
+        "sourceHash": "308ae2a76bf57c6aad234a88b5b714bfac38ce152a57e4a3b5f88e46091d30da",
+        "contentHash": "4a6013770abd805c93e5114f281cf5d99151f7b410e8bb43eec4ad245f32ae60",
+        "reviewer": "condutor-editorial",
+        "date": "2026-09-28"
       },
       "es": {
-        "sourceHash": "06f1ac114ff57d04d0fa813bf8d4867db530704c44410d28db288601454862ae",
-        "contentHash": "5393b8b637e4aa8e52c3d519a0685cd819b4b03c5dc35896fbbab599b1754b98",
-        "reviewer": "executor-editorial",
-        "date": "2026-09-29"
+        "sourceHash": "308ae2a76bf57c6aad234a88b5b714bfac38ce152a57e4a3b5f88e46091d30da",
+        "contentHash": "44a92f8aed0a62f51840f538ddd043f90d6f0589175e268ebd7b3fc74ca99c70",
+        "reviewer": "condutor-editorial",
+        "date": "2026-09-28"
       }
     },
     "governanca": {
