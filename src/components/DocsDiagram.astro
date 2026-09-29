@@ -9,12 +9,12 @@ const height=d.nodes.length*112-28;
  <svg viewBox={`0 0 540 ${height}`} role="img" aria-labelledby={`${prefix}-title ${prefix}-desc`}>
  <title id={prefix+'-title'}>{d.title}</title><desc id={prefix+'-desc'}>{d.description}</desc>
  <defs><marker id={prefix+'-arrow'} markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 8 4 0 8" fill="currentColor"/></marker></defs>
- {d.nodes.map((node,i)=><g><rect x="12" y={i*112+4} width="516" height="66" rx="10"/><text x="34" y={i*112+44}>{i+1}.</text><text x="75" y={i*112+44}>{node}</text>{i<d.nodes.length-1&&<><path class="connector" d={`M48 ${i*112+72} v32`} marker-end={`url(#${prefix}-arrow)`}/><text class="edge-label" x="75" y={i*112+98}>{d.edges[i]}</text></>}</g>)}
+ {d.nodes.map((node,i)=><g><rect x="12" y={i*112+4} width="516" height="66" rx="10"/><text x="34" y={i*112+44}>{i+1}.</text><text x="75" y={i*112+44}>{node}</text>{i < d.nodes.length - 1 && <g><path class="connector" d={`M48 ${i*112+72} v32`} marker-end={`url(#${prefix}-arrow)`}/><text class="edge-label" x="75" y={i*112+98}>{d.edges[i]}</text></g>}</g>)}
  </svg>
  <figcaption><strong>{d.title}.</strong> {d.description}</figcaption>
 </figure>
 <style>
-.docs-diagram{margin:2rem 0;padding:1.25rem;background:var(--doc-panel,var(--painel,var(--fundo-3))));border:1px solid var(--linha-forte);border-radius:12px;}
+.docs-diagram{margin:2rem 0;padding:1.25rem;background:var(--doc-panel,var(--painel,var(--fundo-3)));border:1px solid var(--linha-forte);border-radius:12px;}
 svg{width:100%;max-width:540px;display:block;margin:auto;color:var(--doc-text,var(--tinta,var(--texto)));}
 rect{fill:transparent;stroke:currentColor;stroke-width:1.2;}
 text{fill:currentColor;font:19px var(--f-texto,var(--fonte-texto));}
