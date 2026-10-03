@@ -4,7 +4,7 @@
   "sources": [
     {
       "path": "CONTRIBUTING.md",
-      "sha256": "9f493b464b823fd55d03a9ab14b0c7dccd9b0ace9b71bd347c35977d5008081c",
+      "sha256": "1c5406e58776a74daa5854e07788fb8fa5252c5e7b54da301d60310367581999",
       "category": "root",
       "treatment": "article",
       "targets": [
@@ -13,7 +13,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "8835673c257f04a565276d51c7cd1477a437f070eed6e1bc5e14de0aefa1fcd8",
+      "sha256": "43d3fc60fd40a33c4660bac475ffe73c4934cc71f89ea590a54d8cebfda89293",
       "category": "root",
       "treatment": "article",
       "targets": [
@@ -21,17 +21,100 @@
         "arquitetura",
         "integracoes",
         "governanca",
+        "company-brain",
         "recuperacao",
         "roadmap"
       ]
     },
     {
       "path": "README.pt-BR.md",
-      "sha256": "5995ea048897f38d291ee5e96dded2a0d07c0a454989320b324ae4423f8e3ba1",
+      "sha256": "812e5a6cec9b9921913305200339d8bb7d6ebe8c173323d391f182353bc93156",
       "category": "root",
       "treatment": "article",
       "targets": [
-        "comecar"
+        "comecar",
+        "company-brain"
+      ]
+    },
+    {
+      "path": "docs/company-brain.md",
+      "sha256": "58cc35d9a33094f9a51000920559d84f3ebba23b6b08f0732c0f4a16ee5619b5",
+      "category": "company-brain.md",
+      "treatment": "article",
+      "targets": [
+        "company-brain"
+      ]
+    },
+    {
+      "path": "docs/contribuir/desenvolvimento-local.md",
+      "sha256": "a64ccb4f13722722c9803c9d8bdb85a846a58691082bab23adf8e08616828384",
+      "category": "contribuir",
+      "treatment": "article",
+      "targets": [
+        "contribuir"
+      ]
+    },
+    {
+      "path": "docs/contribuir/documentacao.md",
+      "sha256": "09b2f50471b7848f7b8701cf5b7031c04e5dc770194af4afbcad75e5ef60ca52",
+      "category": "contribuir",
+      "treatment": "article",
+      "targets": [
+        "contribuir"
+      ]
+    },
+    {
+      "path": "docs/contribuir/lint-e-estilo.md",
+      "sha256": "45d6d7b836ddf8a073fe09a54f67b7e3f1b543c7351610c2c36b335f374351f9",
+      "category": "contribuir",
+      "treatment": "article",
+      "targets": [
+        "contribuir"
+      ]
+    },
+    {
+      "path": "docs/contribuir/o-que-contribuir.md",
+      "sha256": "f524355043a5edfaa56f4a7076dfaefe536142ead05c196e6f10fa2b038d488a",
+      "category": "contribuir",
+      "treatment": "article",
+      "targets": [
+        "contribuir"
+      ]
+    },
+    {
+      "path": "docs/contribuir/pull-request.md",
+      "sha256": "0ad1e1fb43d35a1868f84a489b04f24b997c3a969567fb5b1d2ff3fb03c17d8c",
+      "category": "contribuir",
+      "treatment": "article",
+      "targets": [
+        "contribuir"
+      ]
+    },
+    {
+      "path": "docs/contribuir/testes.md",
+      "sha256": "a2edf7e5f46b7b49c04620aa18544b0a18b538012aa823b7355a93e491967002",
+      "category": "contribuir",
+      "treatment": "article",
+      "targets": [
+        "contribuir"
+      ]
+    },
+    {
+      "path": "docs/contribuir/triagem.md",
+      "sha256": "0c786ac65fc8339b98c4db0cf2b13ed28d5f88205e5c8ac1ed592c4853ab2e61",
+      "category": "contribuir",
+      "treatment": "article",
+      "targets": [
+        "contribuir"
+      ]
+    },
+    {
+      "path": "docs/contribuir/versoes-e-publicacao.md",
+      "sha256": "b732ebecc78223ac86faea58be4f991d847066cea7664d058b418d0419da8060",
+      "category": "contribuir",
+      "treatment": "article",
+      "targets": [
+        "contribuir"
       ]
     },
     {
@@ -121,7 +204,7 @@
     },
     {
       "path": "orkastery/CONTRIBUTING.md",
-      "sha256": "7559ac8038b60d4f789720601294103644243051f6e8f21caf656e4f404e2b53",
+      "sha256": "a74f3dac8d030a898154fec3062996dfdf051464a1a79b2a105f130d4a7c5175",
       "category": "CONTRIBUTING.md",
       "treatment": "article",
       "targets": [
@@ -130,7 +213,7 @@
     },
     {
       "path": "orkastery/docs/guias/contribuir/com-o-ork.md",
-      "sha256": "5ac737f17125962edc43d443541e5f1daf9c93ec083336bfa693cb7a6dffaafa",
+      "sha256": "da525b84e5fdf0e3e2359bdf17c7b51f59295061c916c60a927110a4b702da72",
       "category": "docs",
       "treatment": "article",
       "targets": [
@@ -148,7 +231,7 @@
     },
     {
       "path": "orkastery/docs/guias/contribuir/documentacao.md",
-      "sha256": "06de23211b24618140d85876390afed8e2e95aed4e422603b2af6d91da1600b8",
+      "sha256": "e6bfbf5da52626a6a3c10a5e3aae47767519a34a5ccd83e6c5ff6957c984eda3",
       "category": "docs",
       "treatment": "article",
       "targets": [
@@ -175,7 +258,7 @@
     },
     {
       "path": "orkastery/docs/guias/contribuir/pull-request.md",
-      "sha256": "7e1297f3391c8a26c893437f9e4039c2fbaa5c91b9e1dc187e1e404c8e2a8431",
+      "sha256": "a799331bd89d9601303acf9d4325cabffb3e24905d907a6b865d725bd2cf4633",
       "category": "docs",
       "treatment": "article",
       "targets": [
@@ -184,7 +267,7 @@
     },
     {
       "path": "orkastery/docs/guias/contribuir/testes-e-verificacao.md",
-      "sha256": "2265b264fdfb0e7c3eb3601a8b42085ccd21c4c90ea103b938ee0fbc8fa9c823",
+      "sha256": "365c1b1573b61d6887c25bf6ec0d2fec1d82bf59fb49240723236a819a71d05a",
       "category": "docs",
       "treatment": "article",
       "targets": [
@@ -202,7 +285,7 @@
     },
     {
       "path": "orkastery/docs/guias/contribuir/versoes-e-publicacao.md",
-      "sha256": "1b4f8e622f275d67298bf6ea93022f19e087282538a0549c89f480fd877fe50b",
+      "sha256": "b10b2578eea3eb8cfe54212394db3207196fd54091d983a572904f0b015a1bcf",
       "category": "docs",
       "treatment": "article",
       "targets": [
@@ -219,46 +302,46 @@
       ]
     }
   ],
-  "inventoryHash": "772bfdad5513c26dbb4df11fcf9e81c0de0163357266b4bbcce47943259b34c0",
+  "inventoryHash": "95bc4c834f8c0dda695a49df2336d2076943e502c1dd6b6a0004c6d042d1d348",
   "reviews": {
     "comecar": {
       "pt": {
-        "sourceHash": "4a434f1f48b729957a262e4350dd34967101daeb8b754523dfdafb0577b8bcc3",
+        "sourceHash": "b3d718ccee6e297434a9a9c7ac960ab04e66a498e7d7708148127eac10b25284",
         "contentHash": "7616696b63302e4e9e34c79124ae1cbf14f7322ccca9b45db9cf39aa275b2e3d",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       },
       "en": {
-        "sourceHash": "4a434f1f48b729957a262e4350dd34967101daeb8b754523dfdafb0577b8bcc3",
+        "sourceHash": "b3d718ccee6e297434a9a9c7ac960ab04e66a498e7d7708148127eac10b25284",
         "contentHash": "6cd2376637a3e8e04f13d5ca4877769a81038cbcde7cc62ba62fe6e41dcd5535",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       },
       "es": {
-        "sourceHash": "4a434f1f48b729957a262e4350dd34967101daeb8b754523dfdafb0577b8bcc3",
+        "sourceHash": "b3d718ccee6e297434a9a9c7ac960ab04e66a498e7d7708148127eac10b25284",
         "contentHash": "cf3495db34aac84f28ed1f6efa551deb1c705f0f080b1a9a5c3c047900a4438a",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       }
     },
     "arquitetura": {
       "pt": {
-        "sourceHash": "68d303333d68f6b64a388ff41ca56a18b551f693b25b22c0e5926aa04577f3c3",
+        "sourceHash": "6892369fff0e280f5e55982f4f8d0321499663143f5f03ae5d387087eda39542",
         "contentHash": "a75edf3b37f4968b369d0e99a511e1bbc94272c6ead061b20da4b184a18a30fb",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       },
       "en": {
-        "sourceHash": "68d303333d68f6b64a388ff41ca56a18b551f693b25b22c0e5926aa04577f3c3",
+        "sourceHash": "6892369fff0e280f5e55982f4f8d0321499663143f5f03ae5d387087eda39542",
         "contentHash": "6888b1f2a855f45568da27bb87b2bad69e141125b59eebfa1fb19fd622ad676e",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       },
       "es": {
-        "sourceHash": "68d303333d68f6b64a388ff41ca56a18b551f693b25b22c0e5926aa04577f3c3",
+        "sourceHash": "6892369fff0e280f5e55982f4f8d0321499663143f5f03ae5d387087eda39542",
         "contentHash": "9bc508a2fe35c9f3ef3936cf7f23da84f0a627b4ca57a43afb02edb6a0cf4bf8",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       }
     },
     "ontologia": {
@@ -283,22 +366,22 @@
     },
     "integracoes": {
       "pt": {
-        "sourceHash": "dd48e7672336d617ae2d992a17dfcfe998b276aef08606be818e973d60d8f366",
+        "sourceHash": "edc4f52cfddfc404a5865706bc67744637a64bbfa57e57c0b86bf5ff4c79d546",
         "contentHash": "676f93bf9df480fe36556f392def7e54ad8d9175353c7c584f35564dab38165d",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       },
       "en": {
-        "sourceHash": "dd48e7672336d617ae2d992a17dfcfe998b276aef08606be818e973d60d8f366",
+        "sourceHash": "edc4f52cfddfc404a5865706bc67744637a64bbfa57e57c0b86bf5ff4c79d546",
         "contentHash": "209aae5ac989b05bcf641505404a3bc4681c35f55689c55e3498f415879a8f73",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       },
       "es": {
-        "sourceHash": "dd48e7672336d617ae2d992a17dfcfe998b276aef08606be818e973d60d8f366",
+        "sourceHash": "edc4f52cfddfc404a5865706bc67744637a64bbfa57e57c0b86bf5ff4c79d546",
         "contentHash": "bbed49d05ad14c15fe728d4e7f6208172f85125616aca44e3d5d00fa6bdbed86",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       }
     },
     "memory-provider": {
@@ -323,22 +406,22 @@
     },
     "governanca": {
       "pt": {
-        "sourceHash": "23364d36fd021435aaa05be2a49d2dd938c1d6647b501ee0fdd573924296c75c",
+        "sourceHash": "8e3abcdf82bfb66eac7f8dc8d35e0666ab3c2470e32971ad2197c533bd9609d4",
         "contentHash": "7e312856292ab0ef891ae628e30ac28f2dd899af966d5c1d4ed2aff58152af0a",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       },
       "en": {
-        "sourceHash": "23364d36fd021435aaa05be2a49d2dd938c1d6647b501ee0fdd573924296c75c",
+        "sourceHash": "8e3abcdf82bfb66eac7f8dc8d35e0666ab3c2470e32971ad2197c533bd9609d4",
         "contentHash": "04237fec30dacb8cbff5a318a75c738ae6f7ee9dd2e74dbf354add3acf85b182",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       },
       "es": {
-        "sourceHash": "23364d36fd021435aaa05be2a49d2dd938c1d6647b501ee0fdd573924296c75c",
+        "sourceHash": "8e3abcdf82bfb66eac7f8dc8d35e0666ab3c2470e32971ad2197c533bd9609d4",
         "contentHash": "d8a5db2b78806520a2f855f17473995364bd28d16783360695c2b6deb0567d31",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       }
     },
     "armazenamento": {
@@ -363,22 +446,22 @@
     },
     "recuperacao": {
       "pt": {
-        "sourceHash": "e26e335f84655a61c14f80dba5315053b089ae87f1859ac1e2d421d44de712c4",
+        "sourceHash": "3bd7e7be3cb7d37bd18ec40015cf28fdfb52fe3dd8290842cb018c52ae52c8c3",
         "contentHash": "d4e8ee5b4cf507d8aac7be4959eedf405f37eefe319d3bce16b11b5614c08cf3",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       },
       "en": {
-        "sourceHash": "e26e335f84655a61c14f80dba5315053b089ae87f1859ac1e2d421d44de712c4",
+        "sourceHash": "3bd7e7be3cb7d37bd18ec40015cf28fdfb52fe3dd8290842cb018c52ae52c8c3",
         "contentHash": "2ec8a150da8bbc41626b22e704267fc93bb79fa381c26b9e2395e7e2a1b5f275",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       },
       "es": {
-        "sourceHash": "e26e335f84655a61c14f80dba5315053b089ae87f1859ac1e2d421d44de712c4",
+        "sourceHash": "3bd7e7be3cb7d37bd18ec40015cf28fdfb52fe3dd8290842cb018c52ae52c8c3",
         "contentHash": "e59b10c2df7e9499798d073bfb5322161365cd85b094d45d749dffc19d26ef81",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       }
     },
     "federacao": {
@@ -403,42 +486,62 @@
     },
     "roadmap": {
       "pt": {
-        "sourceHash": "983553fdbe5e30ee7c05fd95998db757bbebcb1f842ab6b0d874b284432ab427",
+        "sourceHash": "6dfe206b2a1aaf5853b05cfe76e42398bb674c0c11e40154741f60925188f840",
         "contentHash": "375d9a50f30865b74504da3fd0a00970c96c99b9a69bef548db3866dcf8ea102",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       },
       "en": {
-        "sourceHash": "983553fdbe5e30ee7c05fd95998db757bbebcb1f842ab6b0d874b284432ab427",
+        "sourceHash": "6dfe206b2a1aaf5853b05cfe76e42398bb674c0c11e40154741f60925188f840",
         "contentHash": "207de9c8325c5d46567225448d55f7582dddcbd4ba387643dbd4b45ebb50b11b",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       },
       "es": {
-        "sourceHash": "983553fdbe5e30ee7c05fd95998db757bbebcb1f842ab6b0d874b284432ab427",
+        "sourceHash": "6dfe206b2a1aaf5853b05cfe76e42398bb674c0c11e40154741f60925188f840",
         "contentHash": "1c089c9bb736a9091d7e43890780e119937b66254adcca116c9ae0781705d9f3",
-        "reviewer": "condutor-editorial",
-        "date": "2026-09-29"
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       }
     },
     "contribuir": {
       "pt": {
-        "sourceHash": "695e511907761ff2a64742cdbe456cca1de8a83c2dcd85cbd1908e06a238e1a0",
-        "contentHash": "60aaae37fb1be6a641f2410b53a218d90b7b131a07f1f6a222263dc66c2e4946",
+        "sourceHash": "3c63f0508e3523435720ac3ceb9374d103738b646b8ab9d83865f68b3ceb4b78",
+        "contentHash": "684d6c41dba4c86391fb52a9223b4ee94d53f887769f159289816a9452303431",
         "reviewer": "executor-editorial",
-        "date": "2026-09-29"
+        "date": "2026-10-03"
       },
       "en": {
-        "sourceHash": "695e511907761ff2a64742cdbe456cca1de8a83c2dcd85cbd1908e06a238e1a0",
-        "contentHash": "9fdee4a5057e83ca0a024dc9e91a32771f2bd32db71ad63ab2c7621c3f5d0de8",
+        "sourceHash": "3c63f0508e3523435720ac3ceb9374d103738b646b8ab9d83865f68b3ceb4b78",
+        "contentHash": "5d174ad1ea7671baa1cf94ba9254d056ca954acc721bef10f5d6dbdd352e31a8",
         "reviewer": "executor-editorial",
-        "date": "2026-09-29"
+        "date": "2026-10-03"
       },
       "es": {
-        "sourceHash": "695e511907761ff2a64742cdbe456cca1de8a83c2dcd85cbd1908e06a238e1a0",
-        "contentHash": "677ac2d6d395001428045201f856bcd3ae2b3deeabf0bf7afddec8424da456e3",
+        "sourceHash": "3c63f0508e3523435720ac3ceb9374d103738b646b8ab9d83865f68b3ceb4b78",
+        "contentHash": "e5d06dc8f8ddf298f9e72f8aca1bc0b93ee33ec8d42fef9ceb53551168382713",
         "reviewer": "executor-editorial",
-        "date": "2026-09-29"
+        "date": "2026-10-03"
+      }
+    },
+    "company-brain": {
+      "pt": {
+        "sourceHash": "d23ef87b0cd61bdbf72cfeb2c9b91c99ae9360fbe769168f58ce7865229c567f",
+        "contentHash": "1af8168ac119a39ac7712056236bb6698994fa37416485d30ee38c7731613ab7",
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
+      },
+      "en": {
+        "sourceHash": "d23ef87b0cd61bdbf72cfeb2c9b91c99ae9360fbe769168f58ce7865229c567f",
+        "contentHash": "546b173291847af4c1cacca1f4c81e34bf7b2b9aba8a428682729e9d5f688a57",
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
+      },
+      "es": {
+        "sourceHash": "d23ef87b0cd61bdbf72cfeb2c9b91c99ae9360fbe769168f58ce7865229c567f",
+        "contentHash": "43c118c7685cc73d055e1ffbb6839c32c501eeb12a747d6db495758fb08943f7",
+        "reviewer": "executor-editorial",
+        "date": "2026-10-03"
       }
     }
   }
