@@ -5,6 +5,7 @@
 //
 //   node scripts/publicar.mjs --saida <pasta> [--repo <clone>] [--maximo <n>] [--cache <pasta>] [--resumo <arquivo>]
 //   node scripts/publicar.mjs --ensaio [--repo <clone>] [--maximo <n>]   (só mostra o que publicaria)
+//   --tag-do-disparo <tag>: no push de uma tag, reprova se ela não entrar na publicação
 import {appendFileSync,closeSync,cpSync,existsSync,lstatSync,mkdirSync,mkdtempSync,openSync,readdirSync,readFileSync,readlinkSync,rmSync,symlinkSync,writeFileSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
@@ -19,6 +20,7 @@ export const PASTA_DAS_PREVIAS=PREFIXO_DA_PREVIA.slice(1,-1);
 export const TAG_DE_PRODUCAO=/^producao-[0-9]{8}-[0-9]{4}$/;
 export const PREFIXO_DA_TAG_DE_PREVIA='validacao-';
 export const PREVIAS_MAXIMO=5;
+const MARCADOR_DE_BUILD='.publicar-build-ok';
 
 /** sha256 de cada arquivo da árvore, pelo caminho relativo; excluir lista pastas relativas a dir. */
 export function hashesDe(dir,excluir=[]){
@@ -78,7 +80,9 @@ export function verificarPublicacao(saida,{producao,previas=[],hashesDaProducao=
  for(const {release,sha} of previas){
   const dir=join(pasta,release),base=baseDaRelease(release).slice(0,-1);
   for(const nome of ['CNAME','robots.txt'])if(existsSync(join(dir,nome)))throw Error(nome+' dentro da prévia '+release);
-  const conferida=checkPrevia(dir,base);
+  // O texto da faixa é conferido pela build do próprio commit (check:previa); aqui vale a estrutura, para
+  // que uma mudança futura no texto não reprove as prévias antigas que continuam no ar.
+  const conferida=checkPrevia(dir,base,{texto:false});
   if(conferida.sha!==sha)throw Error('A prévia '+release+' não é o commit da tag: versao.json diz '+conferida.sha+', a tag aponta '+sha);
   checkLinks(dir,base);
  }
@@ -144,7 +148,8 @@ export function resolverTags(repo,{maximo=PREVIAS_MAXIMO}={}){
  const candidatas=deProducao.filter(t=>TAG_DE_PRODUCAO.test(t)).sort(),ignoradas=deProducao.filter(t=>!TAG_DE_PRODUCAO.test(t));
  if(!candidatas.length)throw Error('Nenhuma tag producao-AAAAMMDD-HHMM: não há produção aprovada para a raiz.');
  const tagDaRaiz=candidatas.at(-1);
- const dePrevia=linhas(git(repo,['tag','--list',PREFIXO_DA_TAG_DE_PREVIA+'*','--sort=-v:refname']));
+ // versionsort.suffix=- põe 1.0.0-rc.1 antes de 1.0.0, qualquer que seja a configuração de quem roda.
+ const dePrevia=linhas(git(repo,['-c','versionsort.suffix=-','tag','--list',PREFIXO_DA_TAG_DE_PREVIA+'*','--sort=-v:refname']));
  const invalidas=dePrevia.filter(t=>!releaseValida(t.slice(PREFIXO_DA_TAG_DE_PREVIA.length)));
  if(invalidas.length)throw Error('Tag de prévia com release inválida: '+invalidas.join(', ')+'. A release aceita letras, números, ponto, sublinhado e hífen, começando por letra ou número; apague a tag e crie outra.');
  const previas=dePrevia.slice(0,maximo).map(tag=>({tag,release:tag.slice(PREFIXO_DA_TAG_DE_PREVIA.length),sha:commitDa(repo,tag)}));
@@ -184,7 +189,8 @@ function conferirVersao(dist,sha,release){
  */
 export function compilar(repo,{sha,base='/',cache=null,temporarias=[],log=console.log}){
  const release=releaseDaBase(base),chave=sha+'-'+(release??'raiz');
- if(cache&&existsSync(join(cache,chave,'dist','index.html'))){
+ // O cache só reaproveita build que passou inteira (postbuild e versao.json): o marcador vem por último.
+ if(cache&&existsSync(join(cache,chave,MARCADOR_DE_BUILD))){
   log('build reaproveitada: '+chave);
   conferirVersao(join(cache,chave,'dist'),sha,release);
   return join(cache,chave,'dist');
@@ -198,8 +204,12 @@ export function compilar(repo,{sha,base='/',cache=null,temporarias=[],log=consol
  log('build de '+sha.slice(0,7)+(release?' como prévia '+release:' como raiz'));
  const env={...process.env,SITE_SHA:sha,SITE_DATA:git(repo,['log','-1','--format=%cI',sha]),SITE_BASE:base,SITE_TESTE_PREVIA:'0'};
  const r=spawnSync('npm',['run','build'],{cwd:dir,stdio:'inherit',env});
- if(r.status!==0)throw Error('A build de '+sha.slice(0,7)+' ('+(release?'prévia '+release:'raiz')+') falhou; nada foi publicado.');
+ if(r.status!==0){
+  if(cache)rmSync(dir,{recursive:true,force:true});
+  throw Error('A build de '+sha.slice(0,7)+' ('+(release?'prévia '+release:'raiz')+') falhou; nada foi publicado.');
+ }
  conferirVersao(join(dir,'dist'),sha,release);
+ if(cache)writeFileSync(join(dir,MARCADOR_DE_BUILD),sha+'\n');
  return join(dir,'dist');
 }
 
@@ -208,8 +218,9 @@ export function compilar(repo,{sha,base='/',cache=null,temporarias=[],log=consol
  * cada prévia, monta a árvore em saida e a confere. Qualquer falha para tudo: nada é publicado e o
  * site no ar fica como estava. Com ensaio, só resolve e devolve o plano.
  */
-export function publicar({repo=root,saida=null,maximo=PREVIAS_MAXIMO,cache=null,ensaio=false,log=console.log}={}){
+export function publicar({repo=root,saida=null,maximo=PREVIAS_MAXIMO,cache=null,ensaio=false,tagDoDisparo=null,log=console.log}={}){
  const plano=resolverTags(repo,{maximo});
+ conferirTagDoDisparo(plano,tagDoDisparo,maximo);
  log('Raiz: '+plano.raiz.tag+' ('+plano.raiz.sha.slice(0,7)+')');
  for(const p of plano.previas)log('Prévia: '+p.tag+' ('+p.sha.slice(0,7)+') em '+PREFIXO_DA_PREVIA+p.release+'/');
  if(plano.foraDoTeto.length)log('Fora do teto de '+maximo+', ficam fora do ar: '+plano.foraDoTeto.join(', '));
@@ -229,6 +240,16 @@ export function publicar({repo=root,saida=null,maximo=PREVIAS_MAXIMO,cache=null,
  }finally{
   for(const dir of temporarias)rmSync(dir,{recursive:true,force:true});
  }
+}
+
+/**
+ * No push de uma tag, ela precisa entrar na publicação: a promoção vira a raiz e a prévia cabe no teto.
+ * Senão a execução reprova, em vez de passar verde sem mudar nada no ar.
+ */
+export function conferirTagDoDisparo(plano,tag,maximo){
+ if(!tag)return;
+ if(tag.startsWith('producao-')&&tag!==plano.raiz.tag)throw Error('A tag '+tag+' não vira a raiz: a raiz é a maior tag producao-AAAAMMDD-HHMM pelo nome, hoje '+plano.raiz.tag+(TAG_DE_PRODUCAO.test(tag)?'':', e esta tag está fora do padrão')+'. Nada foi publicado.');
+ if(tag.startsWith(PREFIXO_DA_TAG_DE_PREVIA)&&!plano.previas.some(p=>p.tag===tag))throw Error('A prévia '+tag+' fica fora do teto de '+maximo+' prévias pela ordem de versão. Apague uma prévia antiga ou suba PREVIAS_MAXIMO. Nada foi publicado.');
 }
 
 function resumoEmMarkdown(resultado){
@@ -252,7 +273,8 @@ if(process.argv[1]===fileURLToPath(import.meta.url)){
    saida:valor('--saida')?resolve(valor('--saida')):null,
    maximo:Number(maximo),
    cache:valor('--cache')?resolve(valor('--cache')):null,
-   ensaio:process.argv.includes('--ensaio')
+   ensaio:process.argv.includes('--ensaio'),
+   tagDoDisparo:valor('--tag-do-disparo')??null
   });
   const json=JSON.stringify(resultado,null,2);
   if(valor('--resumo'))writeFileSync(resolve(valor('--resumo')),json+'\n');

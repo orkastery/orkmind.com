@@ -19,7 +19,9 @@ permissions:
   contents: read
 
 concurrency:
-  group: pages
+  # Só a execução que publica entra na fila do Pages: o apagamento de uma branch ou de outra tag cai
+  # num grupo próprio e não pode tomar o lugar (nem cancelar) de uma publicação pendente.
+  group: ${{ (github.event_name != 'delete' || (github.event.ref_type == 'tag' && startsWith(github.event.ref, 'validacao-'))) && 'pages' || format('pages-ignorado-{0}', github.run_id) }}
   cancel-in-progress: false
 
 jobs:
@@ -27,19 +29,29 @@ jobs:
     # Apagar uma branch ou outra tag não muda a publicação; apagar uma tag de prévia a tira do ar.
     if: github.event_name != 'delete' || (github.event.ref_type == 'tag' && startsWith(github.event.ref, 'validacao-'))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       PREVIAS_MAXIMO: '5'
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
       - run: npm ci
       - name: Compor a publicação
-        run: node scripts/publicar.mjs --saida publicacao --maximo "$PREVIAS_MAXIMO" --resumo "$RUNNER_TEMP/publicacao.json"
+        # No push de uma tag, o motor confere que ela entra na publicação: a promoção precisa virar a raiz e a
+        # prévia precisa caber no teto; senão a execução reprova em vez de passar verde sem efeito.
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = push ] && [ "$GITHUB_REF_TYPE" = tag ]; then
+            node scripts/publicar.mjs --saida publicacao --maximo "$PREVIAS_MAXIMO" --resumo "$RUNNER_TEMP/publicacao.json" --tag-do-disparo "$GITHUB_REF_NAME"
+          else
+            node scripts/publicar.mjs --saida publicacao --maximo "$PREVIAS_MAXIMO" --resumo "$RUNNER_TEMP/publicacao.json"
+          fi
       - name: Conferir as versões no artefato
         run: |
           set -euo pipefail

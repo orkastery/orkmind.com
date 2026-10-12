@@ -21,12 +21,13 @@ function git(dir, ...args) {
 }
 
 /** Roda o motor como o workflow roda, contra o repositório do ensaio; devolve código, resumo e saída. */
-function motor({ maximo, ensaio = false, repositorio = repo } = {}) {
+function motor({ maximo, ensaio = false, repositorio = repo, extras = [] } = {}) {
   rodada += 1;
   const saida = join(tmp, 'publicacao-' + rodada), resumo = join(tmp, 'resumo-' + rodada + '.json');
   const args = [join(root, 'scripts/publicar.mjs'), '--repo', repositorio, '--cache', cache, '--resumo', resumo];
   if (ensaio) args.push('--ensaio'); else args.push('--saida', saida);
   if (maximo !== undefined) args.push('--maximo', String(maximo));
+  args.push(...extras);
   const { SITE_BASE, GITHUB_STEP_SUMMARY, ...env } = process.env;
   const r = executar(process.execPath, args, { cwd: root, env });
   for (const linha of (r.saida + r.erros).split('\n')) if (/^(Raiz|Prévia|Fora do teto|Tags producao|build|Publicação|Nenhuma|Tag de prévia|Commit de prévia|A pasta)/.test(linha)) console.log('# rodada ' + rodada + ': ' + linha);
@@ -147,4 +148,63 @@ test('pasta de publicação ocupada reprova antes de compilar', { skip: pular },
   const r = motor();
   assert.equal(r.code, 1);
   assert.match(r.texto, /não está vazia/);
+});
+
+test('a ordem de versão põe a release final antes da rc', { skip: pular }, () => {
+  git(repo, 'tag', 'validacao-1.0.0', shas.B);
+  git(repo, 'tag', 'validacao-1.0.0-rc.1', shas.B);
+  const plano = semFalha(motor({ ensaio: true, maximo: 9 })).resumo;
+  assert.deepEqual(plano.previas.map(p => p.release), ['9.9.2', '1.0.0', '1.0.0-rc.1']);
+  git(repo, 'tag', '-d', 'validacao-1.0.0', 'validacao-1.0.0-rc.1');
+});
+
+test('a tag do disparo precisa entrar na publicação', { skip: pular }, () => {
+  const antiga = motor({ ensaio: true, extras: ['--tag-do-disparo', 'producao-20990101-0000'] });
+  assert.equal(antiga.code, 1);
+  assert.match(antiga.texto, /A tag producao-20990101-0000 não vira a raiz/);
+  semFalha(motor({ ensaio: true, extras: ['--tag-do-disparo', 'producao-20990102-0000'] }));
+  const foraDoTeto = motor({ ensaio: true, maximo: 0, extras: ['--tag-do-disparo', 'validacao-9.9.2'] });
+  assert.equal(foraDoTeto.code, 1);
+  assert.match(foraDoTeto.texto, /A prévia validacao-9.9.2 fica fora do teto de 0/);
+  semFalha(motor({ ensaio: true, extras: ['--tag-do-disparo', 'validacao-9.9.2'] }));
+});
+
+test('o cache não reaproveita build que reprovou no postbuild', { skip: pular }, () => {
+  git(repo, 'checkout', '-q', shas.B);
+  writeFileSync(join(repo, 'src/data/ensaio.ts'), 'export default ' + JSON.stringify('ensaio' + String.fromCharCode(64) + 'example.invalid') + ';\n');
+  git(repo, 'add', '--', 'src/data/ensaio.ts');
+  git(repo, 'commit', '-q', '-m', 'D com e-mail que o check:public recusa');
+  const sha = git(repo, 'rev-parse', 'HEAD');
+  git(repo, 'tag', 'validacao-9.9.4', sha);
+  for (const rodadaDoCache of [1, 2]) {
+    const r = motor();
+    assert.equal(r.code, 1, 'rodada ' + rodadaDoCache);
+    assert.match(r.texto, /\(prévia 9\.9\.4\) falhou/);
+    assert.ok(!r.texto.includes('build reaproveitada: ' + sha), 'rodada ' + rodadaDoCache + ' reaproveitou a build que reprovou');
+  }
+  git(repo, 'tag', '-d', 'validacao-9.9.4');
+  // Sem o marcador de build verde, nem um dist completo no cache é reaproveitado: a build é refeita.
+  rmSync(join(cache, shas.B + '-9.9.2', '.publicar-build-ok'));
+  const refeita = semFalha(motor());
+  assert.ok(refeita.texto.includes('build de ' + shas.B.slice(0, 7) + ' como prévia 9.9.2'), 'a build sem marcador foi reaproveitada');
+});
+
+test('o workflow publica a árvore composta só por tag, com permissões por job', () => {
+  const texto = readFileSync(join(root, '.github/workflows/publicar.yml'), 'utf8');
+  for (const trecho of ["tags: ['producao-*', 'validacao-*']", '\n  delete:\n', '\n  workflow_dispatch:\n',
+    "startsWith(github.event.ref, 'validacao-')", "format('pages-ignorado-{0}', github.run_id)", 'cancel-in-progress: false',
+    'persist-credentials: false', 'timeout-minutes: 30', '\npermissions:\n  contents: read\n',
+    '    permissions:\n      pages: write\n      id-token: write\n', '--tag-do-disparo "$GITHUB_REF_NAME"',
+    'node scripts/publicar.mjs --saida publicacao', 'conferir publicacao/versao.json', 'path: publicacao']) {
+    assert.ok(texto.includes(trecho), trecho);
+  }
+  assert.ok(!/workflow_dispatch:\s*\n\s+inputs:/.test(texto), 'o disparo manual não escolhe a raiz');
+  const linhas = texto.split('\n');
+  for (let i = 0; i < linhas.length; i++) {
+    const m = linhas[i].match(/^(\s*)(?:- )?run:(.*)$/);
+    if (!m) continue;
+    const bloco = [m[2]];
+    for (let j = i + 1; j < linhas.length && (linhas[j].trim() === '' || linhas[j].search(/\S/) > m[1].length); j++) bloco.push(linhas[j]);
+    assert.ok(!bloco.join('\n').includes('$' + '{{'), 'run com expressão do GitHub perto da linha ' + (i + 1));
+  }
 });
