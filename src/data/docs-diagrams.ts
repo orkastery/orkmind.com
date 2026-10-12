@@ -90,7 +90,7 @@ export default {
   "storage": {
     "pt": {
       "title": "Persistência e capacidades",
-      "description": "`GovernedStore` aplica regras comuns sobre backends com capacidades distintas. `pgvector` é a referência de produção; `memory` é volátil; Qdrant é experimental e limitado ao laboratório nas fontes revisadas.",
+      "description": "`GovernedStore` aplica regras comuns sobre backends com capacidades distintas. `pgvector` é a referência de produção; `memory` é volátil; `qdrant` é experimental e limitado ao laboratório nas fontes revisadas.",
       "nodes": [
         "`GovernedStore` · contrato",
         "`StoreCapabilities` · limites",
@@ -103,7 +103,7 @@ export default {
     },
     "en": {
       "title": "Persistence and capabilities",
-      "description": "`GovernedStore` applies common rules over backends with different capabilities. `pgvector` is the production reference; `memory` is volatile; Qdrant is experimental and limited to laboratory use in the reviewed sources.",
+      "description": "`GovernedStore` applies common rules over backends with different capabilities. `pgvector` is the production reference; `memory` is volatile; `qdrant` is experimental and limited to laboratory use in the reviewed sources.",
       "nodes": [
         "`GovernedStore` · contract",
         "`StoreCapabilities` · limits",
@@ -116,7 +116,7 @@ export default {
     },
     "es": {
       "title": "Persistencia y capacidades",
-      "description": "`GovernedStore` aplica reglas comunes sobre backends con distintas capacidades. `pgvector` es la referencia de producción; `memory` es volátil; Qdrant es experimental y está limitado al laboratorio en las fuentes revisadas.",
+      "description": "`GovernedStore` aplica reglas comunes sobre backends con distintas capacidades. `pgvector` es la referencia de producción; `memory` es volátil; `qdrant` es experimental y está limitado al laboratorio en las fuentes revisadas.",
       "nodes": [
         "`GovernedStore` · contrato",
         "`StoreCapabilities` · límites",

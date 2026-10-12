@@ -45,7 +45,7 @@ export default [
             "id": "acesso",
             "title": "Protection before mutation",
             "paragraphs": [
-              "Protected and critical entries reject agent edits or removal. Reading and editing have distinct dimensions; portfolio tags do not expand access. Suspected injection content is retained for inspection but does not enter context automatically."
+              "`protected` and `critical` entries reject agent edits or removal. Reading and editing have distinct dimensions; portfolio tags do not expand access. Suspected injection content is retained for inspection but does not enter context automatically."
             ]
           },
           {
@@ -219,7 +219,7 @@ export default [
           },
           {
             "id": "contexto",
-            "title": "Context mode: a citable package",
+            "title": "`context` mode: a citable package",
             "paragraphs": [
               "A selection with `mode context` builds the `orkmind.company-brain-context/v1` package on the server: the entities requested by `id` and the parents the grant lets you see, each with the complete source citation (authority, instance, reference, hash, version and location). Everything runs in one `REPEATABLE READ, READ ONLY` snapshot. Anything without a complete citation becomes a typed gap, with no content.",
               "The digest is the `sha256` of the package's canonical JSON, with no timestamp: the same state yields the same digest, and the receiver recomputes it. OrkMind cites; freshness against the source is computed by whoever holds the source. An OrkMind older than this mode answers `brain.selection.context-unsupported`."

@@ -327,19 +327,19 @@
     "arquitetura": {
       "pt": {
         "sourceHash": "6892369fff0e280f5e55982f4f8d0321499663143f5f03ae5d387087eda39542",
-        "contentHash": "9f30c2eab3f0627ba671689215917212f36dee89c8a0db78562ffc2ffa30d256",
+        "contentHash": "4f59c408f625f40988f921e47bb9ff8c4e1f5ac380c474fea37aa831b27270f0",
         "reviewer": "executor-editorial",
         "date": "2026-10-12"
       },
       "en": {
         "sourceHash": "6892369fff0e280f5e55982f4f8d0321499663143f5f03ae5d387087eda39542",
-        "contentHash": "f4fd30e9c6627c3ec7f89b136e3c1b12828dc78fd5ab6be6ced900d2e24df48d",
+        "contentHash": "a9147508880a02e6312aed882c4f1c0b478a2db98158f05b0e02034a9632dda3",
         "reviewer": "executor-editorial",
         "date": "2026-10-12"
       },
       "es": {
         "sourceHash": "6892369fff0e280f5e55982f4f8d0321499663143f5f03ae5d387087eda39542",
-        "contentHash": "c224c473fcf821bb6e808c8b3ba7024ee7b2e9455d3410364481ec8bd77def73",
+        "contentHash": "d0ac6d36563d65fa33dec3adc3b1fa8872fd56e554c1b463693945758e957b79",
         "reviewer": "executor-editorial",
         "date": "2026-10-12"
       }
@@ -347,19 +347,19 @@
     "ontologia": {
       "pt": {
         "sourceHash": "1f36a4fa458b62dc856246c6f345048953961c6362f21c72e1f755bca9b84b49",
-        "contentHash": "5321e1a12722573f0ac2393df7e8537c09c2eac6bc54149cb111d3cc86b57491",
+        "contentHash": "46bd40556bd5fc0a474b58c66df453ba8cd0b1b8b57a5dac75974204c6ce289a",
         "reviewer": "executor-editorial",
         "date": "2026-10-12"
       },
       "en": {
         "sourceHash": "1f36a4fa458b62dc856246c6f345048953961c6362f21c72e1f755bca9b84b49",
-        "contentHash": "525d5887f0143d8a88a0a978cb416465cb39f37cf06d613f6584358318d100c7",
+        "contentHash": "f4a042db1818b059dc1591915115ef7dd363791faf976a05d5d6648095a793ec",
         "reviewer": "executor-editorial",
         "date": "2026-10-12"
       },
       "es": {
         "sourceHash": "1f36a4fa458b62dc856246c6f345048953961c6362f21c72e1f755bca9b84b49",
-        "contentHash": "cd4e691dd4131fd82a96f50495349813191be96fb45dcf9ef464f395bc124085",
+        "contentHash": "e431ea27d7456c7abf7ed94c8b4b62c2d44e699feb1826119fdca6069c71153e",
         "reviewer": "executor-editorial",
         "date": "2026-10-12"
       }
@@ -413,7 +413,7 @@
       },
       "en": {
         "sourceHash": "8e3abcdf82bfb66eac7f8dc8d35e0666ab3c2470e32971ad2197c533bd9609d4",
-        "contentHash": "d8e3a858174b38166a0c593687be349b7bae7804eb8e5c82560ae0cb2ab074e8",
+        "contentHash": "529758e409d1d4c81c554aa69aa6b7b10f129520dedeb0c436923d7ba3126acd",
         "reviewer": "executor-editorial",
         "date": "2026-10-12"
       },
@@ -427,19 +427,19 @@
     "armazenamento": {
       "pt": {
         "sourceHash": "f368e2473b7f8ea3196998958876420f306aea28482c45ffad3ac7e439d2857d",
-        "contentHash": "2b344a72a0db55026830b526deb720d7b34127555cf159b511da255c146c6e63",
+        "contentHash": "86c3c9470b762eb408a9bbacdf23c5569a707977751b67f22b6ab3b4fc2bdf8c",
         "reviewer": "executor-editorial",
         "date": "2026-10-12"
       },
       "en": {
         "sourceHash": "f368e2473b7f8ea3196998958876420f306aea28482c45ffad3ac7e439d2857d",
-        "contentHash": "61b439c6bf6741ed8784ae0bcfc8a16aaf1a64dd46bc796adc211cbdf46c6b20",
+        "contentHash": "641b93d894b4ebbfe70859aa7c8ced07de5f45fc77cd687ed5683fefa50199cf",
         "reviewer": "executor-editorial",
         "date": "2026-10-12"
       },
       "es": {
         "sourceHash": "f368e2473b7f8ea3196998958876420f306aea28482c45ffad3ac7e439d2857d",
-        "contentHash": "100bf56004eec20e3a9b22273be13ba06a5eda3577afd29ee80b0ca5978ecb09",
+        "contentHash": "6c8c65565154d1b697d7464213cbc16164b7196471c4b9e5b5654334c74ea1db",
         "reviewer": "executor-editorial",
         "date": "2026-10-12"
       }
@@ -533,7 +533,7 @@
       },
       "en": {
         "sourceHash": "d23ef87b0cd61bdbf72cfeb2c9b91c99ae9360fbe769168f58ce7865229c567f",
-        "contentHash": "c0ec65a48a25bd0e2f4b59706e8a315b6362658f0c596edcc0fb7210eae5ca57",
+        "contentHash": "8006cf651436b3cf8525d95975589735d03c680b11286908e971d8c1324357cc",
         "reviewer": "executor-editorial",
         "date": "2026-10-12"
       },

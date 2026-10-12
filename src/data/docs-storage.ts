@@ -29,9 +29,9 @@ export default [
           },
           {
             "id": "qdrant",
-            "title": "Qdrant: somente laboratório",
+            "title": "`qdrant`: somente laboratório",
             "paragraphs": [
-              "O guia revisado marca Qdrant como experimental e não habilitado para produção. Ele registra questões abertas de identidade dos perfis e descarte por TTL. Não use esse backend para dados de produção com base nesta documentação.",
+              "O guia revisado marca `qdrant` como experimental e não habilitado para produção. Ele registra questões abertas de identidade dos perfis e descarte por TTL. Não use esse backend para dados de produção com base nesta documentação.",
               "A idempotência é best-effort: gravações concorrentes podem duplicar conteúdo porque não há índice único equivalente. A busca textual não tem ranking e a camada governada pode avisar quando a janela de candidatos satura."
             ]
           },
@@ -66,9 +66,9 @@ export default [
           },
           {
             "id": "qdrant",
-            "title": "Qdrant: laboratory use only",
+            "title": "`qdrant`: laboratory use only",
             "paragraphs": [
-              "The reviewed guide marks Qdrant as experimental and not enabled for production. It records unresolved profile identity and TTL disposal issues. Do not use this backend for production data based on this documentation.",
+              "The reviewed guide marks `qdrant` as experimental and not enabled for production. It records unresolved profile identity and TTL disposal issues. Do not use this backend for production data based on this documentation.",
               "Idempotency is best-effort: concurrent writes may duplicate content because there is no equivalent unique index. Text search is unranked, and the governed layer may warn when the candidate window saturates."
             ]
           },
@@ -103,9 +103,9 @@ export default [
           },
           {
             "id": "qdrant",
-            "title": "Qdrant: solo laboratorio",
+            "title": "`qdrant`: solo laboratorio",
             "paragraphs": [
-              "La guía revisada marca Qdrant como experimental y no habilitado para producción. Registra cuestiones pendientes de identidad de perfiles y eliminación por TTL. No utilice este backend para datos de producción basándose en esta documentación.",
+              "La guía revisada marca `qdrant` como experimental y no habilitado para producción. Registra cuestiones pendientes de identidad de perfiles y eliminación por TTL. No utilice este backend para datos de producción basándose en esta documentación.",
               "La idempotencia es best-effort: las escrituras simultáneas pueden duplicar contenido porque no existe un índice único equivalente. La búsqueda textual no tiene ranking y la capa gobernada puede advertir cuando se satura la ventana de candidatos."
             ]
           },
