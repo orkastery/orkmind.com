@@ -4,18 +4,20 @@
 // Quatro builds de verdade, reaproveitadas por commit e base; roda com npm run test:publicar.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { execFileSync, spawnSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync, appendFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { root } from './check-links.mjs';
+import { executar } from './publicar.mjs';
 
 const pular = process.env.SITE_TESTE_PREVIA === '0' ? 'SITE_TESTE_PREVIA=0' : false;
 let tmp = null, repo = null, cache = null, rodada = 0;
 const shas = {};
 
 function git(dir, ...args) {
-  return execFileSync('git', ['-C', dir, '-c', 'user.name=Ensaio', '-c', 'user.email=ensaio@example.invalid', '-c', 'commit.gpgsign=false', '-c', 'tag.gpgsign=false', ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+  const r = executar('git', ['-C', dir, '-c', 'user.name=Ensaio', '-c', 'user.email=ensaio@example.invalid', '-c', 'commit.gpgsign=false', '-c', 'tag.gpgsign=false', ...args]);
+  if (r.status !== 0) throw Error('git ' + args.join(' ') + ': ' + (r.erro?.code ?? r.erros));
+  return r.saida.trim();
 }
 
 /** Roda o motor como o workflow roda, contra o repositório do ensaio; devolve código, resumo e saída. */
@@ -26,9 +28,9 @@ function motor({ maximo, ensaio = false, repositorio = repo } = {}) {
   if (ensaio) args.push('--ensaio'); else args.push('--saida', saida);
   if (maximo !== undefined) args.push('--maximo', String(maximo));
   const { SITE_BASE, GITHUB_STEP_SUMMARY, ...env } = process.env;
-  const r = spawnSync(process.execPath, args, { cwd: root, encoding: 'utf8', maxBuffer: 512 * 1024 * 1024, env });
-  for (const linha of (r.stdout + r.stderr).split('\n')) if (/^(Raiz|Prévia|Fora do teto|Tags producao|build|Publicação|Nenhuma|Tag de prévia|Commit de prévia|A pasta)/.test(linha)) console.log('# rodada ' + rodada + ': ' + linha);
-  return { code: r.status, saida, resumo: existsSync(resumo) ? JSON.parse(readFileSync(resumo, 'utf8')) : null, texto: r.stdout + r.stderr };
+  const r = executar(process.execPath, args, { cwd: root, env });
+  for (const linha of (r.saida + r.erros).split('\n')) if (/^(Raiz|Prévia|Fora do teto|Tags producao|build|Publicação|Nenhuma|Tag de prévia|Commit de prévia|A pasta)/.test(linha)) console.log('# rodada ' + rodada + ': ' + linha);
+  return { code: r.status, saida, resumo: existsSync(resumo) ? JSON.parse(readFileSync(resumo, 'utf8')) : null, texto: r.saida + r.erros };
 }
 const versaoEm = (dir, ...partes) => JSON.parse(readFileSync(join(dir, ...partes, 'versao.json'), 'utf8'));
 const previasEm = dir => existsSync(join(dir, 'releasevalidation')) ? readdirSync(join(dir, 'releasevalidation')).sort() : [];
@@ -39,7 +41,7 @@ before(() => {
   tmp = mkdtempSync(join(tmpdir(), 'publicar-ensaio-'));
   repo = join(tmp, 'repo'); cache = join(tmp, 'cache');
   mkdirSync(repo); mkdirSync(cache);
-  const lista = execFileSync('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).split(String.fromCharCode(0)).filter(Boolean);
+  const lista = git(root, 'ls-files', '-z', '--cached', '--others', '--exclude-standard').split(String.fromCharCode(0)).filter(Boolean);
   for (const rel of lista) {
     if (!existsSync(join(root, rel))) continue;
     mkdirSync(dirname(join(repo, rel)), { recursive: true });

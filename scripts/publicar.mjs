@@ -5,8 +5,8 @@
 //
 //   node scripts/publicar.mjs --saida <pasta> [--repo <clone>] [--maximo <n>] [--cache <pasta>] [--resumo <arquivo>]
 //   node scripts/publicar.mjs --ensaio [--repo <clone>] [--maximo <n>]   (só mostra o que publicaria)
-import {appendFileSync,cpSync,existsSync,mkdirSync,mkdtempSync,readdirSync,readFileSync,rmSync,symlinkSync,writeFileSync} from 'node:fs';
-import {execFileSync,spawnSync} from 'node:child_process';
+import {appendFileSync,closeSync,cpSync,existsSync,mkdirSync,mkdtempSync,openSync,readdirSync,readFileSync,rmSync,symlinkSync,writeFileSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {tmpdir} from 'node:os';
 import {join,relative,resolve,sep} from 'node:path';
@@ -85,10 +85,30 @@ export function verificarPublicacao(saida,{producao,previas=[],hashesDaProducao=
  return {raiz:producao.sha,previas:previas.map(p=>p.release)};
 }
 
-const git=(repo,args)=>execFileSync('git',['-C',repo,...args],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
+/**
+ * Roda um comando e devolve o código, o stdout e o stderr. A saída vai para arquivos temporários, não
+ * para pipes: o sandbox do verificador do núcleo nega o pipe do spawnSync (EPERM, com o filho rodando
+ * mesmo assim), e o arquivo funciona igual lá, no Actions e na máquina de quem desenvolve.
+ */
+export function executar(comando,args,{cwd,env}={}){
+ const dir=mkdtempSync(join(tmpdir(),'executar-')),saida=join(dir,'saida'),erros=join(dir,'erros');
+ const fdSaida=openSync(saida,'w'),fdErros=openSync(erros,'w');
+ let r;
+ try{r=spawnSync(comando,args,{cwd,env,stdio:['ignore',fdSaida,fdErros]});}
+ finally{closeSync(fdSaida);closeSync(fdErros);}
+ const resultado={status:r.error?null:r.status,erro:r.error??null,saida:readFileSync(saida,'utf8'),erros:readFileSync(erros,'utf8')};
+ rmSync(dir,{recursive:true,force:true});
+ return resultado;
+}
+
+function git(repo,args){
+ const r=executar('git',['-C',repo,...args]);
+ if(r.status!==0)throw Error('git '+args.join(' ')+' falhou: '+(r.erro?.code??(r.erros.trim()||'código '+r.status)));
+ return r.saida.trim();
+}
 const linhas=texto=>texto.split('\n').map(l=>l.trim()).filter(Boolean);
 const commitDa=(repo,tag)=>git(repo,['rev-parse',tag+'^{commit}']);
-function temArquivo(repo,sha,caminho){try{execFileSync('git',['-C',repo,'cat-file','-e',sha+':'+caminho],{stdio:'ignore'});return true;}catch{return false;}}
+const temArquivo=(repo,sha,caminho)=>executar('git',['-C',repo,'cat-file','-e',sha+':'+caminho]).status===0;
 
 /**
  * O que a publicação leva. Raiz: a maior tag producao-AAAAMMDD-HHMM pelo nome (as fora do padrão
@@ -112,8 +132,12 @@ export function resolverTags(repo,{maximo=PREVIAS_MAXIMO}={}){
 }
 
 function extrair(repo,sha,dir){
- const arquivo=execFileSync('git',['-C',repo,'archive','--format=tar',sha],{maxBuffer:1024*1024*1024});
- execFileSync('tar',['-x','-C',dir],{input:arquivo,stdio:['pipe','inherit','inherit']});
+ const pasta=mkdtempSync(join(tmpdir(),'arquivo-')),arquivo=join(pasta,'commit.tar');
+ try{
+  git(repo,['archive','--format=tar','--output='+arquivo,sha]);
+  const r=executar('tar',['-x','-f',arquivo,'-C',dir]);
+  if(r.status!==0)throw Error('tar falhou ao extrair '+sha+': '+(r.erro?.code??r.erros.trim()));
+ }finally{rmSync(pasta,{recursive:true,force:true});}
 }
 
 /** node_modules do checkout por link quando o lockfile do commit é idêntico; senão, npm ci no commit. */

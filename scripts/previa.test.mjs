@@ -3,7 +3,6 @@
 // raiz, compila uma prévia de exemplo de uma cópia da árvore de trabalho, monta a publicação e a confere.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { spawnSync, execFileSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative } from 'node:path';
@@ -12,7 +11,7 @@ import {
   textoDaFaixa, ROBOTS_DA_RAIZ, temRegraDoRobots, versaoDaBuild
 } from '../src/lib/previa.mjs';
 import { root, siteBase, pages, checkLinks } from './check-links.mjs';
-import { comporPublicacao, verificarPublicacao, hashesDe, PASTA_DAS_PREVIAS } from './publicar.mjs';
+import { comporPublicacao, verificarPublicacao, hashesDe, executar, PASTA_DAS_PREVIAS } from './publicar.mjs';
 
 test('release aceita no caminho da prévia', () => {
   for (const release of ['0.5.5', '1.0.0-rc.1', '2026.10', 'v0.6.0', 'a', 'x'.repeat(64)]) assert.ok(releaseValida(release), release);
@@ -69,11 +68,8 @@ const pular = siteBase() ? 'build de prévia: a árvore composta é conferida a 
 
 /** Copia os arquivos versionados e os novos não ignorados, como estão no disco, e liga o node_modules. */
 function copiarArvoreDeTrabalho(destino) {
-  let lista = null;
-  try {
-    lista = execFileSync('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' })
-      .split(String.fromCharCode(0)).filter(Boolean);
-  } catch { lista = null; }
+  const git = executar('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], { cwd: root });
+  const lista = git.status === 0 ? git.saida.split(String.fromCharCode(0)).filter(Boolean) : null;
   mkdirSync(destino, { recursive: true });
   if (lista) {
     for (const rel of lista) {
@@ -97,12 +93,11 @@ before(() => {
   const versao = JSON.parse(readFileSync(join(producao, 'versao.json'), 'utf8'));
   const sha = /^[0-9a-f]{40}$/.test(versao.sha || '') ? versao.sha : '0'.repeat(40);
   const fonte = copiarArvoreDeTrabalho(join(tmp, 'fonte'));
-  const build = spawnSync('npm', ['run', 'build'], {
-    cwd: fonte, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024,
-    env: { ...process.env, SITE_BASE: baseDaRelease(RELEASE), SITE_SHA: sha, SITE_DATA: versao.data ?? '' }
+  const build = executar('npm', ['run', 'build'], {
+    cwd: fonte, env: { ...process.env, SITE_BASE: baseDaRelease(RELEASE), SITE_SHA: sha, SITE_DATA: versao.data ?? '' }
   });
-  if (build.status !== 0) throw Error('a build da prévia de exemplo falhou:\n' + (build.stdout + build.stderr).split('\n').slice(-40).join('\n'));
-  for (const linha of build.stdout.split('\n')) if (linha.startsWith('{"pages"')) console.log('# prévia de exemplo, checagem do postbuild: ' + linha);
+  if (build.status !== 0) throw Error('a build da prévia de exemplo falhou (' + (build.erro?.code ?? 'código ' + build.status) + '):\n' + (build.saida + build.erros).split('\n').slice(-40).join('\n'));
+  for (const linha of build.saida.split('\n')) if (linha.startsWith('{"pages"')) console.log('# prévia de exemplo, checagem do postbuild: ' + linha);
   const hashesDaProducao = hashesDe(producao);
   const saida = join(tmp, 'publicacao');
   const { robotsCriado } = comporPublicacao({ producao, previas: [{ release: RELEASE, dist: join(fonte, 'dist') }], saida });
