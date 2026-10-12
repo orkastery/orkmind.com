@@ -83,9 +83,9 @@ const translations={
     "es": "Reranking RRF opcional"
   },
   "t16": {
-    "pt": "A SemanticLayer resolve o que entra no contexto: exato por padrão, semântico como aditivo.",
-    "en": "SemanticLayer selects context: exact matching by default, semantic retrieval as an addition.",
-    "es": "SemanticLayer selecciona el contexto: coincidencia exacta por defecto, recuperación semántica como complemento."
+    "pt": "A `SemanticLayer` resolve o que entra no contexto: exato por padrão, semântico como aditivo.",
+    "en": "`SemanticLayer` selects context: exact matching by default, semantic retrieval as an addition.",
+    "es": "`SemanticLayer` selecciona el contexto: coincidencia exacta por defecto, recuperación semántica como complemento."
   },
   "t17": {
     "pt": "governança",
@@ -123,9 +123,9 @@ const translations={
     "es": "CAS y referencias fijadas"
   },
   "t24": {
-    "pt": "A GovernedStore mora acima do adaptador: nenhum backend consegue afrouxar as garantias.",
-    "en": "GovernedStore sits above the adapter, preserving guarantees across backends.",
-    "es": "GovernedStore está por encima del adaptador y conserva las garantías entre backends."
+    "pt": "A `GovernedStore` mora acima do adaptador: nenhum backend consegue afrouxar as garantias.",
+    "en": "`GovernedStore` sits above the adapter, preserving guarantees across backends.",
+    "es": "`GovernedStore` está por encima del adaptador y conserva las garantías entre backends."
   },
   "t25": {
     "pt": "persistência",
@@ -138,14 +138,14 @@ const translations={
     "es": "Dónde reside"
   },
   "t27": {
-    "pt": "memory (testes)",
-    "en": "memory (tests)",
-    "es": "memory (pruebas)"
+    "pt": "`memory` (testes)",
+    "en": "`memory` (tests)",
+    "es": "`memory` (pruebas)"
   },
   "t28": {
-    "pt": "qdrant (opcional)",
-    "en": "qdrant (optional)",
-    "es": "qdrant (opcional)"
+    "pt": "`qdrant` (opcional)",
+    "en": "`qdrant` (optional)",
+    "es": "`qdrant` (opcional)"
   },
   "t29": {
     "pt": "Persistência real inclui histórico, readback e reconciliação; fixture e fallback não fingem produção.",
@@ -192,7 +192,7 @@ const camadas = [
       t("t13"),
       t("t14"),
       t("t15"),
-      "prod → proj → init",
+      "`prod` → `proj` → `init`",
     ],
     desc: t("t16"),
   },
@@ -353,6 +353,16 @@ const camadas = [
 
   .camada:hover .camada-corpo li {
     color: var(--texto);
+  }
+
+  /* A pílula já é monoespaçada: o código dentro dela (backend, nível do portfólio) mantém a
+     semântica e o chip atômico, sem segunda borda nem outro tamanho. */
+  .camada-corpo li :global(code) {
+    font-size: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
   }
 
   .camada-corpo p {
