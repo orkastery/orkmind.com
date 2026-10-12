@@ -1,61 +1,94 @@
-# Publica o site em producao (GitHub Pages) SO por promocao explicita de uma versao.
-# Um push na main nao publica nada: a main vai para o ambiente de teste, e a producao so recebe
-# o commit que foi aprovado la. Cada promocao e uma tag `producao-AAAAMMDD-HHMM` apontando para
-# esse commit, o que deixa o historico de producao no proprio repositorio. Para desfazer, crie
-# uma tag nova no commit anterior (ou rode este workflow a mao com o ref desejado).
-name: Publicar em producao
+# Publica o site no GitHub Pages SÓ por tag, e sempre a publicação composta inteira:
+# - a raiz é a build da última tag producao-AAAAMMDD-HHMM, a produção aprovada pelo dono;
+# - cada tag validacao-<release> ativa vira uma prévia em /releasevalidation/<release>/, fora dos
+#   buscadores (noindex e robots.txt), com a faixa da release e o SHA no topo de cada página.
+# Uma prévia nova mantém a raiz; uma promoção nova mantém as prévias. Um push na main não publica nada.
+# Para tirar uma prévia do ar, apague a tag validacao-<release> no remoto: o apagamento dispara esta
+# publicação de novo (ou rode-a à mão). Ficam no ar as PREVIAS_MAXIMO prévias mais novas pela ordem de
+# versão. Para reverter a produção, crie uma tag producao-* nova no commit anterior. O motor é
+# scripts/publicar.mjs; as regras estão no README.
+name: Publicar
 
 on:
   push:
-    tags: ['producao-*']
+    tags: ['producao-*', 'validacao-*']
+  delete:
   workflow_dispatch:
-    inputs:
-      ref:
-        description: 'Tag producao-* ou SHA a publicar'
-        required: true
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  # Só a execução que publica entra na fila do Pages: o apagamento de uma branch ou de outra tag cai
+  # num grupo próprio e não pode tomar o lugar (nem cancelar) de uma publicação pendente. queue: max mantém na
+  # fila todas as execuções pendentes (o padrão guarda uma só e cancela a anterior), então uma execução que
+  # reprova pela própria tag não descarta a publicação válida que esperava atrás dela.
+  group: ${{ (github.event_name != 'delete' || (github.event.ref_type == 'tag' && startsWith(github.event.ref, 'validacao-'))) && 'pages' || format('pages-ignorado-{0}', github.run_id) }}
   cancel-in-progress: false
+  queue: max
 
 jobs:
   compilar:
+    # Apagar uma branch ou outra tag não muda a publicação; apagar uma tag de prévia a tira do ar.
+    if: github.event_name != 'delete' || (github.event.ref_type == 'tag' && startsWith(github.event.ref, 'validacao-'))
     runs-on: ubuntu-latest
-    outputs:
-      sha: ${{ steps.versao.outputs.sha }}
+    timeout-minutes: 30
+    env:
+      PREVIAS_MAXIMO: '5'
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.ref || github.ref }}
+          fetch-depth: 0
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - run: npm run build
-      - id: versao
-        name: Conferir a versao no artefato
+      - name: Compor a publicação
+        # No push de uma tag, o motor confere que ela entra na publicação: a promoção precisa virar a raiz e a
+        # prévia precisa caber no teto; senão a execução reprova em vez de passar verde sem efeito.
         run: |
-          esperado="$(git rev-parse HEAD)"
-          publicado="$(node -p "require('./dist/versao.json').sha")"
-          echo "sha=$esperado" >> "$GITHUB_OUTPUT"
-          if [ "$esperado" != "$publicado" ]; then
-            echo "::error::dist/versao.json diz $publicado, mas o checkout e $esperado"
-            exit 1
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = push ] && [ "$GITHUB_REF_TYPE" = tag ]; then
+            node scripts/publicar.mjs --saida publicacao --maximo "$PREVIAS_MAXIMO" --resumo "$RUNNER_TEMP/publicacao.json" --tag-do-disparo "$GITHUB_REF_NAME"
+          else
+            node scripts/publicar.mjs --saida publicacao --maximo "$PREVIAS_MAXIMO" --resumo "$RUNNER_TEMP/publicacao.json"
           fi
-          echo "Publicando $esperado"
+      - name: Conferir as versões no artefato
+        run: |
+          set -euo pipefail
+          resumo="$RUNNER_TEMP/publicacao.json"
+          campo() { node -e 'const v=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));process.stdout.write(String(v[process.argv[2]]??""))' "$1" "$2"; }
+          conferir() {
+            esperado="$(git rev-parse "$2^{commit}")"
+            publicado="$(campo "$1" sha)"
+            if [ "$esperado" != "$publicado" ]; then
+              echo "::error::$1 diz $publicado, mas $2 aponta $esperado"
+              exit 1
+            fi
+            if [ -n "$3" ] && [ "$(campo "$1" release)" != "$3" ]; then
+              echo "::error::$1 não diz a release $3"
+              exit 1
+            fi
+            echo "$1: $2 em $esperado"
+          }
+          conferir publicacao/versao.json "$(node -p 'require(process.argv[1]).raiz.tag' "$resumo")" ""
+          node -p 'require(process.argv[1]).previas.map(p=>p.tag+" "+p.release).join("\n")' "$resumo" | while read -r tag release; do
+            [ -n "$tag" ] || continue
+            conferir "publicacao/releasevalidation/$release/versao.json" "$tag" "$release"
+          done
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: publicacao
 
   publicar:
     needs: compilar
     runs-on: ubuntu-latest
+    # Só o deploy fala com o Pages; as builds, que rodam o código de cada commit marcado, só leem o repositório.
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}

@@ -188,7 +188,100 @@ sem imprimir o valor encontrado. O email institucional de contato é uma exceç�
 explícita; a busca não substitui revisão contextual. O formulário apenas prepara
 um email no aplicativo do visitante; não tem backend de coleta.
 
-O workflow existente `.github/workflows/publicar.yml` publica somente por promoção
-explícita com tag `producao-*` ou execução manual com ref. Um commit local não
-publica. A reversão operacional é promover uma revisão anteriormente validada,
-com autorização do responsável; o workflow não foi alterado por esta revisão.
+O workflow `.github/workflows/publicar.yml` publica somente por tag (`producao-*` ou
+`validacao-*`), pelo apagamento de uma tag `validacao-*` ou por execução manual, e
+sempre a publicação composta descrita em "Prévia de uma release". Um commit local
+ou um push na `main` não publica. A reversão operacional é promover uma revisão
+anteriormente validada, com autorização do responsável.
+
+## Prévia de uma release
+
+Cada release em validação sai no domínio do próprio site, em
+`https://orkmind.com/releasevalidation/<release>/`, antes de qualquer promoção. A publicação
+no GitHub Pages é sempre composta: a raiz é a build da última tag `producao-AAAAMMDD-HHMM`
+(a produção aprovada) e cada tag `validacao-<release>` ativa vira uma prévia, compilada
+com `base` `/releasevalidation/<release>/`. Uma prévia nova não muda a raiz; uma promoção
+nova mantém as prévias.
+
+Para abrir a prévia de um commit revisado:
+
+```sh
+git tag validacao-<release> <sha> && git push origin validacao-<release>
+```
+
+A release aceita letras, números, ponto, sublinhado e hífen, começando por letra ou
+número (`0.5.5`, `0.6.0-rc.1`); na ordem das prévias, um sufixo como `-rc.1` conta como
+anterior à versão final. O push da tag dispara `.github/workflows/publicar.yml`. Envie uma
+tag por push: o GitHub não dispara o workflow quando mais de três tags chegam juntas. O
+commit precisa ter a regra da prévia (`src/lib/previa.mjs`).
+
+No push da tag, o GitHub roda o workflow e o motor (`scripts/publicar.mjs`) do próprio
+commit marcado, que montam a publicação inteira, raiz inclusive, e as builds rodam o código
+dele no mesmo job. Só marque commit revisado: quem pode criar tag pode mudar o site. Para
+exigir aprovação antes de cada deploy, o dono pode pôr revisor obrigatório no ambiente
+`github-pages` ou um ruleset nas tags `producao-*` e `validacao-*`.
+
+Na prévia, todo link interno, asset, canonical, alternates, seletor de língua e o
+`versao.json` ficam dentro do `base`; toda página tem `noindex, nofollow` e, no topo, a
+faixa "Prévia da release <release>, não publicada" com o SHA do commit. O `robots.txt` da
+raiz bloqueia `/releasevalidation/`, e a prévia não entra em sitemap da produção. Os dois
+bloqueios juntos têm um custo: o robô que respeita o `robots.txt` nem lê o `noindex`, então
+o endereço de uma prévia que vazar ainda pode aparecer numa busca, sem o conteúdo. O
+commit publicado se confere em `/releasevalidation/<release>/versao.json`, que traz
+`release` e `sha`.
+
+Para tirar uma prévia do ar, apague a tag no remoto:
+
+```sh
+git push origin --delete validacao-<release>
+```
+
+O apagamento dispara a publicação de novo, já sem a prévia (apagar mais de três tags
+de uma vez não dispara; nesse caso, rode à mão). Apague também a tag local
+(`git tag -d validacao-<release>`), senão um envio de todas as tags a traz de volta.
+Para recompor à mão, rode o workflow "Publicar" pela aba Actions, na `main`. Há também
+um teto: ficam no ar as 5 prévias mais novas pela ordem de versão
+(`git -c versionsort.suffix=- tag --sort=-v:refname`), ajustável por `PREVIAS_MAXIMO`
+no workflow.
+
+Só o dono promove para a raiz, criando `producao-AAAAMMDD-HHMM` no commit que validou
+pela prévia. Uma prévia verde não é aprovação. A raiz é sempre a maior tag
+`producao-AAAAMMDD-HHMM` pelo nome; tag `producao-*` fora desse padrão é ignorada. Os nomes
+seguem o mesmo fuso das tags que já existem. No push de uma tag `producao-*` que não vira a
+raiz (nome menor que o da maior, ou fora do padrão), a execução reprova e nada muda no ar;
+o mesmo vale para uma tag `validacao-*` que fique fora do teto. As execuções esperam na
+fila do Pages, uma depois da outra, sem que uma descarte a outra; depois de corrigir uma
+tag recusada, rode o workflow à mão para recompor. Para reverter, crie uma tag
+`producao-*` nova no commit anterior. Apagar uma tag `producao-*` não republica sozinho: a
+raiz só muda na publicação seguinte, para a maior tag que restar. Promover ou reverter para
+um commit anterior a esta regra usa o workflow antigo daquele commit, que publica só a
+raiz: as prévias saem do ar até a próxima publicação composta.
+
+O ambiente `github-pages` do repositório precisa aceitar as tags `validacao-*` na
+política de deploy, configuração feita pelo dono; sem isso, a execução disparada pela
+tag para no job `publicar`. Se a build de qualquer árvore falhar, ou a conferência da
+árvore montada reprovar, nada é publicado e o site no ar fica como estava: uma prévia
+ativa que não compila segura toda publicação, promoção inclusive, até a tag dela sair.
+
+Prova local:
+
+```sh
+npm run build
+SITE_BASE=/releasevalidation/0.5.5/ npm run build
+npm run test:publicar
+node scripts/publicar.mjs --ensaio
+node scripts/publicar.mjs --saida /tmp/publicacao
+```
+
+A build de produção termina com `test:previa`: compila uma prévia de exemplo a partir
+da árvore de trabalho, monta a árvore com o `dist` de produção e confere raiz, prévia,
+`noindex`, faixa, `robots.txt`, `versao.json` e links, com canários que reprovam cada
+desvio. A segunda linha compila uma prévia com todas as checagens do postbuild em modo
+`base` (`SITE_BASE` só aceita `/` e `/releasevalidation/<release>/`). `test:publicar`
+ensaia o motor (`scripts/publicar.mjs`) num repositório Git temporário com tags de
+verdade. As duas últimas usam as tags deste clone: `--ensaio` mostra o que seria
+publicado, e `--saida` monta e confere a árvore; o `npm ci` dos commits cujo
+`package-lock.json` difere do clone precisa de rede. Para iterar mais rápido,
+`SITE_TESTE_PREVIA=0 npm run build` pula a árvore composta do `test:previa` (os testes da
+regra continuam). O `check:visual` continua servindo só a build de produção; a prévia se
+confere pelo `test:previa` e abrindo a URL dela.

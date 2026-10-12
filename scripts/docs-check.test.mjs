@@ -32,10 +32,12 @@ test('new upstream document requires synchronization',()=>fixture(({root})=>{
 }));
 
 import {cpSync,readFileSync} from 'node:fs';
-import {checkLinks,root as siteRoot} from './check-links.mjs';
+import {checkLinks,root as siteRoot,siteBase} from './check-links.mjs';
 import {checkI18n} from './check-i18n.mjs';
 import {checkPublic} from './check-public.mjs';
 import {checkContent} from './check-content.mjs';
+// Os canários editam a saída da build atual: na prévia, os links internos levam o base (SITE_BASE).
+const B=siteBase();
 function outputFixture(run){
  const dir=mkdtempSync(resolve(tmpdir(),'docs-output-canary-'));
  try{cpSync(resolve(siteRoot,'dist'),dir,{recursive:true});run(dir);}finally{rmSync(dir,{recursive:true,force:true});}
@@ -45,7 +47,7 @@ test('built output passes links, locale, content and public checks',()=>{
  assert.ok(checkLinks().checked>0);assert.equal(checkI18n().locales,3);assert.equal(checkPublic().findings,0);assert.ok(checkContent().accessibleDiagrams>0);
 });
 test('missing internal destination fails',()=>outputFixture(dir=>{
- edit(dir,'index.html',s=>s.replace('</main>','<a href="/missing-canary/">Broken</a></main>'));
+ edit(dir,'index.html',s=>s.replace('</main>','<a href="'+B+'/missing-canary/">Broken</a></main>'));
  assert.throws(()=>checkLinks(dir),/Missing target/);
 }));
 test('missing fragment fails',()=>outputFixture(dir=>{
@@ -74,7 +76,7 @@ test('unlinked SVG description fails',()=>outputFixture(dir=>{
 }));
 
 test('ordinary navigation must preserve language',()=>outputFixture(dir=>{
- edit(dir,'en/index.html',s=>s.replace('href="/en/docs/','href="/docs/'));
+ edit(dir,'en/index.html',s=>s.replace('href="'+B+'/en/docs/','href="'+B+'/docs/'));
  assert.throws(()=>checkI18n(dir),/Navigation loses locale/);
 }));
 
@@ -117,7 +119,7 @@ test('removing a restored home section fails the content audit',()=>outputFixtur
  assert.throws(()=>checkContent(dir),/restored home section/);
 }));
 test('missing contribution navigation fails the content audit',()=>outputFixture(dir=>{
- edit(dir,'en/index.html',s=>s.replaceAll('href="/en/docs/contribuir/"','href="/en/docs/"'));
+ edit(dir,'en/index.html',s=>s.replaceAll('href="'+B+'/en/docs/contribuir/"','href="'+B+'/en/docs/"'));
  assert.throws(()=>checkContent(dir),/contribution navigation/);
 }));
 test('untranslated system label fails the content audit',()=>outputFixture(dir=>{

@@ -15,12 +15,15 @@
     "check:i18n": "node scripts/check-i18n.mjs",
     "check:public": "node scripts/check-public.mjs",
     "check:content": "node scripts/check-content.mjs",
+    "check:previa": "node scripts/check-previa.mjs",
     "check:visual": "node scripts/check-visual.mjs",
     "test:docs": "node scripts/docs-schema.test.mjs && node scripts/docs-check.test.mjs",
+    "test:previa": "node scripts/previa.test.mjs",
+    "test:publicar": "node scripts/publicar.test.mjs",
     "test:code": "node scripts/code-format.test.mjs",
     "check:code": "node scripts/check-code.mjs",
     "prebuild": "npm run docs:check",
-    "postbuild": "npm run check:links && npm run check:i18n && npm run check:public && npm run check:content && npm run test:docs && npm run test:code && npm run check:code"
+    "postbuild": "npm run check:links && npm run check:i18n && npm run check:public && npm run check:content && npm run test:docs && npm run test:code && npm run check:code && npm run check:previa && npm run test:previa"
   },
   "dependencies": {
     "@fontsource/geist-mono": "^5.3.0",

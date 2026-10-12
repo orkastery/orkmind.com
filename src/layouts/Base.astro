@@ -7,17 +7,20 @@ import "@fontsource/geist-mono/500.css";
 import "../styles/global.css";
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import {localeFor,localize,locales,languageTag,ui} from '../data/i18n';
+import {localeFor,localize,locales,languageTag,ui,withBase} from '../data/i18n';
+import {releaseDaBase,textoDaFaixa,versaoDaBuild} from '../lib/previa.mjs';
 interface Props { titulo?: string; descricao?: string; }
 const locale=localeFor(Astro.url.pathname),text=ui(locale);
 const {titulo='OrkMind',descricao=text.indexDescription}=Astro.props;
 const origin='https://orkmind.com';
+// Prévia de release (SITE_BASE em /releasevalidation/<release>/): fora dos buscadores e com a faixa no topo.
+const release=releaseDaBase(import.meta.env.BASE_URL),sha=release?versaoDaBuild().sha:null;
 ---
 <!doctype html>
 <html lang={languageTag[locale]}>
 <head>
  <meta charset="utf-8" />
- <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <meta name="viewport" content="width=device-width, initial-scale=1" />{release&&<meta name="robots" content="noindex, nofollow" />}
  <title>{titulo}</title>
  <meta name="description" content={descricao} />
  <link rel="canonical" href={origin+Astro.url.pathname} />
@@ -28,16 +31,16 @@ const origin='https://orkmind.com';
  <meta property="og:type" content="website" />
  <meta property="og:url" content={origin+Astro.url.pathname} />
  <meta property="og:locale" content={{pt:'pt_BR',en:'en_US',es:'es_ES'}[locale]} />
- <meta property="og:image" content={origin+'/og.png'} />
+ <meta property="og:image" content={origin+withBase('/og.png')} />
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="theme-color" content="#07090e" />
- <link rel="icon" href="/favicon.ico" sizes="32x32" />
- <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
- <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
- <link rel="manifest" href="/site.webmanifest" />
+ <link rel="icon" href={withBase('/favicon.ico')} sizes="32x32" />
+ <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+ <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
+ <link rel="manifest" href={withBase('/site.webmanifest')} />
 
 </head>
-<body>
+<body>{release&&<div class="previa-faixa" role="note" lang="pt-BR" data-previa={release} data-sha={sha} style="padding:.45rem 1rem;font:500 .8rem/1.4 var(--f-texto,var(--fonte-texto,system-ui,sans-serif));text-align:center;color:var(--tinta,var(--texto));background:var(--poco,var(--fundo));border-bottom:1px dashed var(--linha-forte,currentColor);">{textoDaFaixa(release)} · <code title={sha} style="font:inherit;font-family:var(--f-mono,var(--fonte-mono,monospace));background:none;padding:0;border:0;">{sha?.slice(0,7)}</code></div>}
  <a class="skip-content" href="#conteudo">{text.skip}</a>
  <Nav />
  <main id="conteudo" tabindex="-1"><slot /></main>
