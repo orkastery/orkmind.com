@@ -1,12 +1,14 @@
 import {readFileSync,writeFileSync,mkdirSync,existsSync,statSync,readdirSync} from 'node:fs';
 import {resolve,extname,relative} from 'node:path';
 import {pathToFileURL} from 'node:url';
-const args=process.argv.slice(2),list=(flag,all)=>args.includes(flag)?args[args.indexOf(flag)+1].split(',').filter(v=>all.includes(v)):all;
-// --widths, --locales e --schemes recortam a matriz, para provar uma guarda contra uma mutação do dist.
-const widths=list('--widths',['1280','700','390','320']).map(Number),schemes=list('--schemes',['light','dark']),locales=list('--locales',['pt','en','es']);
+const args=process.argv.slice(2);
+// --widths, --locales e --schemes recortam a matriz, para provar uma guarda contra uma mutação do
+// dist. Valor desconhecido reprova: recorte vazio não pode passar como aprovado.
+const list=(flag,all,valid)=>{if(!args.includes(flag))return all;const values=args[args.indexOf(flag)+1].split(',');const bad=values.filter(v=>!valid(v));if(bad.length||!values.length)throw Error(`Unknown ${flag} value: ${bad.join(',')||'(none)'}`);return values;};
+const widths=list('--widths',['1280','700','390','320'],v=>/^\d+$/.test(v)&&Number(v)>=200&&Number(v)<=3000).map(Number),schemes=list('--schemes',['light','dark'],v=>['light','dark'].includes(v)),locales=list('--locales',['pt','en','es'],v=>['pt','en','es'].includes(v));
 // Rotas com captura, teclado e interações; as guardas de código e de borda varrem todas as páginas.
 const routes=['/','/docs/','/docs/arquitetura/','/docs/contribuir/'];
-const checks=['overflow','keyboard','diagramLabels','systemSelection','inlineCodeAtomic','adjacentTextWithCode','codeWithinColumn','oneCodeScalePerBlock','linkUnderlineOnCode','oneContentEdge'];
+const checks=['overflow','keyboard','diagramLabels','systemSelection','inlineCodeAtomic','adjacentTextWithCode','codeWithinColumn','codeBreaksAtSeparators','oneCodeScalePerBlock','linkUnderlineOnCode','oneContentEdge'];
 const dist=resolve(args.includes('--dist')?args[args.indexOf('--dist')+1]:'dist');
 const htmlFiles=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?htmlFiles(resolve(dir,e.name)):e.name==='index.html'?[resolve(dir,e.name)]:[]);
 const allRoutes=existsSync(dist)?htmlFiles(dist).map(f=>'/'+relative(dist,f).replace(/index\.html$/,'')).filter(p=>!/^\/(en|es)\//.test(p)).sort():[];
@@ -40,9 +42,25 @@ const codeLayout=()=>{
  // O texto também conta: um chip sem quebra cabe no max-width, mas o texto vaza dele.
  const column=c=>{const b=block(c),cs=getComputedStyle(b),r=b.getBoundingClientRect();return {left:r.left+parseFloat(cs.paddingLeft)+parseFloat(cs.borderLeftWidth),right:r.right-parseFloat(cs.paddingRight)-parseFloat(cs.borderRightWidth)};};
  const beyond=c=>{const col=column(c),r=(c.closest('.code-unit')||c).getBoundingClientRect(),text=document.createRange();text.selectNodeContents(c);return r.right>col.right+1||r.left<col.left-1||c.scrollWidth>c.clientWidth+1||[...text.getClientRects()].some(t=>t.right>col.right+1);};
+ // Chip maior que a coluna quebra por dentro: cada quebra tem de cair depois de separador,
+ // em espaço ou na corcova camelCase, nunca no meio da palavra.
+ const wordBreaks=c=>{
+  const r=document.createRange();r.selectNodeContents(c);
+  if(new Set([...r.getClientRects()].filter(x=>x.width>0).map(x=>Math.round(x.top))).size<2)return [];
+  const chars=[],walker=document.createTreeWalker(c,NodeFilter.SHOW_TEXT);let node;
+  while((node=walker.nextNode()))for(let i=0;i<node.nodeValue.length;i++){const g=document.createRange();g.setStart(node,i);g.setEnd(node,i+1);const box=[...g.getClientRects()].find(x=>x.width>0);chars.push({ch:node.nodeValue[i],top:box?box.top:null});}
+  const found=[];let last=null;
+  for(let i=0;i<chars.length;i++){
+   if(chars[i].top===null)continue;
+   if(last!==null&&chars[i].top>last+2){const before=chars[i-1].ch,after=chars[i].ch;if(!(/[\/._\-=:\s]/.test(before)||/\s/.test(after)||(/[\p{Ll}\p{N}]/u.test(before)&&/\p{Lu}/u.test(after))))found.push(c.textContent.trim()+' ('+before+'|'+after+')');}
+   last=chars[i].top;
+  }
+  return found;
+ };
  const fixed=['.site-header-inner','.editorial-hero > div','.home-main','.secao > .container','.docs-shell','.contact-inner','.footer-inner'];
  return {
   codes:codes.length,
+  wordBreaks:codes.flatMap(wordBreaks),
   split:codes.filter(c=>c.getClientRects().length>1).map(c=>c.textContent.trim()),
   detached:codes.flatMap(c=>{
    const box=c.getBoundingClientRect(),t=c.textContent.trim(),p=neighbour(c,true),n=neighbour(c,false),found=[];
@@ -77,6 +95,7 @@ try{
    if(grid.split.length)throw Error('Inline code split across lines '+localized+' '+width+': '+grid.split.join(', '));
    if(grid.detached.length)throw Error('Adjacent text detached from inline code '+localized+' '+width+': '+grid.detached.join(', '));
    if(grid.column.length)throw Error('Inline code overflows its column '+localized+' '+width+': '+grid.column.join(', '));
+   if(grid.wordBreaks.length)throw Error('Inline code breaks inside a word '+localized+' '+width+': '+grid.wordBreaks.join(', '));
    if(grid.scales.length)throw Error('Inline code sizes differ within a block '+localized+' '+width+': '+grid.scales.join(', '));
    if(grid.underline.length)throw Error('Link underline missing on inline code '+localized+' '+width+': '+grid.underline.join(', '));
    if(grid.edges.length!==1)throw Error('Content edges differ '+localized+' '+width+': '+grid.edges.join(', '));
@@ -142,7 +161,7 @@ try{
    await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
    await page.screenshot({path:resolve(output,shot),fullPage:true});
    if(errors.length)throw Error(errors.join('; '));
-   results.push({path:localized,width,scheme,screenshot:shot,overflow:0,keyboard:true,diagramBoxes:diagram.boxes,labelsContained:true,inlineCodeAtomic:true,adjacentTextWithCode:true,codeWithinColumn:true,oneCodeScalePerBlock:true,linkUnderlineOnCode:true,oneContentEdge:true});await page.close();
+   results.push({path:localized,width,scheme,screenshot:shot,overflow:0,keyboard:true,diagramBoxes:diagram.boxes,labelsContained:true,inlineCodeAtomic:true,adjacentTextWithCode:true,codeWithinColumn:true,codeBreaksAtSeparators:true,oneCodeScalePerBlock:true,linkUnderlineOnCode:true,oneContentEdge:true});await page.close();
   }
   // Varredura das guardas de código e de borda em todas as páginas da língua, sem captura.
   const sweep=await context.newPage(),sweepErrors=[];sweep.on('pageerror',e=>sweepErrors.push(e.message));
@@ -151,13 +170,14 @@ try{
    await sweep.goto('http://docs.local'+localized,{waitUntil:'networkidle'});await sweep.evaluate(()=>document.fonts.ready);
    await sweep.locator('details').evaluateAll(nodes=>nodes.forEach(n=>n.open=true));
    const grid=await auditCode(sweep,localized);
-   results.push({path:localized,width,scheme,audit:'code-and-edge',inlineCodes:grid.codes,inlineCodeAtomic:true,adjacentTextWithCode:true,codeWithinColumn:true,oneCodeScalePerBlock:true,linkUnderlineOnCode:true,oneContentEdge:true});
+   results.push({path:localized,width,scheme,audit:'code-and-edge',inlineCodes:grid.codes,inlineCodeAtomic:true,adjacentTextWithCode:true,codeWithinColumn:true,codeBreaksAtSeparators:true,oneCodeScalePerBlock:true,linkUnderlineOnCode:true,oneContentEdge:true});
   }
   if(sweepErrors.length)throw Error(sweepErrors.join('; '));
   await sweep.close();
   await context.close();
  }
  const shots=results.filter(r=>r.screenshot).length,audits=results.filter(r=>r.audit).length;
+ if(!audits||!shots)throw Error('Empty matrix: nothing was checked');
  writeFileSync(resolve(output,'report.json'),JSON.stringify({status:'passed',screenshots:shots,pageAudits:audits,results},null,2)+'\n');console.log(JSON.stringify({screenshots:shots,pageAudits:audits,status:'passed',output}));
 }catch(e){writeFileSync(resolve(output,'report.json'),JSON.stringify({status:'blocked-or-failed',error:e.message,results},null,2)+'\n');console.error(e.message);process.exitCode=1;}
 finally{if(browser)await browser.close();}

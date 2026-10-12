@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {codeParts,plainText,technicalUnits,technicalHtml,technicalSvg,codeSegments,codeHtml} from '../src/lib/technical-text.mjs';
-import {violations,scaleViolations,glueViolations,cssCanaries,checkCode,proseExceptions,productNames} from './check-code.mjs';
+import {violations,scaleViolations,glueViolations,cssCanaries,checkCode,proseExceptions,productNames,backtickViolations,breakPointViolations} from './check-code.mjs';
 import {mkdtempSync,writeFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
@@ -121,5 +121,31 @@ test('rendered-directory audit rejects a regression and accepts the repair',()=>
   assert.equal(checkCode(dir).unformatted,0);
   writeFileSync(join(dir,'site.css'),css.replace('.code-unit{white-space:nowrap}',''));
   assert.throws(()=>checkCode(dir),/detach/);
+ }finally{rmSync(dir,{recursive:true,force:true});}
+});
+
+test('a backtick left in visible text fails the audit; rendered code has none',()=>{
+ // Componente que esquece o renderizador vaza a marcação, e o identificador de uma palavra escapa da auditoria por padrão.
+ assert.deepEqual(violations('<ul><li>`rule`: Regras</li></ul>'),[]);
+ assert.equal(backtickViolations('<ul><li>`rule`: Regras</li></ul>').length,1);
+ assert.deepEqual(backtickViolations(`<ul><li>${technicalHtml('`rule`: Regras')}</li></ul>`),[]);
+ assert.deepEqual(backtickViolations('<pre><code>echo `date`</code></pre><script>let a=`x`</script>'),[]);
+});
+test('a long inline code needs a break point so it never breaks inside a word',()=>{
+ const path='orkastery/docs/guias/contribuir/versoes-e-publicacao.md';
+ assert.deepEqual(breakPointViolations(`<p><code>${path}</code></p>`),[path]);
+ assert.deepEqual(breakPointViolations(`<p>${codeHtml(path)}</p>`),[]);
+ assert.deepEqual(breakPointViolations('<p><code>REPEATABLE READ, READ ONLY</code> e <code>get</code></p>'),[]);
+ assert.deepEqual(breakPointViolations(`<pre><code>${path}</code></pre>`),[]);
+ const dir=mkdtempSync(join(tmpdir(),'site-code-break-'));
+ const css=':not(pre)>code{display:inline-block;max-width:100%}.code-unit{white-space:nowrap}a>code,a .code-unit,a .code-unit>code{text-decoration:inherit}';
+ try{
+  writeFileSync(join(dir,'site.css'),css);
+  writeFileSync(join(dir,'index.html'),`<ul><li><a href="#"><code>${path}</code></a></li></ul>`);
+  assert.throws(()=>checkCode(dir),/without a break point/);
+  writeFileSync(join(dir,'index.html'),'<ul><li>`rule`: Regras</li></ul>');
+  assert.throws(()=>checkCode(dir),/Backtick leaked/);
+  writeFileSync(join(dir,'index.html'),`<ul><li><a href="#">${codeHtml(path)}</a></li><li>${technicalHtml('`rule`: Regras')}</li></ul>`);
+  assert.equal(checkCode(dir).leakedBackticks,0);
  }finally{rmSync(dir,{recursive:true,force:true});}
 });

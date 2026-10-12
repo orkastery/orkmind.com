@@ -109,9 +109,15 @@ variável de ambiente, `snake_case`, `camelCase`, `PascalCase` composto, arquivo
 identificador pontuado ou versionado, caminho, marcador e link de wiki fora de
 `code`. As exceções são exatas e ficam no próprio script (nomes de produto,
 `Node.js`, `e/ou`). Identificador em palavra comum (`get`, `pending`, `source`) só
-o contexto distingue: a auditoria não o vê, e a marcação depende de quem escreve.
-`check:code` também reprova código com escala própria dentro do parágrafo, unidade
-colada a mais de 12 caracteres e a falta das regras do chip no CSS gerado.
+o contexto distingue: o padrão não o vê, e a marcação depende de quem escreve. Se um
+componente renderizar o texto sem o `TechnicalText`, a crase vaza para a página, e
+`check:code` reprova qualquer crase na prosa visível. Também reprova código com mais
+de 30 caracteres sem ponto de quebra (`<wbr>` ou espaço), código com escala própria
+dentro do parágrafo, unidade colada a mais de 12 caracteres e a falta das regras do
+chip no CSS gerado. Limites conhecidos, sem efeito no conteúdo de hoje: o padrão não
+pega `-h`, `sha256`, `getURL`, `Dockerfile` nem variável sem sublinhado (`HOME`), e
+reprovaria prosa como "e.g.", "leitura/escrita" e "JavaScript"; exceção nova entra
+exata na lista do script.
 
 ## Tipografia, caixa e diagramas
 
@@ -148,9 +154,25 @@ idiomas, 1280/700/390/320 px e esquemas claro/escuro: 96 screenshots, overflow,
 navegação por teclado e o diagrama do sistema. Em todas as páginas de cada idioma,
 nas mesmas larguras e esquemas, confere o código inline (não se parte entre
 linhas, não solta o que encosta nele, não passa da coluna, uma escala por bloco,
-sublinhado do link) e uma só borda esquerda de conteúdo. `--plan` lista a matriz
-sem abrir o navegador; `--dist` aponta outro build, para provar que uma guarda
-reprova a regressão.
+sublinhado do link, e o chip maior que a coluna só quebra depois de separador, em
+espaço ou na corcova camelCase) e uma só borda esquerda de conteúdo. `--plan` lista a
+matriz sem abrir o navegador. `--dist` aponta outro build e `--widths`, `--locales` e
+`--schemes` recortam a matriz (por exemplo `--widths 320 --locales pt --schemes dark`),
+para provar que uma guarda reprova uma mutação do dist; valor desconhecido e matriz
+vazia reprovam.
+
+Para medir o código inline de um build por largura, antes e depois de uma mudança:
+
+```sh
+PLAYWRIGHT_MODULE=/caminho/playwright-core/index.mjs \
+CHROMIUM_EXECUTABLE=/caminho/chromium \
+node scripts/measure-code.mjs --dist dist --from 320 --to 1280 --step 10 --output /diretorio/privado/medida.json
+```
+
+A saída conta, por largura, código partido entre linhas, código maior que a coluna
+que quebra dentro do próprio chip (e quantos quebram no meio da palavra), o que
+encosta no chip solto noutra linha, chip além da coluna, estouro da janela e
+identificadores fora de `code` na prosa visível, com os padrões do `check:code`.
 Os PNGs e `report.json` ficam fora do repositório público. Se o navegador não puder
 iniciar, o comando falha e registra o impedimento; não muda sandbox nem permissões.
 A inspeção humana das imagens ainda é necessária para avaliar qualidade visual.

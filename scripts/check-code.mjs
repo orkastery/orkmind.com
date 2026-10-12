@@ -65,6 +65,21 @@ export function violations(html) {
  const dom = typeof html === 'string' ? parse(html) : html;
  return [...new Set(prose(dom).split(/[\u0000\u0001]/).flatMap(findings))];
 }
+// Crase na prosa visível é marcação que vazou: o renderizador nunca emite crase. Pega o
+// identificador de uma palavra (rule, get, pending) que a auditoria por padrão não vê.
+export function backtickViolations(html) {
+ const dom = typeof html === 'string' ? parse(html) : html;
+ return prose(dom).split(/[\u0000\u0001]/).filter(text => text.includes('`')).map(text => text.trim().slice(0, 80));
+}
+// Código maior que a coluna estreita (mais de 30 caracteres, a largura de uma linha a 320 px)
+// precisa de ponto de quebra (<wbr> ou espaço); sem ele, quebraria no meio da palavra.
+export function breakPointViolations(html) {
+ const dom = typeof html === 'string' ? parse(html) : html;
+ return walk(dom).filter(n => n.tagName === 'code' && n.parentNode?.tagName !== 'pre').filter(code => {
+  const text = content(code);
+  return text.length > 30 && !/\s/.test(text) && !walk(code).some(n => n.tagName === 'wbr');
+ }).map(code => content(code));
+}
 
 // Código com classe própria dentro de parágrafo fugiria da escala comum do bloco.
 export function scaleViolations(html) {
@@ -90,18 +105,22 @@ export function cssCanaries(css) {
 }
 
 export function checkCode(dist = distArg()) {
- const all = pages(dist), errors = [], scaled = [], glued = [];
+ const all = pages(dist), errors = [], scaled = [], glued = [], leaked = [], unbreakable = [];
  for (const page of all) {
   for (const item of violations(page.dom)) errors.push(`${page.path}: ${item}`);
+  for (const item of backtickViolations(page.dom)) leaked.push(`${page.path}: ${item}`);
+  for (const item of breakPointViolations(page.dom)) unbreakable.push(`${page.path}: ${item}`);
   for (const item of scaleViolations(page.dom)) scaled.push(`${page.path}: ${item}`);
   for (const item of glueViolations(page.dom)) glued.push(`${page.path}: ${item}`);
  }
  if (errors.length) throw Error('Technical text outside code:\n' + errors.join('\n'));
+ if (leaked.length) throw Error('Backtick leaked into visible text:\n' + leaked.join('\n'));
+ if (unbreakable.length) throw Error('Long inline code without a break point:\n' + unbreakable.join('\n'));
  if (scaled.length) throw Error('Inline code with its own type scale:\n' + scaled.join('\n'));
  if (glued.length) throw Error('Inline code unit glues more than 12 characters:\n' + glued.join('\n'));
  const css = files(dist).filter(f => f.endsWith('.css')).map(f => readFileSync(f, 'utf8')).join('\n') + all.flatMap(p => p.nodes.filter(n => n.tagName === 'style').map(content)).join('\n');
  cssCanaries(css);
  const codes = all.reduce((sum, p) => sum + p.nodes.filter(isCode).length, 0);
- return {pages: all.length, inlineCodes: codes, unformatted: 0, scaledInlineCode: 0, longCodeUnits: 0, proseExceptions: proseExceptions.length + productNames.length};
+ return {pages: all.length, inlineCodes: codes, unformatted: 0, leakedBackticks: 0, unbreakableCodes: 0, scaledInlineCode: 0, longCodeUnits: 0, proseExceptions: proseExceptions.length + productNames.length};
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) { try { console.log(JSON.stringify(checkCode())); } catch (error) { console.error(error.message); process.exitCode = 1; } }
