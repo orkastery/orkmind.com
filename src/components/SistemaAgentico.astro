@@ -135,6 +135,7 @@ const translations={
 };
 const t=(key:keyof typeof translations)=>translations[key][locale];
 import Icone from "./Icone.astro";
+import TechnicalText from "./TechnicalText.astro";
 
 interface No {
   id: string;
@@ -217,10 +218,10 @@ const posicoes = nos.map((_, i) => {
   <div class="container">
     <div class="sistema-cabeca">
       <h2 class="titulo-display" id="sistema-titulo">
-        {t("t24")}
+        <TechnicalText text={t("t24")}/>
       </h2>
       <p class="prosa">
-        {t("t25")}
+        <TechnicalText text={t("t25")}/>
       </p>
     </div>
 
@@ -247,7 +248,7 @@ const posicoes = nos.map((_, i) => {
             style={`--x:${posicoes[i]!.x};--y:${posicoes[i]!.y}`}
           >
             <Icone nome={no.icone} tamanho={19} />
-            <span data-node-label>{no.rotulo}</span>
+            <span data-node-label><TechnicalText text={no.rotulo}/></span>
           </button>
         ))}
       </div>
@@ -255,11 +256,11 @@ const posicoes = nos.map((_, i) => {
       <aside class="painel" aria-live="polite">
         {nos.map((no, i) => (
           <div class="painel-item" data-painel={no.id} hidden={i !== 0}>
-            <h3>{no.rotulo}</h3>
-            <p class="prosa">{no.desc}</p>
+            <h3><TechnicalText text={no.rotulo}/></h3>
+            <p class="prosa"><TechnicalText text={no.desc}/></p>
             <p class="painel-fluxo">
               <Icone nome="flow-arrow" tamanho={16} />
-              {no.fluxo}
+              <TechnicalText text={no.fluxo}/>
             </p>
           </div>
         ))}
