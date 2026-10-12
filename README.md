@@ -26,8 +26,9 @@ npm run check:code
 
 O prebuild confere o snapshot e a revisão editorial. O postbuild confere HTML,
 links, fragmentos, idiomas, metadados, padrões públicos, semântica e o código no
-texto, e executa canários negativos. Build aprovado não é revisão visual nem prova de naturalidade
-da tradução. Links externos são inventariados, mas não consultados pela prova offline.
+texto, e executa canários negativos. Build aprovado não é revisão visual nem prova
+de naturalidade da tradução. Links externos são inventariados, mas não consultados
+pela prova offline.
 `parse5` já integra a árvore do Astro; a mesma versão do lockfile é declarada
 diretamente para os auditores de HTML, sem adicionar outro parser.
 
@@ -102,8 +103,9 @@ Marque com crase o que a fonte marca como código: executável (`orkmind`, `ork`
 campo, operação, estado, coleção, contrato, código de erro e a branch `main`. Nome
 de produto e de padrão fica em prosa: OrkMind, PostgreSQL, Hermes, OpenClaw, MCP,
 CLI, ACL, AES-256-GCM, append-only. `pgvector`, `memory` e `qdrant` são código quando
-nomeiam o backend configurado; "PostgreSQL com pgvector", a extensão, fica em prosa. Mudar o texto de um catálogo
-das docs pede a revisão editorial do artigo (`docs:sync --review`, acima).
+nomeiam o backend configurado; "PostgreSQL com pgvector", a extensão, fica em prosa.
+Mudar o texto de um catálogo das docs pede a revisão editorial do artigo
+(`docs:sync --review`, acima).
 
 `check:code` lê a prosa visível das páginas geradas e reprova executável, opção,
 variável de ambiente, `snake_case`, `camelCase`, `PascalCase` composto, arquivo,
@@ -167,7 +169,8 @@ Para medir o código inline de um build por largura, antes e depois de uma mudan
 ```sh
 PLAYWRIGHT_MODULE=/caminho/playwright-core/index.mjs \
 CHROMIUM_EXECUTABLE=/caminho/chromium \
-node scripts/measure-code.mjs --dist dist --from 320 --to 1280 --step 10 --output /diretorio/privado/medida.json
+node scripts/measure-code.mjs --dist dist --from 320 --to 1280 --step 10 \
+  --output /diretorio/privado/medida.json
 ```
 
 A saída conta, por largura, código partido entre linhas, código maior que a coluna
