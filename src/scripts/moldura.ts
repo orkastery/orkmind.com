@@ -49,5 +49,6 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   if (en.isIntersecting && (en.intersectionRatio >= 0.2 || en.intersectionRect.height >= innerHeight * 0.2)) revelar(en.target);
  }), {threshold: [0, 0.05, 0.1, 0.2]});
  blocos.forEach(el => io.observe(el));
- document.addEventListener('focusin', e => { const bloco = (e.target as Element).closest?.('[data-reveal]:not(.revelado)'); if (bloco) revelar(bloco); });
+ // No foco, sem transição: o bloco já aparece inteiro.
+ document.addEventListener('focusin', e => { const bloco = (e.target as Element).closest?.('[data-reveal]:not(.revelado)') as HTMLElement | null; if (bloco) { bloco.style.transition = 'none'; revelar(bloco); } });
 }

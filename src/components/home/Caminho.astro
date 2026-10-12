@@ -1,8 +1,9 @@
 ---
 // 07 · Como funciona (#caminho): as seis etapas como abas (Governar no início), os dois cartões da
 // etapa escolhida (o que ela entrega e o que o OrkMind exige para passar, com o identificador real
-// do código) e a nota da entrada retida. Cada etapa sai pronta do build; só a escolhida aparece. A
-// aba escolhida usa a cor de ação do kit (--acao), nunca o jade.
+// do código) e a nota da entrada retida. Cada etapa sai pronta do build; com JavaScript, viram
+// abas (role, aria-selected, setas) e só a escolhida aparece; sem ele, as seis ficam abertas e os
+// botões não fingem ser abas. A aba escolhida usa a cor de ação do kit (--acao), nunca o jade.
 import CabecalhoSecao from '../ds/CabecalhoSecao.astro';
 import TechnicalText from '../TechnicalText.astro';
 import {etapas,etapaDetalhe,ESTADO_INICIAL,cor} from '../../lib/home-state.mjs';
@@ -18,13 +19,13 @@ const saidaLang=localeFor(Astro.url.pathname)==='pt'?undefined:'pt-BR';
 <section id="caminho" class="caminho secao-padrao">
  <div class="container">
   <CabecalhoSecao sobretitulo={c.eyebrow} titulo={c.title} lead={c.lead} medidaTitulo="18ch" medidaLead="60ch"/>
-  <div class="etapas" data-reveal role="tablist" aria-label={c.title}>
-   {abas.map((f,i)=><button type="button" class="etapa" role="tab" id={'etapa-'+i} data-etapa={i} aria-selected={f.on?'true':'false'} aria-controls="caminho-painel" tabindex={f.on?'0':'-1'} style={`background:${cor(f.bg)};border-color:${cor(f.bd)};color:${cor(f.fg)}`}>
+  <div class="etapas" data-reveal data-etapas aria-label={c.title}>
+   {abas.map((f,i)=><button type="button" class="etapa" id={'etapa-'+i} data-etapa={i} style={`background:${cor(f.bg)};border-color:${cor(f.bd)};color:${cor(f.fg)}`}>
     <span class="etapa-n">{f.n}</span>
     <span class="etapa-nome">{f.name}</span>
    </button>)}
   </div>
-  <div class="caminho-detalhe" id="caminho-painel" role="tabpanel" aria-labelledby={'etapa-'+ESTADO_INICIAL.stage} aria-live="polite">
+  <div class="caminho-detalhe" id="caminho-painel">
    {c.stages.map((_:string,i:number)=>{const d=etapaDetalhe(t,i);return <div class:list={['caminho-par',i===ESTADO_INICIAL.stage&&'ativo']} data-detalhe={i}>
     <div class="caminho-cartao">
      <div class="caminho-rotulo">{d.gives}</div>

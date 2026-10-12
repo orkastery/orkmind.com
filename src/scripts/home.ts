@@ -104,9 +104,16 @@ if (dados) {
   $('[data-integracao-texto]').forEach(el => el.classList.toggle('ativo', Number(el.dataset.integracaoTexto) === estado.integration));
  }
  $('[data-integracao]').forEach(el => el.addEventListener('click', () => { estado.integration = Number(el.dataset.integracao); pintaIntegracoes(); }));
+ // O estado (aria-pressed) e o anúncio da troca só existem com JavaScript: sem ele, as quatro ficam abertas.
+ document.getElementById('integracoes-detalhe')?.setAttribute('aria-live', 'polite');
+ pintaIntegracoes();
 
- // Etapas do caminho (abas com seta, Home e End).
+ // Etapas do caminho: com JavaScript viram abas (setas, Home e End); sem ele, as seis ficam abertas.
  const abas = $('[data-etapa]');
+ $('[data-etapas]')[0]?.setAttribute('role', 'tablist');
+ abas.forEach(aba => { aba.setAttribute('role', 'tab'); aba.setAttribute('aria-controls', 'caminho-painel'); });
+ const painel = document.getElementById('caminho-painel');
+ painel?.setAttribute('role', 'tabpanel'); painel?.setAttribute('aria-live', 'polite');
  function pintaEtapas(foco = false) {
   etapas(t, estado.stage).forEach((f: any, i: number) => {
    const aba = abas[i]; if (!aba) return;
@@ -117,6 +124,7 @@ if (dados) {
   $('[data-detalhe]').forEach(el => el.classList.toggle('ativo', Number(el.dataset.detalhe) === estado.stage));
   document.getElementById('caminho-painel')?.setAttribute('aria-labelledby', 'etapa-' + estado.stage);
  }
+ pintaEtapas();
  abas.forEach(aba => {
   aba.addEventListener('click', () => { estado.stage = Number(aba.dataset.etapa); pintaEtapas(); });
   // A seta parte da aba que tem o foco (com o roving tabindex, é a escolhida).

@@ -22,7 +22,7 @@ const m=t.integrations,linhas=integracoes(t,ESTADO_INICIAL.integration);
       <div class="matriz-etapas">{t.path.stages.map((e:string)=><div>{e}</div>)}</div>
       <span class="matriz-turno">{m.turnHead}</span>
      </div>
-     {linhas.map((l,i)=><button type="button" class="integracao" data-integracao={i} aria-pressed={l.on?'true':'false'} aria-controls="integracoes-detalhe" style={`background:${cor(l.bg)}`}>
+     {linhas.map((l,i)=><button type="button" class="integracao" data-integracao={i} aria-controls="integracoes-detalhe" style={`background:${cor(l.bg)}`}>
       <span class="integracao-tag">{l.tag}</span>
       <span class="integracao-blocos">{l.blocks.map(b=><span class="integracao-bloco" style={`grid-column:${b.col}`}>
        <span class:list={['integracao-faixa',b.sobDemanda&&'integracao-faixa-pedido']} style={`background:${cor(b.bg)};color:${cor(b.fg)};border-color:${cor(b.bd)}`}>{b.label}</span>
@@ -36,7 +36,7 @@ const m=t.integrations,linhas=integracoes(t,ESTADO_INICIAL.integration);
    <li><span class="amostra amostra-pedido" aria-hidden="true"></span>{m.legendDemand}</li>
    <li><span class="amostra" aria-hidden="true"></span>{m.legendBlock}</li>
   </ul>
-  <div class="integracoes-detalhe" id="integracoes-detalhe" aria-live="polite">
+  <div class="integracoes-detalhe" id="integracoes-detalhe">
    <div class="integracoes-cartao">
     {m.list.map((_:any,i:number)=>{const d=integracaoDetalhe(t,i);return <div class:list={['integracoes-item',i===ESTADO_INICIAL.integration&&'ativo']} data-integracao-texto={i}>
      <div class="integracoes-rotulo">{d.when}</div>

@@ -141,7 +141,9 @@ let no=0;
 .no-topo{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--e-2)}
 .no-linha{display:flex;align-items:center;justify-content:space-between;gap:var(--e-2)}
 /* Mais e menos desenhados: o nó aberto mostra o menos. */
-.no-mais{position:relative;flex:none;width:10px;height:10px}
+.no-mais{position:relative;flex:none;width:10px;height:10px;display:none}
+/* O mais e o menos só aparecem com JavaScript, quando o nó abre e fecha de verdade. */
+:global(.js) .no-mais{display:block}
 .no-mais::before,.no-mais::after{content:'';position:absolute;left:0;top:4px;width:10px;height:1.5px;border-radius:1px;background:var(--texto-3)}
 .no-mais::after{transform:rotate(90deg);transition:transform var(--dur-media) var(--curva)}
 .no-botao[aria-expanded="true"] .no-mais::after{transform:rotate(0deg)}

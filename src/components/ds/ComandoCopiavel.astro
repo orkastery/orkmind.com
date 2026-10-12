@@ -29,7 +29,7 @@ const dados={'data-copiar':comando,'data-rotulo':m.copy,'data-rotulo-ok':m.copie
 .comando-botao:focus-visible{box-shadow:var(--anel-foco)}
 .comando-prompt{color:var(--luar-2)}
 /* O comando é código e inteiro: herda a letra do botão, sem o chip da prosa. */
-.comando-texto{display:inline;font:inherit;color:inherit;background:none;padding:0;border-radius:0;white-space:nowrap}
+.comando-texto{display:inline;font:inherit;color:inherit;background:none;padding:0;border-radius:0;white-space:nowrap;user-select:text}
 .comando-rotulo{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;min-width:64px;height:36px;padding:0 var(--e-3);border-radius:9px;background:var(--noite-3);color:var(--luar);font:var(--peso-destaque) 12px/1 var(--f-mono);letter-spacing:.04em}
 /* O estado do rótulo vem no texto e no glifo (✓, ×); a cor fica só no contorno, porque água e
    brasa não passam de 4,5:1 sobre noite-3 em 12 px. */

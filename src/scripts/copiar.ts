@@ -1,6 +1,6 @@
 // Comando copiável: copia o comando do botão. O rótulo vira "✓ copiado" por 1,6 s; se a área de
-// transferência recusar, "× use Ctrl+C" (⌘C no Mac), e a mensagem para leitor de tela manda copiar
-// à mão. Cada botão cuida do próprio rótulo.
+// transferência recusar, "× use Ctrl+C" (⌘C no Mac), o comando fica selecionado e a mensagem para
+// leitor de tela pede o atalho. Cada botão cuida do próprio rótulo.
 const atalho = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? '⌘C' : 'Ctrl+C';
 for (const botao of document.querySelectorAll<HTMLButtonElement>('[data-copiar]')) {
  let volta = 0;
@@ -20,6 +20,8 @@ for (const botao of document.querySelectorAll<HTMLButtonElement>('[data-copiar]'
  botao.addEventListener('click', async () => {
   let ok = true;
   try { if (!navigator.clipboard) throw new Error('sem área de transferência'); await navigator.clipboard.writeText(botao.dataset.copiar || ''); } catch { ok = false; }
+  // Na recusa, o comando fica selecionado, e a mensagem pede só o atalho.
+  if (!ok) { const texto = botao.querySelector('.comando-texto'), sel = getSelection(); if (texto && sel) { const r = document.createRange(); r.selectNodeContents(texto); sel.removeAllRanges(); sel.addRange(r); } }
   mostrar(ok ? 'ok' : 'falha');
   clearTimeout(volta);
   volta = window.setTimeout(() => mostrar(null), 1600);
