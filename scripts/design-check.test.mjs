@@ -7,7 +7,7 @@ import {mkdtempSync,mkdirSync,writeFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {parse} from 'parse5';
-import {acentoForaDoLugar,focoSemAnel,fontesForaDoKit,corSolta,corSoltaNoHtml,codigoForaDaNoite,comandoForaDaNoite,recursosDeFora,marcaFora,vozForaDoKit,licencasFaltando,regras} from './check-design.mjs';
+import {acentoForaDoLugar,jadeInlineForaDoLugar,focoSemAnel,fontesForaDoKit,corSolta,corSoltaNoHtml,codigoForaDaNoite,comandoForaDaNoite,recursosDeFora,marcaFora,vozForaDoKit,licencasFaltando,regras} from './check-design.mjs';
 
 const doc=corpo=>parse(`<!doctype html><html><head></head><body>${corpo}</body></html>`);
 
@@ -20,6 +20,12 @@ test('jade: só no comando de instalação, no separador, no ponto que espera e 
  assert.deepEqual(acentoForaDoLugar(certo),[]);
  assert.deepEqual(acentoForaDoLugar(certo+'.cabecalho-nav a[aria-current]{color:var(--espera-texto)}'),['.cabecalho-nav a[aria-current]']);
  assert.deepEqual(acentoForaDoLugar('.etapa,.comando{border-color:var(--jade)}'),['.etapa']);
+});
+
+test('jade inline: só dentro do que espera você (data-espera)',()=>{
+ assert.deepEqual(jadeInlineForaDoLugar(doc('<div data-entrada="2" data-espera><span style="background:var(--espera)"></span></div><li data-espera style="border-color:var(--espera)"></li>')),[]);
+ assert.deepEqual(jadeInlineForaDoLugar(doc('<h1 class="hero-titulo" style="color:var(--espera);background:var(--jade)">x</h1>')),['h1.hero-titulo']);
+ assert.deepEqual(jadeInlineForaDoLugar(doc('<div data-entrada="0"><span class="b" style="color:var(--espera-texto)"></span></div>')),['span.b']);
 });
 
 test('foco: o anel do kit em :focus-visible e nenhum outline:none sem anel',()=>{
@@ -70,7 +76,8 @@ test('marca: assinatura clara no cabeçalho, escura no rodapé noite, só arquiv
 
 test('voz: nenhum termo proibido pelo kit e nenhum travessão',()=>{
  assert.deepEqual(vozForaDoKit('Agentes vêm e vão. A memória fica; a regra espera você.'),[]);
- for(const frase of ['nenhum backend consegue afrouxar as garantias','a batuta da orquestra','no ritmo do metrônomo','como Bernstein regia','um produto disruptivo','a thread entra em pausa'])assert.ok(vozForaDoKit(frase).length>0,'não pegou: '+frase);
+ for(const frase of ['nenhum backend consegue afrouxar as garantias','o backend afrouxou a regra','afrouxe a regra','a batuta da orquestra','no ritmo do metrônomo','Metrônomos','como Bernstein regia','um produto disruptivo','a thread entra em pausa','pausaram a fila','no backend loosens the guarantees','a metronome','the baton','a disruptive product','the thread pauses','paused for approval'])assert.ok(vozForaDoKit(frase).length>0,'não pegou: '+frase);
+ for(const frase of ['a regra espera você','o despacho segue','paus de selfie não existem'])assert.deepEqual(vozForaDoKit(frase),[],'falso positivo: '+frase);
  assert.deepEqual(vozForaDoKit('memória — governada'),['travessão']);
 });
 

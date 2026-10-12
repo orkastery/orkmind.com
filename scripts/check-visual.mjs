@@ -5,10 +5,10 @@ const args=process.argv.slice(2);
 // --widths, --locales e --schemes recortam a matriz, para provar uma guarda contra uma mutação do
 // dist. Valor desconhecido reprova: recorte vazio não pode passar como aprovado.
 const list=(flag,all,valid)=>{if(!args.includes(flag))return all;const values=args[args.indexOf(flag)+1].split(',');const bad=values.filter(v=>!valid(v));if(bad.length||!values.length)throw Error(`Unknown ${flag} value: ${bad.join(',')||'(none)'}`);return values;};
-const widths=list('--widths',['1440','1280','1024','768','390','320'],v=>/^\d+$/.test(v)&&Number(v)>=200&&Number(v)<=3000).map(Number),schemes=list('--schemes',['light','dark'],v=>['light','dark'].includes(v)),locales=list('--locales',['pt','en'],v=>['pt','en'].includes(v));
+const widths=list('--widths',['1440','1280','1024','768','390','320'],v=>/^\d+$/.test(v)&&Number(v)>=200&&Number(v)<=3000).map(Number),schemes=list('--schemes',['light'],v=>['light','dark'].includes(v)),locales=list('--locales',['pt','en'],v=>['pt','en'].includes(v));
 // Rotas com captura, teclado e interações; as guardas de código e de borda varrem todas as páginas.
 const routes=['/','/docs/','/docs/arquitetura/','/docs/contribuir/'];
-const checks=['overflow','keyboard','focusVisible','touchTargets','contrast','copy','menu','reducedMotion','stopMotion','diagramLabels','systemSelection','integrations','stageTabs','inlineCodeAtomic','adjacentTextWithCode','codeWithinColumn','codeBreaksAtSeparators','oneCodeScalePerBlock','linkUnderlineOnCode','oneContentEdge'];
+const checks=['overflow','keyboard','focusVisible','touchTargets','contrast','copy','menu','reducedMotion','stopMotion','noJavaScript','zoom400','shortMenu','diagramLabels','systemSelection','integrations','stageTabs','inlineCodeAtomic','adjacentTextWithCode','codeWithinColumn','codeBreaksAtSeparators','oneCodeScalePerBlock','linkUnderlineOnCode','oneContentEdge'];
 const dist=resolve(args.includes('--dist')?args[args.indexOf('--dist')+1]:'dist');
 const htmlFiles=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?htmlFiles(resolve(dir,e.name)):e.name==='index.html'?[resolve(dir,e.name)]:[]);
 const allRoutes=existsSync(dist)?htmlFiles(dist).map(f=>'/'+relative(dist,f).replace(/index\.html$/,'')).filter(p=>!/^\/(en|es)\//.test(p)).sort():[];
@@ -270,6 +270,8 @@ try{
   {const {ctx,page}=await open({permissions:['clipboard-read','clipboard-write']});
    const button=page.locator('.comando-hero [data-copiar]'),label=button.locator('[data-rotulo-visivel]');
    await button.click();
+   // O rótulo muda quando a área de transferência responde: a conferência espera por ele.
+   await page.waitForFunction(()=>document.querySelector('.comando-hero [data-rotulo-visivel]')?.textContent?.startsWith('✓'),null,{timeout:3000}).catch(()=>{});
    const shown=await label.textContent(),copied=await page.evaluate(()=>navigator.clipboard.readText()),status=await page.locator('.comando-hero [data-status]').textContent();
    if(copied!=='pip install orkmind'||!shown.startsWith('✓')||!status.trim())throw Error('Copy failed '+locale+': '+shown+' / '+copied+' / '+status);
    await page.waitForTimeout(1700);
@@ -278,6 +280,7 @@ try{
   {const {ctx,page}=await open({});
    await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:()=>Promise.reject(new Error('refused'))}}));
    const button=page.locator('.comando-hero [data-copiar]');await button.click();
+   await page.waitForFunction(()=>document.querySelector('.comando-hero [data-rotulo-visivel]')?.textContent?.startsWith('×'),null,{timeout:3000}).catch(()=>{});
    const shown=await button.locator('[data-rotulo-visivel]').textContent(),status=await page.locator('.comando-hero [data-status]').textContent();
    if(!/^× /.test(shown)||!/Ctrl\+C|⌘C/.test(shown)||!/Ctrl\+C|⌘C/.test(status))throw Error('Copy refusal not shown '+locale+': '+shown+' / '+status);
    await ctx.close();}
@@ -308,7 +311,43 @@ try{
    if(c===d)throw Error('Stop motion button does not resume '+locale);
    await ctx.close();}
   {const {ctx,page}=await open({});if(await page.locator('[data-movimento]').isVisible())throw Error('Stop motion button shown with reduced motion '+locale);await ctx.close();}
-  results.push({path:home.replace(origin,''),interactions:{copy:true,copyRefusal:true,menuEscape:true,reducedMotion:reduced,motion:free,stopMotion:true}});
+  // Sem JavaScript nada do conteúdo fica escondido: as descrições dos nós, os textos das quatro
+  // integrações, as seis etapas e os blocos da entrada ao rolar saem à vista.
+  {const ctx=await browser.newContext({viewport:{width:1280,height:900},javaScriptEnabled:false,serviceWorkers:'block'});await serve(ctx,origin);const page=await ctx.newPage();await page.goto(home,{waitUntil:'load'});
+   const r=await page.evaluate(()=>{const vis=el=>{const b=el.getBoundingClientRect();return b.width>0&&b.height>0&&getComputedStyle(el).visibility!=='hidden'&&Number(getComputedStyle(el).opacity)>0.99;};
+    const conta=sel=>[...document.querySelectorAll(sel)].filter(vis).length;
+    return {desc:conta('.no-desc'),integ:conta('[data-integracao-texto]'),etapas:conta('[data-detalhe]'),reveal:[...document.querySelectorAll('[data-reveal]')].filter(el=>!vis(el)).length,
+     escondido:[...document.querySelectorAll('main [hidden]')].filter(el=>!el.matches('[data-movimento]')).map(el=>el.tagName.toLowerCase()+'.'+el.className)};});
+   if(r.desc!==8||r.integ!==8||r.etapas!==6||r.reveal||r.escondido.length)throw Error('Content hidden without JavaScript '+locale+': '+JSON.stringify(r));
+   await ctx.close();}
+  // Janela de 320 x 256 (1280 x 1024 com zoom de 400%), com movimento: rolando do topo ao fim,
+  // todo bloco da entrada ao rolar aparece; e nenhuma parada do Tab cai em bloco invisível.
+  {const {ctx,page}=await open({viewport:{width:320,height:256},reducedMotion:'no-preference'});
+   const altura=await page.evaluate(()=>document.documentElement.scrollHeight);
+   for(let y=0;y<=altura;y+=120){await page.evaluate(v=>window.scrollTo({top:v,behavior:'instant'}),y);await page.waitForTimeout(40);}
+   await page.waitForTimeout(700);
+   const faltam=await page.evaluate(()=>[...document.querySelectorAll('[data-reveal]:not(.revelado)')].map(el=>el.tagName.toLowerCase()+'.'+[...el.classList].join('.')));
+   if(faltam.length)throw Error('Reveal never fires at 320x256 '+locale+': '+faltam.join(', '));
+   await page.goto(home,{waitUntil:'networkidle'});await page.evaluate(()=>document.fonts.ready);
+   const invisiveis=new Set();let primeiro=null;
+   for(let i=0;i<220;i++){await page.keyboard.press('Tab');await page.waitForTimeout(20);
+    const f=await page.evaluate(()=>{const el=document.activeElement;if(!el||el===document.body)return null;let o=1;for(let x=el;x;x=x.parentElement)o*=Number(getComputedStyle(x).opacity);return {name:el.tagName.toLowerCase()+'.'+[...el.classList].join('.')+' "'+(el.textContent||'').trim().slice(0,20)+'"',o};});
+    if(!f)continue;if(primeiro===null)primeiro=f.name;else if(f.name===primeiro)break;
+    await page.waitForTimeout(650);
+    const o=await page.evaluate(()=>{let o=1;for(let x=document.activeElement;x;x=x.parentElement)o*=Number(getComputedStyle(x).opacity);return o;});
+    if(o<0.99)invisiveis.add(f.name);}
+   if(invisiveis.size)throw Error('Focus lands on invisible content at 320x256 '+locale+': '+[...invisiveis].slice(0,6).join(', '));
+   await ctx.close();}
+  // Menu numa janela baixa (568 x 320): o fim do painel aberto se alcança pelo teclado.
+  {const {ctx,page}=await open({viewport:{width:568,height:320}});
+   await page.locator('[data-menu]').click();
+   const fora=[];
+   for(let i=0;i<30;i++){await page.keyboard.press('Tab');
+    const f=await page.evaluate(()=>{const el=document.activeElement,painel=document.querySelector('[data-painel]');if(!el||!painel||!painel.contains(el))return null;const r=el.getBoundingClientRect();return {name:el.tagName.toLowerCase()+' "'+(el.textContent||'').trim().slice(0,20)+'"',dentro:r.top>=-1&&r.bottom<=innerHeight+1};});
+    if(!f){if(i>2)break;continue;}if(!f.dentro)fora.push(f.name);}
+   if(fora.length)throw Error('Menu items out of reach at 568x320 '+locale+': '+fora.join(', '));
+   await ctx.close();}
+  results.push({path:home.replace(origin,''),interactions:{copy:true,copyRefusal:true,menuEscape:true,reducedMotion:reduced,motion:free,stopMotion:true,noJavaScript:true,zoom400:true,shortMenu:true}});
  }
  const shots=results.filter(r=>r.screenshot).length,audits=results.filter(r=>r.audit).length;
  if(!audits||!shots)throw Error('Empty matrix: nothing was checked');

@@ -23,6 +23,14 @@ export function acentoForaDoLugar(css){
  return regras(css).filter(r=>ACENTO.test(r.declaracoes)&&!blocoDeTokens(r.seletor)).flatMap(r=>r.seletor.split(',').map(s=>s.trim()).filter(s=>!ACENTO_PERMITIDO.some(p=>p.test(s))));
 }
 
+// 1b. O mesmo no HTML: a lógica da home pinta a cor de estado no atributo style. O jade inline só
+// vale dentro do que espera você (marcado com data-espera: a entrada em conflito, o evento da noite
+// que fica para a revisão humana).
+export function jadeInlineForaDoLugar(dom){
+ const espera=n=>{for(let x=n;x;x=x.parentNode)if('data-espera' in attrs(x))return true;return false;};
+ return walk(dom).filter(n=>ACENTO.test(attrs(n).style||'')&&!espera(n)).map(n=>n.tagName+'.'+(attrs(n).class||''));
+}
+
 // 2. Foco visível: o anel do kit em :focus-visible, e nenhum outline:none sem o anel no lugar
 // (fora o foco que não é de teclado e o main, que só recebe foco pelo link de pular).
 export function focoSemAnel(css){
@@ -92,9 +100,10 @@ export function marcaFora(dom){
  return erros;
 }
 
-// 8. Voz do kit: nenhum termo proibido no texto visível (e "pausa" fica de fora em qualquer
-// sentido, porque o kit pede "ponto de HITL" no lugar) e nenhum travessão.
-export const PROIBIDAS=/\b(?:afrouxar|afrouxa|afrouxam|batuta|metr[ôo]nomo|bernstein|disruptiv[oa]s?|pausas?|pauses?|paused)\b/iu;
+// 8. Voz do kit: nenhum termo proibido no texto visível, nas duas línguas e com as flexões (e
+// "pausa" fica de fora em qualquer sentido, porque o kit pede "ponto de HITL" no lugar), e nenhum
+// travessão.
+export const PROIBIDAS=/(?<![\p{L}\p{N}])(?:afroux\p{L}*|loosen\p{L}*|batutas?|batons?|metr[ôo]nomos?|metronomes?|bernstein|disruptiv\p{L}*|pausa\p{L}*|paus(?:e|es|ed|ing))(?![\p{L}\p{N}])/iu;
 export function vozForaDoKit(texto){
  const erros=[];
  const m=texto.match(PROIBIDAS);if(m)erros.push('termo proibido: '+m[0]);
@@ -121,6 +130,7 @@ export function checkDesign(dist=distArg()){
  juntar('licença de fonte',licencasFaltando());
  for(const p of todas){
   juntar('cor solta no HTML '+p.path,corSoltaNoHtml(p.dom));
+  juntar('jade inline fora do lugar '+p.path,jadeInlineForaDoLugar(p.dom));
   juntar('código fora da noite '+p.path,codigoForaDaNoite(p.dom));
   juntar('comando fora da noite '+p.path,comandoForaDaNoite(p.dom,css));
   juntar('recurso de fora '+p.path,recursosDeFora(p.dom,css));

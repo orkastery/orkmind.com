@@ -174,7 +174,8 @@ luar (a regência não passa como texto) e a cor fica no ponto.
 `check:design` reprova o build que:
 
 - usa o jade fora do que espera você, do ponto de revisão, do chip de espera, do
-  separador e da borda de luz do comando de instalação;
+  separador e da borda de luz do comando de instalação, no CSS ou num atributo `style` (a cor
+  de estado da home só leva jade dentro de um elemento marcado com `data-espera`);
 - tira o foco de um elemento sem o anel do kit (`box-shadow: var(--anel-foco)`);
 - usa outra família que não Geist (títulos), Hanken Grotesk (texto) e IBM Plex Mono
   (prova), servidas do próprio site com a licença OFL em `public/licenses/`;
@@ -183,7 +184,8 @@ luar (a regência não passa como texto) e a cor fica no ponto.
 - põe bloco de código, terminal ou comando copiável fora do tema noite;
 - carrega folha de estilo, script, fonte ou imagem de fora;
 - usa a marca fora dos arquivos de `marca/` ou a assinatura errada para o fundo;
-- escreve no texto visível um termo que o kit proíbe ou um travessão.
+- escreve no texto visível um termo que o kit proíbe, em português ou inglês e com as flexões,
+  ou um travessão.
 
 `test:design` prova, com canários, que cada uma dessas regras reprova a mutação que deve
 pegar. Alvos de toque de 44 px, teclado e estouro lateral são conferidos no navegador
@@ -207,16 +209,21 @@ e a noite pela rolagem) são funções puras em `src/lib/home-state.mjs`: o buil
 com o estado inicial e o navegador (`src/scripts/home.ts`) com o estado que muda. O canvas
 do hero está em `src/lib/caminho.mjs`. Com movimento reduzido nada se move sozinho; sem
 movimento reduzido, o botão "Parar o movimento" do cartão vivo para e retoma o canvas, o
-relógio e as animações (WCAG 2.2.2). Sem JavaScript, nada fica escondido (a noite sai
-inteira). `test:home` confere o relógio, a
+relógio e as animações (WCAG 2.2.2). Sem JavaScript, nada fica escondido: a noite sai inteira,
+e as descrições dos nós, os textos das quatro integrações e as seis etapas saem abertos (o
+script inline do `<head>` marca a página com a classe `js` antes da pintura, e só então os
+botões recolhem o que não está escolhido). A entrada ao rolar vale também para o bloco mais
+alto que a janela (zoom de 400%), e o que recebe foco aparece na hora. `test:home` confere o relógio, a
 recusa da regra protegida, a matriz das integrações, as abas, a noite, o jade só no que
 espera você (com canários) e a forma do inglês igual à do português.
 
 Todo número tem o comando que o prova:
 
-- 20/20, 6/6 e 0: `python bench/run.py` no repositório do OrkMind, que grava
-  `bench/results/latest.json` (resultado do commit `31e4e4f`, de 01/09/2026, anterior à
-  0.4.0); a lacuna de recall com embedder real (M4) aparece como planejada.
+- 20/20 (M1, turnos com o bloco de regras), 6/6 (M3, os cenários de falha segura em que o
+  plugin acerta: alerta quando deve e nenhum alerta nos casos de controle) e 0 (M7):
+  `python bench/run.py` no repositório do OrkMind, que grava `bench/results/latest.json`
+  (resultado do commit `31e4e4f`, de 01/09/2026, anterior à 0.4.0); a lacuna de recall com
+  embedder real (M4) aparece como planejada.
 - 23 coleções e 11 dimensões de tag: o comando do terminal da seção 08, que imprime
   `23 11` com o pacote 0.4.0 instalado.
 - As saídas de terminal (a gravação com aviso de conflito e de injeção, a busca por tags)
@@ -245,7 +252,8 @@ npm run check:visual -- --output /diretorio/privado/screenshots
 
 O verificador intercepta todas as requisições, serve somente `dist` em memória e
 bloqueia destinos externos. Exercita home, índice, arquitetura e Contribuir nos dois
-idiomas, 1440/1280/1024/768/390/320 px e esquemas claro/escuro: 96 screenshots, estouro
+idiomas, 1440/1280/1024/768/390/320 px, no esquema claro (o site não reage ao esquema
+escuro: o noite é por seção; `--schemes light,dark` repete a matriz no escuro): 48 screenshots, estouro
 lateral, navegação por teclado (o link de pular, o menu do estreito e o seletor de
 língua), o foco em cada parada do Tab a 1280 e 390 px (anel presente, sem recorte e sem o
 cabeçalho por cima), alvos de toque de 44 px, contraste medido contra o fundo efetivo
@@ -253,7 +261,9 @@ cabeçalho por cima), alvos de toque de 44 px, contraste medido contra o fundo e
 descrição), as integrações, as abas das etapas (também pelas setas) e as linhas longas dos
 terminais, que rolam dentro do próprio bloco. Uma vez por língua, confere copiar (sucesso e
 recusa da área de transferência), o menu do estreito com Esc, o movimento reduzido sem nada
-rodando e o botão que para o movimento. Em todas as páginas de cada idioma,
+rodando, o botão que para o movimento, a página sem JavaScript (nada escondido), a janela de
+320 x 256 px (zoom de 400%: todo bloco aparece ao rolar e nenhum foco cai em bloco invisível) e
+o menu numa janela baixa (568 x 320 px, todo item ao alcance do teclado). Em todas as páginas de cada idioma,
 nas mesmas larguras e esquemas, confere o código inline (não se parte entre
 linhas, não solta o que encosta nele, não passa da coluna, uma escala por bloco,
 sublinhado do link, e o chip maior que a coluna só quebra depois de separador, em
