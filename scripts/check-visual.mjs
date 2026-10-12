@@ -282,7 +282,8 @@ try{
    const button=page.locator('.comando-hero [data-copiar]');await button.click();
    await page.waitForFunction(()=>document.querySelector('.comando-hero [data-rotulo-visivel]')?.textContent?.startsWith('×'),null,{timeout:3000}).catch(()=>{});
    const shown=await button.locator('[data-rotulo-visivel]').textContent(),status=await page.locator('.comando-hero [data-status]').textContent();
-   if(!/^× /.test(shown)||!/Ctrl\+C|⌘C/.test(shown)||!/Ctrl\+C|⌘C/.test(status))throw Error('Copy refusal not shown '+locale+': '+shown+' / '+status);
+   const selecionado=await page.evaluate(()=>getSelection().toString());
+   if(!/^× /.test(shown)||!/Ctrl\+C|⌘C/.test(shown)||!/Ctrl\+C|⌘C/.test(status)||selecionado!=='pip install orkmind')throw Error('Copy refusal not shown '+locale+': '+shown+' / '+status+' / seleção: '+selecionado);
    await ctx.close();}
   {const {ctx,page}=await open({viewport:{width:390,height:844}});
    const button=page.locator('[data-menu]'),panel=page.locator('[data-painel]');

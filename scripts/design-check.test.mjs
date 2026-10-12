@@ -16,14 +16,17 @@ test('regras: lê o seletor sem o escopo do Astro, também dentro de @media',()=
 });
 
 test('jade: só no comando de instalação, no separador, no ponto que espera e no chip de espera',()=>{
+ assert.deepEqual(acentoForaDoLugar('.etapa{color:var( --jade-tinta )}.aba{border-color:var(--espera,var(--texto))}'),['.etapa','.aba'],'grafias com espaço e reserva no CSS');
  const certo=':root{--espera:var(--jade)}[data-tema=noite]{--espera-texto:var(--jade)}.comando{box-shadow:var(--luz-jade)}.separador-fio span{background:var(--espera)}.chip-espera{color:var(--espera-texto)}.chip-espera .chip-ponto{background:var(--espera)}';
  assert.deepEqual(acentoForaDoLugar(certo),[]);
  assert.deepEqual(acentoForaDoLugar(certo+'.cabecalho-nav a[aria-current]{color:var(--espera-texto)}'),['.cabecalho-nav a[aria-current]']);
  assert.deepEqual(acentoForaDoLugar('.etapa,.comando{border-color:var(--jade)}'),['.etapa']);
 });
 
-test('jade inline: só dentro do que espera você (data-espera)',()=>{
- assert.deepEqual(jadeInlineForaDoLugar(doc('<div data-entrada="2" data-espera><span style="background:var(--espera)"></span></div><li data-espera style="border-color:var(--espera)"></li>')),[]);
+test('jade inline: só dentro do que espera você (data-espera na linha ou no evento)',()=>{
+ assert.deepEqual(jadeInlineForaDoLugar(doc('<div data-entrada="2" data-espera><span style="background:var(--espera)"></span></div><li data-noite-evento="4" data-espera style="border-color:var(--espera)"></li>')),[]);
+ assert.deepEqual(jadeInlineForaDoLugar(doc('<main data-espera><h1 class="t" style="color:var(--espera)">x</h1></main>')),['h1.t'],'marcador num ancestral qualquer não libera');
+ assert.deepEqual(jadeInlineForaDoLugar(doc('<p class="a" style="color:var( --espera )">x</p><p class="b" style="color:var(--jade,var(--texto))">y</p>')),['p.a','p.b'],'grafias com espaço e reserva');
  assert.deepEqual(jadeInlineForaDoLugar(doc('<h1 class="hero-titulo" style="color:var(--espera);background:var(--jade)">x</h1>')),['h1.hero-titulo']);
  assert.deepEqual(jadeInlineForaDoLugar(doc('<div data-entrada="0"><span class="b" style="color:var(--espera-texto)"></span></div>')),['span.b']);
 });

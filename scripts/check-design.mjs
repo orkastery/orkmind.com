@@ -17,7 +17,8 @@ const blocoDeTokens=s=>/^(?::root|\[data-tema=(?:"noite"|noite)\])$/.test(s);
 
 // 1. O jade (acento único) só no que espera você e na luz do comando de instalação. Definir os
 // semânticos nos blocos de tokens não é uso.
-export const ACENTO=/var\(--(?:espera|espera-texto|jade|jade-tinta|luz-jade)\)/;
+// Qualquer grafia válida do var(): com espaço dentro e com valor de reserva.
+export const ACENTO=/var\(\s*--(?:espera|espera-texto|jade|jade-tinta|luz-jade)\s*[,)]/;
 export const ACENTO_PERMITIDO=[/^\.comando$/,/^\.comando-hero$/,/^\.separador-fio span$/,/^\.hero-ponto-espera$/,/^\.chip-espera(?: \.chip-ponto)?$/];
 export function acentoForaDoLugar(css){
  return regras(css).filter(r=>ACENTO.test(r.declaracoes)&&!blocoDeTokens(r.seletor)).flatMap(r=>r.seletor.split(',').map(s=>s.trim()).filter(s=>!ACENTO_PERMITIDO.some(p=>p.test(s))));
@@ -27,7 +28,9 @@ export function acentoForaDoLugar(css){
 // vale dentro do que espera você (marcado com data-espera: a entrada em conflito, o evento da noite
 // que fica para a revisão humana).
 export function jadeInlineForaDoLugar(dom){
- const espera=n=>{for(let x=n;x;x=x.parentNode)if('data-espera' in attrs(x))return true;return false;};
+ // O marcador só vale nos dois lugares que esperam você (a linha do quadro de entradas e o evento
+ // da noite): num ancestral qualquer, como o main, ele não libera o que está embaixo.
+ const espera=n=>{for(let x=n;x;x=x.parentNode){const a=attrs(x);if('data-espera' in a)return 'data-entrada' in a||'data-noite-evento' in a;}return false;};
  return walk(dom).filter(n=>ACENTO.test(attrs(n).style||'')&&!espera(n)).map(n=>n.tagName+'.'+(attrs(n).class||''));
 }
 
