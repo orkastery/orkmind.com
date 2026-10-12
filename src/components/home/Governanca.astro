@@ -1,5 +1,5 @@
 ---
-// 05 · Governança: a janela do orkmind list que se atualiza sozinha (exemplo), os avisos reais da
+// 05 · Governança: o quadro do caminho de cada entrada que se atualiza sozinho (exemplo), os avisos reais da
 // gravação na 0.4.0 (terminal, sempre noite), quem revisa o que ficou retido e as quatro camadas da
 // arquitetura. Componentes do kit: tabela com cabeça mono em caixa alta, barra de seis etapas com
 // rótulo acessível, e abaixo de 768 px a tabela vira lista de cartões. O jade fica só na entrada que
@@ -28,13 +28,13 @@ const avisos=g.warnings.map((w:any)=>[`<span class="terminal-prompt" aria-hidden
    <div class="board">
     <div class="board-topo">
      <div class="board-luzes" aria-hidden="true"><span></span><span></span><span></span></div>
-     <span class="board-comando">$ <code class="codigo-liso">{g.boardCmd}</code></span>
+     <span class="board-comando">{g.boardTitle}</span>
      <span class="estica"></span>
      <span class="board-meta">{g.boardMeta}</span>
     </div>
-    <div class="board-tabela" role="table" aria-label={g.boardCmd}>
+    <div class="board-tabela" role="table" aria-label={g.boardTitle}>
      <div class="board-cabeca" role="row">{g.boardHead.map((h:string)=><div role="columnheader">{h}</div>)}</div>
-     {linhas.map((l,i)=><div class="board-linha" role="row" data-entrada={i} style={`background:${cor(l.rowBg)}`}>
+     {linhas.map((l,i)=><div class="board-linha" role="row" data-entrada={i} data-espera={l.estado==='hold'?'':undefined} style={`background:${cor(l.rowBg)}`}>
       <div class="board-entrada" role="cell"><div class="board-nome">{l.name}</div></div>
       <div class="board-colecao" role="cell"><div>{l.coll}</div><div class="board-tags">{l.tags}</div></div>
       <div class="board-etapas" role="cell">

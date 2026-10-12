@@ -5,13 +5,13 @@
 export default {
  "pt": {
   "title": "OrkMind · Agentes vêm e vão. A memória fica.",
-  "description": "Memória tipada e governada para agentes de IA, no seu PostgreSQL: a regra obrigatória volta sempre que as tags batem, a busca por tags é exata e cada alteração guarda a versão anterior.",
+  "description": "Memória tipada e governada para agentes de IA, no seu PostgreSQL: a regra obrigatória volta pela tag, não pela semelhança, a busca por tags é exata e cada alteração guarda a versão anterior.",
   "hero": {
    "badge": "Memória para agentes de IA",
    "license": "MIT",
    "title": "Agentes vêm e vão.",
    "titleMuted": "A memória fica.",
-   "lead": "O OrkMind guarda o que seus agentes precisam lembrar no seu PostgreSQL, em coleções tipadas. A regra obrigatória volta sempre que as tags batem, a busca por tags é exata e cada alteração guarda a versão anterior.",
+   "lead": "O OrkMind guarda o que seus agentes precisam lembrar no seu PostgreSQL, em coleções tipadas. A regra obrigatória volta pela tag, não pela semelhança; a busca por tags é exata e cada alteração guarda a versão anterior.",
    "talk": "Falar com a gente",
    "note": "Python 3.11 ou mais novo e um PostgreSQL com a extensão `vector`. A busca semântica é opcional: sem chave de embeddings, o OrkMind avisa e segue com a busca por tags.",
    "scoreHead": "agora · {n} memórias · 23 coleções · 11 dimensões de tag",
@@ -135,7 +135,7 @@ export default {
     }
    ],
    "active": "ativo",
-   "refused": "regra protegida · espera você",
+   "refused": "edição recusada · regra protegida",
    "foot": "{n} nós · uma memória · as mesmas regras",
    "historyLabel": "cada alteração guarda a versão anterior, uma de cada vez",
    "versions": [
@@ -235,7 +235,7 @@ export default {
     },
     {
      "sem": "Toda instrução disputa a janela de contexto",
-     "com": "As obrigatórias entram primeiro e inteiras; o resto respeita o orçamento de tokens"
+     "com": "As obrigatórias entram primeiro e nunca pela metade; o resto respeita o orçamento de tokens"
     },
     {
      "sem": "O agente edita a regra que deveria obedecer",
@@ -247,7 +247,7 @@ export default {
     },
     {
      "sem": "Texto colado vira instrução para o modelo",
-     "com": "Conteúdo suspeito é gravado, mas fica fora do prompt até uma pessoa revisar"
+     "com": "Conteúdo com sinal conhecido de injeção é gravado, mas fica fora da injeção automática até a revisão humana"
     }
    ]
   },
@@ -283,7 +283,7 @@ export default {
       ]
      ],
      "use": "Você roda o Hermes e quer as regras obrigatórias no prompt de todo turno, sem depender de o agente lembrar de pedir.",
-     "about": "Injeção das regras obrigatórias em toda montagem do prompt, alerta quando a governança fica indisponível e recall por turno, medidos no benchmark."
+     "about": "Injeção das regras obrigatórias em toda montagem do prompt e alerta quando a governança fica indisponível, medidos no benchmark (M1 e M3)."
     },
     {
      "tag": "OpenClaw",
@@ -317,7 +317,7 @@ export default {
       ]
      ],
      "use": "Claude Code, Codex ou qualquer cliente MCP que consulta a memória quando precisa.",
-     "about": "Dez ferramentas sob demanda, como `orkmind_get_rules` e `orkmind_query`. O servidor não monta o prompt: a regra só chega se o agente pedir."
+     "about": "Ferramentas sob demanda, como `orkmind_get_rules` e `orkmind_query`. O servidor não monta o prompt: a regra só chega se o agente pedir."
     },
     {
      "tag": "CLI",
@@ -345,14 +345,14 @@ export default {
    "whenLabel": "{tag} · para quando",
    "aboutLabel": "o que ela garante",
    "closing": "A integração muda o caminho.",
-   "closingOk": "A governança é a mesma nas quatro."
+   "closingOk": "A memória é a mesma nas quatro."
   },
   "governance": {
    "eyebrow": "05 · Governança",
    "title": "Governança acima do adaptador.",
-   "titleMuted": "Trocar de backend não muda as garantias.",
-   "lead": "Da chamada do runtime ao disco, cada camada tem um dever só. É por isso que as garantias valem em qualquer backend, e o que só uma pessoa pode decidir espera por você, fora do prompt.",
-   "boardCmd": "orkmind list",
+   "titleMuted": "A proteção e o acesso valem em qualquer backend.",
+   "lead": "Da chamada do runtime ao disco, cada camada tem um dever só. A proteção e o acesso ficam acima do backend, e o que pede revisão humana espera por você, fora da injeção automática.",
+   "boardTitle": "o caminho de cada entrada",
    "boardMeta": "7 entradas · exemplo · atualiza sozinho",
    "boardHead": [
     "Entrada",
@@ -441,8 +441,8 @@ export default {
     }
    ],
    "reviewLabel": "quem revisa",
-   "reviewTitle": "Só uma pessoa autenticada libera o que ficou retido.",
-   "reviewText": "Conflito e conteúdo suspeito ficam fora do prompt até a revisão. Quem pede como agente recebe um `ProtectionError` com esta mensagem; o agente não libera a si mesmo.",
+   "reviewTitle": "Só a revisão humana libera o que ficou retido.",
+   "reviewText": "Conflito e conteúdo suspeito ficam fora da injeção automática até a revisão. Quem pede como agente para resolver um conflito recebe um `ProtectionError` com esta mensagem.",
    "reviewError": "Apenas humano autenticado pode resolver conflitos.",
    "reviewGap": "Hoje a revisão é pela API Python (`resolve_conflict` e `review_injection`): comando e ferramenta de revisão ainda não existem.",
    "layers": [
@@ -459,12 +459,12 @@ export default {
     {
      "n": "03 · governança",
      "t": "O que protege",
-     "d": "Proteção de entradas, ACL por tags de acesso, versionamento e ordenação constitucional moram na `GovernedStore`, acima do adaptador: um backend novo não enfraquece as garantias."
+     "d": "Proteção de entradas, ACL por tags de acesso e ordenação constitucional moram na `GovernedStore`, acima do adaptador, e valem em qualquer backend; o que o backend não sabe fazer fica declarado e registrado, nunca em silêncio."
     },
     {
      "n": "04 · persistência",
      "t": "Onde vive",
-     "d": "`pgvector` em produção, `memory` nos testes e `qdrant` como opção. Toda degradação aparece em `orkmind store info`, nunca em silêncio."
+     "d": "`pgvector` em produção, `memory` nos testes e `qdrant` como opção experimental. Toda degradação aparece em `orkmind store info`, nunca em silêncio."
     }
    ],
    "stageWords": {
@@ -478,14 +478,14 @@ export default {
   "night": {
    "eyebrow": "06 · Gravação garantida",
    "title": "O banco cai. A gravação espera na fila.",
-   "lead": "Pelo plugin do Hermes, toda gravação entra primeiro numa fila em disco e só depois vai ao banco. Isto é uma noite com o PostgreSQL fora do ar. Ninguém precisou acordar.",
+   "lead": "No plugin do Hermes, a ferramenta `orkmind_store` põe cada gravação primeiro numa fila em disco e só depois a manda ao banco. Isto é uma noite com o PostgreSQL fora do ar. Ninguém precisou acordar.",
    "note": "role a página · exemplo de uma noite com o plugin do Hermes",
    "events": [
     {
      "t": "23:04",
      "tag": "gravar",
      "c": "executando",
-     "text": "Três agentes no Hermes gravam aprendizados e handoffs. Cada gravação vira primeiro um arquivo em `pending/`, com o hash do conteúdo."
+     "text": "Três agentes no Hermes gravam aprendizados e handoffs pela ferramenta de memória. Cada gravação vira primeiro um arquivo em `pending/`, com o hash do conteúdo."
     },
     {
      "t": "01:52",
@@ -532,17 +532,17 @@ export default {
    "details": [
     {
      "gives": "Uma entrada com coleção, tags, prioridade e o hash SHA-256 do conteúdo.",
-     "needs": "O hash é do conteúdo, não de quem grava: a mesma entrada não entra duas vezes na coleção.",
+     "needs": "O hash é do conteúdo, não de quem grava: no PostgreSQL, a mesma entrada não entra duas vezes na coleção.",
      "code": "uq_memories_collection_content_hash"
     },
     {
      "gives": "A entrada conferida contra a ontologia: 23 coleções e 11 dimensões de tag.",
-     "needs": "Dimensão de tag fora da ontologia é recusada, e agente não cria regra obrigatória.",
+     "needs": "Dimensão de tag fora da ontologia é recusada, e quem grava como agente não cria regra obrigatória.",
      "code": "ValidationError"
     },
     {
      "gives": "Proteção, ACL e os sinais de risco aplicados acima do adaptador, na `GovernedStore`.",
-     "needs": "Regra `critical` ou `protected` não muda por pedido de agente; conflito e conteúdo suspeito ficam retidos até a revisão.",
+     "needs": "Regra `critical` ou `protected` não muda quando o pedido vem como agente; conflito e conteúdo suspeito ficam retidos até a revisão.",
      "code": "ProtectionError"
     },
     {
@@ -552,7 +552,7 @@ export default {
     },
     {
      "gives": "O bloco de regras no prompt de todo turno, pelos plugins do Hermes e do OpenClaw.",
-     "needs": "As obrigatórias entram inteiras e primeiro; se a governança cair, o modelo recebe o alerta em vez de seguir sem regra.",
+     "needs": "As obrigatórias entram primeiro e nunca pela metade: a que não cabe no orçamento sai inteira, com uma nota. Se a governança cair, o modelo recebe o alerta em vez de seguir sem regra.",
      "code": "## ALERTA: Regras de Governanca Indisponiveis"
     },
     {
@@ -562,7 +562,7 @@ export default {
     }
    ],
    "failChip": "× retida",
-   "failNote": "Conteúdo com sinal de injeção? É gravado, marcado e fica fora do prompt até uma pessoa revisar. O agente não libera a si mesmo."
+   "failNote": "Conteúdo com sinal de injeção? É gravado, marcado e fica fora da injeção automática até a revisão humana; pedindo como agente, não se libera."
   },
   "proof": {
    "eyebrow": "08 · Prova",
@@ -576,7 +576,7 @@ export default {
     },
     {
      "n": "6/6",
-     "l": "cenários de falha segura com alerta, nos dois plugins (M3)",
+     "l": "cenários de falha segura em que o plugin acerta: alerta quando deve e nenhum alerta nos casos de controle, nos dois plugins (M3)",
      "c": "python bench/run.py"
     },
     {
@@ -637,6 +637,12 @@ export default {
     {
      "k": "",
      "kc": "saida",
+     "v": "",
+     "code": true
+    },
+    {
+     "k": "",
+     "kc": "saida",
      "v": "Results: 1",
      "code": true
     },
@@ -658,24 +664,34 @@ export default {
      "s": "não existe",
      "c": "falha",
      "t": "Injeção em todo turno pelo servidor MCP e pela CLI: eles não montam o prompt e entregam a regra quando alguém pede."
+    },
+    {
+     "s": "não existe",
+     "c": "falha",
+     "t": "Fila em disco para o que o plugin do Hermes extrai no fim da sessão: essa gravação vai direto ao banco e se perde com ele fora do ar."
+    },
+    {
+     "s": "não existe",
+     "c": "falha",
+     "t": "Detecção de injeção além de uma lista curta de padrões: a mesma frase em português passa sem aviso."
     }
    ]
   },
   "cta": {
    "title": "Dê memória aos seus agentes hoje.",
-   "text": "Instale em um minuto, aponte para o seu PostgreSQL e grave a primeira regra obrigatória.",
+   "text": "Instale com `pip`, aponte para o seu PostgreSQL e grave a primeira regra obrigatória.",
    "talk": "Falar com a gente"
   }
  },
  "en": {
   "title": "OrkMind · Agents come and go. The memory stays.",
-  "description": "Typed, governed memory for AI agents, in your PostgreSQL: the mandatory rule comes back whenever the tags match, tag search is exact and every change keeps the previous version.",
+  "description": "Typed, governed memory for AI agents, in your PostgreSQL: the mandatory rule comes back by tag, not by similarity, tag search is exact and every change keeps the previous version.",
   "hero": {
    "badge": "Memory for AI agents",
    "license": "MIT",
    "title": "Agents come and go.",
    "titleMuted": "The memory stays.",
-   "lead": "OrkMind stores what your agents need to remember in your PostgreSQL, in typed collections. The mandatory rule comes back whenever the tags match, tag search is exact and every change keeps the previous version.",
+   "lead": "OrkMind stores what your agents need to remember in your PostgreSQL, in typed collections. The mandatory rule comes back by tag, not by similarity; tag search is exact and every change keeps the previous version.",
    "talk": "Talk to us",
    "note": "Python 3.11 or newer and PostgreSQL with the `vector` extension. Semantic search is optional: without an embeddings key, OrkMind warns you and continues with tag search.",
    "scoreHead": "now · {n} memories · 23 collections · 11 tag dimensions",
@@ -799,7 +815,7 @@ export default {
     }
    ],
    "active": "active",
-   "refused": "protected rule · waits for you",
+   "refused": "edit refused · protected rule",
    "foot": "{n} nodes · one memory · the same rules",
    "historyLabel": "every change keeps the previous version, one at a time",
    "versions": [
@@ -899,7 +915,7 @@ export default {
     },
     {
      "sem": "Every instruction competes for the context window",
-     "com": "Mandatory rules go in first and in full; the rest stays within the token budget"
+     "com": "Mandatory rules go in first and never in part; the rest stays within the token budget"
     },
     {
      "sem": "The agent edits the rule it should obey",
@@ -911,7 +927,7 @@ export default {
     },
     {
      "sem": "Pasted text becomes an instruction to the model",
-     "com": "Suspicious content is stored, but stays out of the prompt until a person reviews it"
+     "com": "Content with a known injection signal is stored, but stays out of automatic injection until human review"
     }
    ]
   },
@@ -947,7 +963,7 @@ export default {
       ]
      ],
      "use": "You run Hermes and want the mandatory rules in the prompt on every turn, without relying on the agent to remember to ask.",
-     "about": "Mandatory rules injected on every prompt build, an alert when governance is unavailable and per-turn recall, measured in the benchmark."
+     "about": "Mandatory rules injected on every prompt build and an alert when governance is unavailable, measured in the benchmark (M1 and M3)."
     },
     {
      "tag": "OpenClaw",
@@ -981,7 +997,7 @@ export default {
       ]
      ],
      "use": "Claude Code, Codex or any MCP client that queries memory when it needs to.",
-     "about": "Ten on-demand tools, such as `orkmind_get_rules` and `orkmind_query`. The server does not build the prompt: the rule only arrives if the agent asks for it."
+     "about": "On-demand tools, such as `orkmind_get_rules` and `orkmind_query`. The server does not build the prompt: the rule only arrives if the agent asks for it."
     },
     {
      "tag": "CLI",
@@ -1009,14 +1025,14 @@ export default {
    "whenLabel": "{tag} · when to use it",
    "aboutLabel": "what it guarantees",
    "closing": "The integration changes the path.",
-   "closingOk": "Governance is the same in all four."
+   "closingOk": "The memory is the same in all four."
   },
   "governance": {
    "eyebrow": "05 · Governance",
    "title": "Governance above the adapter.",
-   "titleMuted": "Switching backends does not change the guarantees.",
-   "lead": "From the runtime call to disk, each layer has a specific responsibility. Governance remains above storage. What only a person can decide waits for you, outside the prompt.",
-   "boardCmd": "orkmind list",
+   "titleMuted": "Protection and access hold on any backend.",
+   "lead": "From the runtime call to disk, each layer has a specific responsibility. Governance remains above storage. What needs human review waits for you, outside automatic injection.",
+   "boardTitle": "each entry's path",
    "boardMeta": "7 entries · example · updates on its own",
    "boardHead": [
     "Entry",
@@ -1105,8 +1121,8 @@ export default {
     }
    ],
    "reviewLabel": "who reviews",
-   "reviewTitle": "Only an authenticated person releases what was held.",
-   "reviewText": "Conflicts and suspicious content stay out of the prompt until review. Anyone who asks as an agent gets a `ProtectionError` with this message; the agent cannot sign off on itself.",
+   "reviewTitle": "Only human review releases what was held.",
+   "reviewText": "Conflicts and suspicious content stay out of automatic injection until review. Anyone who asks as an agent to resolve a conflict gets a `ProtectionError` with this message.",
    "reviewError": "Apenas humano autenticado pode resolver conflitos.",
    "reviewGap": "Today, review goes through the Python API (`resolve_conflict` and `review_injection`): a review command and tool do not exist yet.",
    "layers": [
@@ -1123,12 +1139,12 @@ export default {
     {
      "n": "03 · governance",
      "t": "What protects it",
-     "d": "Entry protection, ACL through access tags, versioning and constitutional ordering live in `GovernedStore`, above the adapter: a new backend does not weaken the guarantees."
+     "d": "Entry protection, ACL through access tags and constitutional ordering live in `GovernedStore`, above the adapter, and hold on any backend; what a backend cannot do is declared and logged, never silent."
     },
     {
      "n": "04 · persistence",
      "t": "Where it lives",
-     "d": "`pgvector` in production, `memory` in tests and `qdrant` as an option. Every degradation shows up in `orkmind store info`, never silently."
+     "d": "`pgvector` in production, `memory` in tests and `qdrant` as an experimental option. Every degradation shows up in `orkmind store info`, never silently."
     }
    ],
    "stageWords": {
@@ -1142,14 +1158,14 @@ export default {
   "night": {
    "eyebrow": "06 · Guaranteed writes",
    "title": "The database goes down. The write waits in the queue.",
-   "lead": "Through the Hermes plugin, every write goes first to an on-disk queue and only then to the database. This is one night with PostgreSQL down. Nobody had to wake up.",
+   "lead": "In the Hermes plugin, the `orkmind_store` tool puts every write in an on-disk queue first and only then sends it to the database. This is one night with PostgreSQL down. Nobody had to wake up.",
    "note": "scroll the page · example of a night with the Hermes plugin",
    "events": [
     {
      "t": "23:04",
      "tag": "write",
      "c": "executando",
-     "text": "Three Hermes agents write lessons and handoffs. Each write first becomes a file in `pending/`, with the content hash."
+     "text": "Three Hermes agents write lessons and handoffs through the memory tool. Each write first becomes a file in `pending/`, with the content hash."
     },
     {
      "t": "01:52",
@@ -1196,17 +1212,17 @@ export default {
    "details": [
     {
      "gives": "An entry with collection, tags, priority and the SHA-256 hash of its content.",
-     "needs": "The hash comes from the content, not from who writes it: the same entry does not enter the collection twice.",
+     "needs": "The hash comes from the content, not from who writes it: in PostgreSQL, the same entry does not enter the collection twice.",
      "code": "uq_memories_collection_content_hash"
     },
     {
      "gives": "The entry checked against the ontology: 23 collections and 11 tag dimensions.",
-     "needs": "A tag dimension outside the ontology is rejected, and an agent cannot create a mandatory rule.",
+     "needs": "A tag dimension outside the ontology is rejected, and a write declared as agent cannot create a mandatory rule.",
      "code": "ValidationError"
     },
     {
      "gives": "Protection, ACL and risk signals applied above the adapter, in `GovernedStore`.",
-     "needs": "A `critical` or `protected` rule does not change at an agent's request; conflicts and suspicious content are held until review.",
+     "needs": "A `critical` or `protected` rule does not change when the request comes as an agent; conflicts and suspicious content are held until review.",
      "code": "ProtectionError"
     },
     {
@@ -1216,7 +1232,7 @@ export default {
     },
     {
      "gives": "The rules block in the prompt on every turn, through the Hermes and OpenClaw plugins.",
-     "needs": "Mandatory rules go in first and in full; if governance goes down, the model gets the alert instead of carrying on without rules.",
+     "needs": "Mandatory rules go in first and never in part: one that does not fit the budget is left out whole, with a note. If governance goes down, the model gets the alert instead of carrying on without rules.",
      "code": "## ALERTA: Regras de Governanca Indisponiveis"
     },
     {
@@ -1226,7 +1242,7 @@ export default {
     }
    ],
    "failChip": "× held",
-   "failNote": "Content with an injection signal? It is stored, flagged and kept out of the prompt until a person reviews it. The agent cannot sign off on itself."
+   "failNote": "Content with an injection signal? It is stored, flagged and kept out of automatic injection until human review; asking as an agent does not release it."
   },
   "proof": {
    "eyebrow": "08 · Proof",
@@ -1240,7 +1256,7 @@ export default {
     },
     {
      "n": "6/6",
-     "l": "fail-safe scenarios with an alert, in both plugins (M3)",
+     "l": "fail-safe scenarios the plugin gets right: an alert when it should and none in the control cases, in both plugins (M3)",
      "c": "python bench/run.py"
     },
     {
@@ -1301,6 +1317,12 @@ export default {
     {
      "k": "",
      "kc": "saida",
+     "v": "",
+     "code": true
+    },
+    {
+     "k": "",
+     "kc": "saida",
      "v": "Results: 1",
      "code": true
     },
@@ -1322,12 +1344,22 @@ export default {
      "s": "does not exist",
      "c": "falha",
      "t": "Injection on every turn through the MCP server and the CLI: they do not build the prompt, and they deliver the rule when someone asks."
+    },
+    {
+     "s": "does not exist",
+     "c": "falha",
+     "t": "An on-disk queue for what the Hermes plugin extracts at the end of a session: that write goes straight to the database and is lost while it is down."
+    },
+    {
+     "s": "does not exist",
+     "c": "falha",
+     "t": "Injection detection beyond a short list of patterns: the same phrase in Portuguese goes through without a warning."
     }
    ]
   },
   "cta": {
    "title": "Give your agents memory today.",
-   "text": "Install in a minute, point it at your PostgreSQL and write your first mandatory rule.",
+   "text": "Install with `pip`, point it at your PostgreSQL and write your first mandatory rule.",
    "talk": "Talk to us"
   }
  }

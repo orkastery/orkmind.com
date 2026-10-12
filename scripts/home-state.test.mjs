@@ -8,6 +8,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {entradas,topo,integracoes,integracaoDetalhe,etapas,etapaDetalhe,nightVals,nightItems,nightProgress,barra,ESTADO_INICIAL,ETAPAS,RETIDA_EM,C,cor,mistura} from '../src/lib/home-state.mjs';
 import {codeParts} from '../src/lib/technical-text.mjs';
+import {vozForaDoKit} from './check-design.mjs';
 import home from '../src/data/home.ts';
 
 const t=home.pt;
@@ -19,13 +20,13 @@ function saidas(t,tick){
  return {entradas:entradas(t,tick),topo:topo(t,tick),noite:nightItems(t,1),
   integracoes:t.integrations.list.map((_,sel)=>integracoes(t,sel)),etapas:Array.from({length:ETAPAS},(_,sel)=>etapas(t,sel))};
 }
-// Onde o jade aparece fora do que espera você (a entrada em conflito, o nó que recusa a regra
-// protegida e o evento da noite que espera você).
+// Onde o jade aparece fora do que espera você (a entrada em conflito e o evento da noite que espera
+// a revisão humana). O nó que tem a edição da regra protegida recusada não espera ninguém: é brasa.
 export function acentoForaDoLugar(s){
  const fora=[];
  for(const l of s.entradas)for(const c of [...l.segs,l.dot,l.fg,l.rowBg])if(JADE.has(c)&&l.estado!=='hold')fora.push('entrada '+l.name);
  for(const f of s.topo.coreFns)for(const c of [f.bg,f.fg,f.bd])if(JADE.has(c))fora.push('função '+f.t);
- for(const g of s.topo.groups)for(const n of g.nodes)for(const c of [n.sbg,n.sfg,n.dot,...n.segs])if(JADE.has(c)&&!n.recusou)fora.push('nó '+n.n);
+ for(const g of s.topo.groups)for(const n of g.nodes)for(const c of [n.sbg,n.sfg,n.dot,...n.segs])if(JADE.has(c))fora.push('nó '+n.n);
  for(const c of [...s.topo.collections.flatMap(x=>[x.bg,x.fg,x.bd]),...s.topo.history.flatMap(h=>[h.bg,h.fg]),...s.topo.legend.map(l=>l.c)])if(JADE.has(c))fora.push('coleções e histórico');
  for(const linhas of s.integracoes)for(const l of linhas)for(const c of [l.bg,...l.blocks.flatMap(b=>[b.bg,b.fg,b.bd])])if(JADE.has(c))fora.push('integração '+l.tag);
  for(const abas of s.etapas)for(const f of abas)for(const c of [f.bg,f.fg,f.bd])if(JADE.has(c))fora.push('etapa '+f.name);
@@ -71,7 +72,7 @@ test('barra de seis etapas: o rótulo acessível diz o estado de cada etapa',()=
  for(const l of entradas(t,0))assert.equal(l.barra.split(', ').length,ETAPAS);
 });
 
-test('diagrama: oito nós em três grupos, uma função ativa por tique e a regra protegida recusada cinco tiques a cada doze',()=>{
+test('diagrama: oito nós em três grupos, uma função ativa por tique e a edição da regra protegida recusada cinco tiques a cada doze',()=>{
  for(const tick of TIQUES){
   const v=topo(t,tick),nos=v.groups.flatMap(g=>g.nodes);
   assert.equal(nos.length,8);
@@ -83,7 +84,7 @@ test('diagrama: oito nós em três grupos, uma função ativa por tique e a regr
    const guardado=t.system.groups.flatMap(g=>g.nodes).find(x=>x.n===n.n).guarded===true;
    assert.equal(n.recusou,recusa&&guardado,'recusa '+tick+' '+n.n);
    assert.equal(n.state,n.recusou?t.system.refused:t.system.active);
-   assert.deepEqual([n.dot,n.sfg],n.recusou?['espera','espera-texto']:['verificado','verificado-texto']);
+   assert.deepEqual([n.dot,n.sfg],n.recusou?['falha','falha-texto']:['verificado','verificado-texto']);
   }
   assert.deepEqual(v.collections.map(c=>c.id),t.system.collections);
   assert.equal(v.collections.length,23);
@@ -135,7 +136,7 @@ test('canários: o jade fora do lugar é pego em cada parte da página',()=>{
  const mutacoes=[
   ['entrada que anda',s=>{s.entradas.find(l=>l.estado==='run').dot='espera';}],
   ['função da camada',s=>{s.topo.coreFns[0].bg=C.waitS;}],
-  ['nó que não recusa',s=>{s.topo.groups[0].nodes[0].dot='espera';}],
+  ['nó do diagrama',s=>{s.topo.groups[0].nodes[1].dot='espera';}],
   ['coleção',s=>{s.topo.collections[0].bg='espera';}],
   ['integração',s=>{s.integracoes[2][2].blocks[0].bd='espera';}],
   ['aba da etapa',s=>{s.etapas[0][0].bg='espera';}],
@@ -159,7 +160,7 @@ test('cor: nome de token vira var(--nome); mistura e transparente passam como es
 // identificadores e códigos. Comandos com conteúdo entre aspas mudam só dentro das aspas (cada
 // língua gravou o próprio texto numa sessão real da 0.4.0); a saída do produto sai em português nas
 // duas línguas, e só os IDs gerados mudam.
-const IGUAIS=new Set(['c','kc','k','code','href','layerName','collectionsCmd','boardCmd','reviewError','license']);
+const IGUAIS=new Set(['c','kc','k','code','href','layerName','collectionsCmd','reviewError','license']);
 function forma(a,b,caminho=''){
  assert.equal(typeof a,typeof b,caminho);
  if(Array.isArray(a)){assert.equal(a.length,b.length,caminho);a.forEach((x,i)=>forma(x,b[i],caminho+'['+i+']'));return;}
@@ -194,6 +195,6 @@ test('texto da home: crase equilibrada, sem travessão e sem vocabulário proibi
  for(const s of textos)codeParts(s);
  for(const s of textos){
   assert.ok(!/[‒-―]/.test(s),'travessão: '+s.slice(0,60));
-  assert.ok(!/afrouxar|batuta|metr[oô]nomo|bernstein|\bpausas?\b|\bpause[sd]?\b|disruptiv/i.test(s),'vocabulário proibido: '+s.slice(0,60));
+  assert.deepEqual(vozForaDoKit(s),[],'voz fora do kit: '+s.slice(0,60));
  }
 });

@@ -8,7 +8,7 @@ import {readFileSync,existsSync,statSync} from 'node:fs';
 import {resolve,extname} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import home from '../src/data/home.ts';
-import {pacote,versao} from '../src/data/release.mjs';
+import {pacote,versao,estagio} from '../src/data/release.mjs';
 
 const args=process.argv.slice(2);
 const dist=resolve(args.includes('--dist')?args[args.indexOf('--dist')+1]:'dist');
@@ -23,7 +23,7 @@ const pagina=(t,lang)=>`<!doctype html><html lang="${lang}"><head>${cabeca}</hea
  <div style="position:relative;display:flex;flex-direction:column;height:100%">
   <img src="/marca/assinatura-fundo-claro.svg" alt="" width="166" height="34" style="display:block">
   <div style="margin-top:56px;display:inline-flex;align-self:flex-start;align-items:center;gap:12px;height:36px;padding:0 16px;border-radius:999px;background:var(--superficie);border:1px solid var(--linha);font:500 15px/1 var(--f-mono);color:var(--texto-2)">
-   <span style="width:8px;height:8px;border-radius:50%;background:var(--verificado)"></span>${escapar(t.hero.badge)}<span style="color:var(--linha-forte)">/</span>${pacote} ${versao}<span style="color:var(--linha-forte)">/</span>${escapar(t.hero.license)}
+   <span style="width:8px;height:8px;border-radius:50%;background:var(--verificado)"></span>${escapar(t.hero.badge)}<span style="color:var(--linha-forte)">/</span>${pacote} ${versao} ${estagio}<span style="color:var(--linha-forte)">/</span>${escapar(t.hero.license)}
   </div>
   <div style="margin-top:28px;font:600 92px/1 var(--f-titulo);letter-spacing:-0.035em">${escapar(t.hero.title)}<br><span style="color:var(--texto-3)">${escapar(t.hero.titleMuted)}</span></div>
   <div style="margin-top:auto;display:inline-flex;align-self:flex-start;align-items:center;gap:14px;padding:16px 22px;border-radius:var(--raio-botao);background:var(--noite-2);box-shadow:var(--luz-jade);font:400 22px/1 var(--f-mono);color:var(--luar)"><span style="color:var(--luar-2)">$</span>pip install orkmind</div>

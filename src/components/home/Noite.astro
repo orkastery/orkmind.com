@@ -25,7 +25,7 @@ const n=t.night,v=nightVals(1),itens=nightItems(t,1);
   <div class="noite-linha">
    <div class="noite-fio" aria-hidden="true"><div data-noite-fio style={`height:${v.pct}`}></div></div>
    <ol class="noite-eventos">
-    {itens.map((e,i)=><li class="noite-evento" data-noite-evento={i} style={`opacity:${e.op}`}>
+    {itens.map((e,i)=><li class="noite-evento" data-noite-evento={i} data-espera={e.c==='espera'?'':undefined} style={`opacity:${e.op}`}>
      <span class="noite-ponto" data-noite-ponto style={`background:var(--${e.fill});border-color:var(--${e.c});box-shadow:${e.glow}`} aria-hidden="true"></span>
      <div class="noite-quando"><span class="noite-hora">{e.t}</span><span class="noite-tag" style={`color:var(--${e.c}-texto)`}>{e.tag}</span></div>
      <p class="noite-texto"><TechnicalText text={e.text}/></p>

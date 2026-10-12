@@ -6,7 +6,7 @@
 // animações. Ele só aparece com JavaScript e sem movimento reduzido, quando há o que parar.
 import ComandoCopiavel from '../ds/ComandoCopiavel.astro';
 import TechnicalText from '../TechnicalText.astro';
-import {pacote,versao} from '../../data/release.mjs';
+import {pacote,versao,estagio} from '../../data/release.mjs';
 import {preencher} from '../../lib/home-state.mjs';
 import {DENSIDADE} from '../../lib/caminho.mjs';
 const {t}=Astro.props;
@@ -14,7 +14,7 @@ const {t}=Astro.props;
 <section id="topo" class="hero">
  <div class="hero-pontos" aria-hidden="true"></div>
  <div class="container hero-conteudo">
-  <div class="hero-selo"><span class="hero-ponto-selo" aria-hidden="true"></span><span>{t.hero.badge}</span><span class="hero-barra" aria-hidden="true">/</span><span><code class="codigo-liso">{pacote}</code> <code class="codigo-liso">{versao}</code></span><span class="hero-barra" aria-hidden="true">/</span><span>{t.hero.license}</span></div>
+  <div class="hero-selo"><span class="hero-ponto-selo" aria-hidden="true"></span><span>{t.hero.badge}</span><small class="hero-barra" aria-hidden="true">/</small><span><code class="codigo-liso">{pacote}</code> <code class="codigo-liso">{versao}</code> {estagio}</span><small class="hero-barra" aria-hidden="true">/</small><span>{t.hero.license}</span></div>
   <h1 id="hero-titulo" class="hero-titulo">{t.hero.title} <span class="hero-continuacao">{t.hero.titleMuted}</span></h1>
   <p class="hero-lead"><TechnicalText text={t.hero.lead}/></p>
   <div id="instalar" class="hero-acoes">
@@ -43,7 +43,7 @@ const {t}=Astro.props;
 .hero-conteudo{position:relative}
 .hero-selo{display:inline-flex;flex-wrap:wrap;align-items:center;gap:var(--e-2) var(--e-3);min-height:32px;padding:var(--e-1) var(--e-3);border-radius:var(--raio-pilula);background:var(--superficie);border:1px solid var(--linha);font:var(--peso-destaque) var(--t-rotulo)/1.3 var(--f-mono);color:var(--texto-2);box-sizing:border-box}
 .hero-ponto-selo{width:7px;height:7px;border-radius:50%;background:var(--verificado)}
-.hero-barra{color:var(--linha-forte)}
+.hero-barra{font-size:inherit;color:var(--linha-forte)}
 .hero-titulo{margin:var(--e-6) 0 0;font:var(--tipo-display);letter-spacing:var(--trk-display);max-width:16ch;text-wrap:balance}
 /* As duas frases do título ficam em linhas próprias, também no estreito. */
 .hero-continuacao{display:block;color:var(--texto-3)}

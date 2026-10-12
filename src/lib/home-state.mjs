@@ -3,7 +3,8 @@
 // navegador (src/scripts/home.ts) chama as mesmas com o estado que muda (relógio, cliques, rolagem).
 // As cores são da Partitura do OrkMind (partitura/partitura.css): um nome de token vira var(--nome)
 // e um tom intermediário vira color-mix de tokens. O jade (--espera) só pinta o que espera você: a
-// regra protegida recusada, a entrada em conflito e o conteúdo que fica para a revisão da manhã.
+// entrada em conflito e o conteúdo que fica para a revisão humana da manhã. A regra protegida que
+// recusa a edição não espera ninguém: o pedido falha, em brasa.
 
 export const ETAPAS = 6;
 // Etapa (de 0 a 5) em que a entrada suspeita fica retida: Governar.
@@ -54,7 +55,7 @@ export function entradas(t, tick) {
 
 // Diagrama do sistema (01): a função ativa da camada, os oito nós em três grupos com o estado de
 // cada um, o histórico de versões e a grade das 23 coleções (quem leu cada coleção neste turno).
-// O nó guardado recusa a edição de uma regra protegida por cinco tiques a cada doze.
+// O nó guardado tem a edição de uma regra protegida recusada por cinco tiques a cada doze.
 export const GRUPO_CORES = ['texto', 'texto-3', mistura('texto-3', 45, 'linha')];
 export function topo(t, tick) {
  const s = t.system, MC = GRUPO_CORES;
@@ -66,8 +67,8 @@ export function topo(t, tick) {
   const nodes = gr.nodes.map(n => {
    seed++;
    const recusou = recusa && !!n.guarded;
-   return {n: n.n, edge: n.edge, d: n.d, recusou, state: recusou ? s.refused : s.active, dot: recusou ? C.wait : C.ok,
-    sbg: recusou ? C.waitS : C.okS, sfg: recusou ? C.waitT : C.okT, segs: segs(seed * 2 + Math.floor((tick + seed) / 3))};
+   return {n: n.n, edge: n.edge, d: n.d, recusou, state: recusou ? s.refused : s.active, dot: recusou ? C.fail : C.ok,
+    sbg: recusou ? C.failS : C.okS, sfg: recusou ? C.failT : C.okT, segs: segs(seed * 2 + Math.floor((tick + seed) / 3))};
   });
   return {name: gr.name, env: gr.env, color: MC[gi], nodes, foot: fill(s.foot, {n: nodes.length})};
  });
