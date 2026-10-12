@@ -17,7 +17,7 @@
 .docs-navigation ul{list-style:none;padding:0;margin:0}
 .nav-group{margin-top:var(--e-5)}
 .nav-group>p{margin:0 0 var(--e-1);font:var(--tipo-rotulo);letter-spacing:var(--espaco-rotulo);text-transform:uppercase;color:var(--texto-3)}
-.docs-navigation a{display:flex;align-items:center;min-height:var(--alvo);padding:0 var(--e-3);border-radius:var(--raio-chip);color:var(--texto-2);text-decoration:none;box-sizing:border-box;transition:color var(--dur-curta) var(--curva),background-color var(--dur-curta) var(--curva)}
+.docs-navigation a{display:block;padding:12px var(--e-3);line-height:20px;border-radius:var(--raio-chip);color:var(--texto-2);text-decoration:none;box-sizing:border-box;transition:color var(--dur-curta) var(--curva),background-color var(--dur-curta) var(--curva)}
 .docs-navigation a:hover{color:var(--texto);background:color-mix(in srgb,var(--texto) 4%,transparent)}
 .docs-navigation a[aria-current]{background:var(--superficie);color:var(--texto);box-shadow:inset 2px 0 0 var(--texto),var(--sombra-1)}
 /* O anel de foco vence a marca do item atual (a sombra dela tiraria o anel). */
@@ -28,7 +28,7 @@
 .docs-reading h1,.docs-reading h2,.docs-reading h3{color:var(--texto);text-wrap:balance}
 .docs-reading h1{margin:var(--e-4) 0 0;font:var(--tipo-titulo-1);letter-spacing:var(--trk-titulo-1);max-width:20ch}
 .docs-reading h2{margin:0 0 var(--e-3);font:var(--tipo-titulo-2);letter-spacing:var(--trk-titulo-2)}
-.docs-reading h2 a{color:inherit;display:inline-flex;align-items:center;min-height:var(--alvo)}
+.docs-reading h2 a{color:inherit;display:inline-block;padding-block:max(0px,calc((var(--alvo) - 1.15em) / 2))}
 .docs-reading h3{margin:0 0 var(--e-2);font:var(--tipo-titulo-3);letter-spacing:var(--trk-titulo-3)}
 .docs-reading p{margin:var(--e-3) 0}
 .docs-reading a:not(.docs-card):not([rel]){color:var(--texto);text-decoration:underline;text-decoration-color:var(--linha-forte);text-decoration-thickness:1px;text-underline-offset:3px;transition:text-decoration-color var(--dur-curta) var(--curva)}
@@ -43,6 +43,12 @@
 .docs-reading li{margin:var(--e-2) 0}
 .docs-reading li::marker{color:color-mix(in srgb,var(--texto-3) 60%,var(--linha))}
 
+/* Links com texto e código (título da seção, sumário, navegação e listas de links) ficam em bloco
+   de linha, nunca em caixa flexível: na caixa flexível o texto e o código viram itens que encolhem,
+   e o chip se partiria no meio da palavra. O alvo de 44 px vem do padding. Nesses links o chip usa
+   a largura toda do link, que já conta o que vem colado a ele. */
+.docs-reading h2 a .code-unit>code,.docs-toc a .code-unit>code,.docs-navigation a .code-unit>code,.docs-links a .code-unit>code,.docs-sources a .code-unit>code,.docs-legacy a .code-unit>code,.docs-note a .code-unit>code{max-width:100%}
+
 /* Código: bloco sempre noite (o <pre> leva data-tema), inline como o chip. */
 .docs-reading pre{margin:var(--e-5) 0;padding:var(--e-5);background:var(--superficie);color:var(--texto);border-radius:var(--raio-cartao);font:var(--tipo-codigo);overflow:auto;max-width:100%;tab-size:2}
 .docs-reading pre code{color:inherit}
@@ -52,7 +58,7 @@
 .docs-toc>p{margin:0 0 var(--e-1);font:var(--tipo-rotulo);letter-spacing:var(--espaco-rotulo);text-transform:uppercase;color:var(--texto-3)}
 .docs-toc ul{columns:2;column-gap:var(--e-6);list-style:none;padding:0;margin:0}
 .docs-toc li{break-inside:avoid;margin:0}
-.docs-toc a{display:inline-flex;align-items:center;min-height:var(--alvo);min-width:var(--alvo);color:var(--texto-2)!important;text-decoration:none!important;transition:color var(--dur-curta) var(--curva)}
+.docs-toc a{display:inline-block;padding:12px 0;line-height:20px;min-width:var(--alvo);color:var(--texto-2)!important;text-decoration:none!important;transition:color var(--dur-curta) var(--curva)}
 .docs-toc a:hover{color:var(--texto)!important}
 
 /* Índice das docs: cartões como os da home. */
@@ -72,7 +78,7 @@
 /* Listas só de links (fontes, atalhos antigos, destinos de uma seção): cada link é um alvo de 44 px. */
 .docs-links,.docs-sources ul,.docs-legacy ul{margin:var(--e-2) 0}
 .docs-links li,.docs-sources li,.docs-legacy li{margin:0}
-.docs-links a,.docs-sources a,.docs-legacy a,.docs-note a{display:inline-flex;align-items:center;min-height:var(--alvo);min-width:var(--alvo)}
+.docs-links a,.docs-sources a,.docs-legacy a,.docs-note a{display:inline-block;padding:12px 0;line-height:20px;min-width:var(--alvo)}
 
 /* Anterior e próximo: dois cartões. */
 .docs-pagination{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--e-3);margin-top:var(--e-7)}

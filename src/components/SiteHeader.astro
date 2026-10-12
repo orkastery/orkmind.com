@@ -39,7 +39,7 @@ const navegacao=locale==='en'?'Main navigation':'Navegação principal';
 .cabecalho-marca img{height:26px;width:auto;display:block}
 .cabecalho-painel{flex:1;display:flex;align-items:center;gap:var(--e-5);min-width:0}
 .cabecalho-nav{flex:1;display:flex;justify-content:center;gap:var(--e-5);font:var(--peso-destaque) 15px/1 var(--f-texto);white-space:nowrap}
-.cabecalho-nav a{display:inline-flex;align-items:center;min-height:44px;color:var(--texto-2);text-decoration:none;border-radius:var(--raio-chip)}
+.cabecalho-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;color:var(--texto-2);text-decoration:none;border-radius:var(--raio-chip)}
 .cabecalho-nav a:hover,.cabecalho-nav a[aria-current]{color:var(--texto)}
 .cabecalho-acoes{display:flex;align-items:center;gap:var(--e-3);flex:none}
 .cabecalho-menu{display:none;margin-left:auto;width:44px;height:44px;border:1px solid var(--linha-forte);border-radius:var(--raio-botao);background:var(--superficie);cursor:pointer;align-items:center;justify-content:center}
@@ -58,7 +58,7 @@ const navegacao=locale==='en'?'Main navigation':'Navegação principal';
  .cabecalho-menu{display:inline-flex}
  .cabecalho-painel{flex-basis:100%;flex-direction:column;align-items:stretch;gap:var(--e-3);padding:0 0 var(--e-4)}
  .cabecalho-nav{flex-direction:column;justify-content:flex-start;gap:0}
- .cabecalho-nav a{border-top:1px solid var(--linha);padding:0 var(--e-1)}
+ .cabecalho-nav a{justify-content:flex-start;border-top:1px solid var(--linha);padding:0 var(--e-1)}
  .cabecalho-acoes{flex-wrap:wrap}
  .cabecalho-acoes :global(.comando-cabecalho){display:inline-flex}
  :global(.js) .cabecalho-painel[hidden]{display:none}

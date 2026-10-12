@@ -72,8 +72,9 @@ button{font:inherit;color:inherit}
 
 /* Código inline na prosa (regra do dono de 03/10): o comando, o caminho e o identificador saem em
    mono, inteiros. Atômico: um código curto nunca se parte entre linhas; um maior que a coluna quebra
-   dentro do próprio chip, nos pontos que o renderizador marca. */
-:not(pre)>code{display:inline-block;max-width:100%;font-family:var(--f-mono);font-weight:var(--peso-texto);font-size:.86em;line-height:1.3;padding:.08em .38em;border-radius:var(--raio-segmento);background:color-mix(in srgb,currentColor 8%,transparent);white-space:normal;overflow-wrap:anywhere;vertical-align:baseline}
+   dentro do próprio chip, nos pontos que o renderizador marca. A largura máxima conta o padding
+   (border-box), para a folga da pontuação colada caber na coluna. */
+:not(pre)>code{display:inline-block;max-width:100%;box-sizing:border-box;font-family:var(--f-mono);font-weight:var(--peso-texto);font-size:.86em;line-height:1.3;padding:.08em .38em;border-radius:var(--raio-segmento);background:color-mix(in srgb,currentColor 8%,transparent);white-space:normal;overflow-wrap:anywhere;vertical-align:baseline}
 /* Inline-block não herda o sublinhado do link: o código o aplica a si mesmo. */
 a>code,a .code-unit,a .code-unit>code{text-decoration:inherit}
 /* Unidade sem quebra: o que encosta no chip viaja com ele (parêntese, vírgula, sufixo colado). */
