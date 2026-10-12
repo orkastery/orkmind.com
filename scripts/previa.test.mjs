@@ -12,6 +12,7 @@ import {
 } from '../src/lib/previa.mjs';
 import { root, siteBase, pages, checkLinks } from './check-links.mjs';
 import { comporPublicacao, verificarPublicacao, hashesDe, executar, copiarArvoreDeTrabalho, PASTA_DAS_PREVIAS } from './publicar.mjs';
+import { checkPrevia } from './check-previa.mjs';
 
 test('release aceita no caminho da prévia', () => {
   for (const release of ['0.5.5', '1.0.0-rc.1', '2026.10', 'v0.6.0', 'a', 'x'.repeat(64)]) assert.ok(releaseValida(release), release);
@@ -149,22 +150,32 @@ test('cada desvio da árvore composta reprova a conferência', { skip: pular }, 
     ['link para o outro site com caminho de prévia', d => trocar(join(previaEm(d), 'index.html'), s => s.replace('</main>', '<a href="https://' + OUTRO_SITE + PREFIXO_DA_PREVIA + RELEASE + '/">outro</a></main>')), /outro site/],
     ['noindex numa página da raiz', d => trocar(join(d, 'docs/index.html'), s => s.replace('<title>', '<meta name="robots" content="noindex"><title>')), /fora do índice/],
     ['faixa numa página da raiz', d => trocar(join(d, 'docs/index.html'), s => s.replace('</main>', '<div data-previa="x"></div></main>')), /Faixa de prévia na produção/],
-    ['robots.txt da raiz sem a regra', d => writeFileSync(join(d, 'robots.txt'), 'User-agent: *\nAllow: /\n'), /robots\.txt/],
+    ['robots.txt da raiz sem a regra', d => writeFileSync(join(d, 'robots.txt'), 'User-agent: *\nAllow: /\n'), /robots\.txt da raiz sem Disallow/],
     ['release errada no versao.json da prévia', d => trocar(join(previaEm(d), 'versao.json'), s => s.replace('"release": "' + RELEASE + '"', '"release": "9.9.9"')), /sem a release/],
     ['raiz diferente da build de produção', d => trocar(join(d, 'docs/index.html'), s => s + '<!-- mudou -->'), /difere da build de produção/],
     ['raiz que não é o commit da tag', d => trocar(join(d, 'versao.json'), s => s.replace(arvore.sha, 'b'.repeat(40))), /não é a produção esperada/],
     ['prévia a mais na pasta', d => cpSync(previaEm(d), join(d, PASTA_DAS_PREVIAS, '9.9.9'), { recursive: true }), /diferem das esperadas/],
-    ['sitemap da raiz citando prévia', d => writeFileSync(join(d, 'sitemap-0.xml'), '<urlset><url><loc>https://exemplo.invalid' + PREFIXO_DA_PREVIA + RELEASE + '/</loc></url></urlset>'), /sitemap/],
-    ['CNAME dentro da prévia', d => writeFileSync(join(previaEm(d), 'CNAME'), 'exemplo.invalid'), /CNAME/]
+    ['sitemap da raiz citando prévia', d => writeFileSync(join(d, 'sitemap-0.xml'), '<urlset><url><loc>https://exemplo.invalid' + PREFIXO_DA_PREVIA + RELEASE + '/</loc></url></urlset>'), /O sitemap da raiz cita/],
+    ['CNAME dentro da prévia', d => writeFileSync(join(previaEm(d), 'CNAME'), 'exemplo.invalid'), /CNAME dentro da prévia/]
   ];
   for (const [nome, editar, erro] of casos) await t.test(nome, () => assert.throws(() => verificarPublicacao(copiaDaArvore(editar), arvore.esperado), erro));
 });
 
-test('a produção não aponta para prévias', { skip: pular }, () => {
+test('a produção não aponta para prévias, nem deste site nem do outro', { skip: pular }, () => {
   const dir = join(mkdtempSync(join(tmp, 'producao-')), 'dist');
   cpSync(arvore.producao, dir, { recursive: true });
   trocar(join(dir, 'index.html'), s => s.replace('</main>', '<a href="' + PREFIXO_DA_PREVIA + RELEASE + '/">prévia</a></main>'));
   assert.throws(() => checkLinks(dir, ''), /aponta para uma prévia/);
+  const outra = join(mkdtempSync(join(tmp, 'producao-')), 'dist');
+  cpSync(arvore.producao, outra, { recursive: true });
+  trocar(join(outra, 'index.html'), s => s.replace('</main>', '<a href="https://' + OUTRO_SITE + PREFIXO_DA_PREVIA + RELEASE + '/">prévia</a></main>'));
+  assert.throws(() => checkLinks(outra, ''), /outro site com caminho de prévia/);
+});
+
+test('o texto da faixa é da build de cada commit; a árvore composta confere a estrutura', { skip: pular }, () => {
+  const dir = copiaDaArvore(d => trocar(join(previaEm(d), 'docs/index.html'), s => s.replace(textoDaFaixa(RELEASE), 'Texto antigo da faixa')));
+  assert.doesNotThrow(() => verificarPublicacao(dir, arvore.esperado));
+  assert.throws(() => checkPrevia(previaEm(dir), baseDaRelease(RELEASE)), /sem a faixa da release/);
 });
 
 test('raiz de tag antiga sem robots.txt ganha a regra; robots.txt sem a regra reprova a montagem', { skip: pular }, () => {

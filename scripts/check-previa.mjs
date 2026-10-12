@@ -7,7 +7,7 @@ import {resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {pages,attrs,content,distArg,siteBase} from './check-links.mjs';
 import {releaseDaBase,textoDaFaixa,temRegraDoRobots} from '../src/lib/previa.mjs';
-export function checkPrevia(dist=distArg(),base=siteBase(),{excluir=[],robots=true}={}){
+export function checkPrevia(dist=distArg(),base=siteBase(),{excluir=[],robots=true,texto:conferirTexto=true}={}){
  const release=releaseDaBase(base||'/');
  const versao=JSON.parse(readFileSync(resolve(dist,'versao.json'),'utf8'));
  if(release){
@@ -20,8 +20,8 @@ export function checkPrevia(dist=distArg(),base=siteBase(),{excluir=[],robots=tr
   const faixas=p.nodes.filter(n=>'data-previa' in attrs(n));
   if(release){
    if(metas.length!==1||attrs(metas[0]).content!=='noindex, nofollow')throw Error('Página da prévia sem noindex, nofollow: '+p.path);
-   const faixa=faixas[0],texto=faixa?content(faixa).replace(/\s+/g,' '):'';
-   if(faixas.length!==1||attrs(faixa)['data-previa']!==release||attrs(faixa)['data-sha']!==versao.sha||!texto.includes(textoDaFaixa(release))||!texto.includes(versao.sha.slice(0,7)))throw Error('Página da prévia sem a faixa da release com o SHA: '+p.path);
+   const faixa=faixas[0],rotulo=faixa?content(faixa).replace(/\s+/g,' '):'';
+   if(faixas.length!==1||attrs(faixa)['data-previa']!==release||attrs(faixa)['data-sha']!==versao.sha||(conferirTexto&&(!rotulo.includes(textoDaFaixa(release))||!rotulo.includes(versao.sha.slice(0,7)))))throw Error('Página da prévia sem a faixa da release com o SHA: '+p.path);
   }else{
    if(metas.some(n=>/noindex|nofollow|none/i.test(attrs(n).content||'')))throw Error('Página da produção fora do índice: '+p.path);
    if(faixas.length)throw Error('Faixa de prévia na produção: '+p.path);

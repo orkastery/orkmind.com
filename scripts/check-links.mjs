@@ -29,8 +29,8 @@ export function checkLinks(dist=distArg(),base=siteBase()) {
   const url=new URL(raw,origin+base+page);
   let targetRoot=dist,targetPages=byFile;
   if(url.origin!==origin){
-   // O outro site não tem esta release: a prévia aponta para a produção dele, nunca para uma prévia.
-   if(base&&url.origin==='https://'+peerDomain&&url.pathname.startsWith(PREFIXO_DA_PREVIA))throw Error('Link para o outro site com caminho de prévia: '+base+page+' → '+raw);
+   // O outro site não tem esta release: nenhuma página aponta para uma prévia dele, só para a produção.
+   if(url.origin==='https://'+peerDomain&&url.pathname.startsWith(PREFIXO_DA_PREVIA))throw Error('Link para o outro site com caminho de prévia: '+base+page+' → '+raw);
    if(url.origin==='https://'+peerDomain&&peerPages){targetRoot=peerDist;targetPages=peerPages;peerChecked++;}
    else{external++;return;}
   }
