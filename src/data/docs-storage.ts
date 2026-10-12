@@ -14,7 +14,7 @@ export default [
         "sections": [
           {
             "id": "pgvector",
-            "title": "pgvector: referência para produção",
+            "title": "`pgvector`: referência para produção",
             "paragraphs": [
               "O backend padrão usa PostgreSQL com pgvector. Oferece persistência durável, busca textual com ranking, índice único de conteúdo, filtro de ACL e ordenação no banco. Confira as capacidades da instalação antes de investigar diferenças de resultado."
             ],
@@ -22,9 +22,9 @@ export default [
           },
           {
             "id": "memory",
-            "title": "memory: testes e desenvolvimento",
+            "title": "`memory`: testes e desenvolvimento",
             "paragraphs": [
-              "memory dispensa serviço externo, mas perde os dados quando o processo termina. A busca textual usa correspondência de tokens sem ranking. A unicidade vale no processo; este backend não substitui armazenamento de produção."
+              "`memory` dispensa serviço externo, mas perde os dados quando o processo termina. A busca textual usa correspondência de tokens sem ranking. A unicidade vale no processo; este backend não substitui armazenamento de produção."
             ]
           },
           {
@@ -51,7 +51,7 @@ export default [
         "sections": [
           {
             "id": "pgvector",
-            "title": "pgvector: production reference",
+            "title": "`pgvector`: production reference",
             "paragraphs": [
               "The default backend uses PostgreSQL with pgvector. It provides durable storage, ranked text search, a unique content index, ACL filtering and database-side ordering. Check the installation’s capabilities before investigating result differences."
             ],
@@ -59,9 +59,9 @@ export default [
           },
           {
             "id": "memory",
-            "title": "memory: testing and development",
+            "title": "`memory`: testing and development",
             "paragraphs": [
-              "memory needs no external service but loses data when the process ends. Text search uses token matching without ranking. Uniqueness is process-local; this backend does not replace production storage."
+              "`memory` needs no external service but loses data when the process ends. Text search uses token matching without ranking. Uniqueness is process-local; this backend does not replace production storage."
             ]
           },
           {
@@ -88,7 +88,7 @@ export default [
         "sections": [
           {
             "id": "pgvector",
-            "title": "pgvector: referencia para producción",
+            "title": "`pgvector`: referencia para producción",
             "paragraphs": [
               "El backend predeterminado usa PostgreSQL con pgvector. Ofrece persistencia duradera, búsqueda textual con ranking, índice único de contenido, filtrado ACL y ordenación en la base. Compruebe las capacidades de la instalación antes de investigar diferencias de resultados."
             ],
@@ -96,9 +96,9 @@ export default [
           },
           {
             "id": "memory",
-            "title": "memory: pruebas y desarrollo",
+            "title": "`memory`: pruebas y desarrollo",
             "paragraphs": [
-              "memory no necesita un servicio externo, pero pierde los datos al terminar el proceso. La búsqueda textual usa coincidencia de tokens sin ranking. La unicidad se limita al proceso; este backend no sustituye el almacenamiento de producción."
+              "`memory` no necesita un servicio externo, pero pierde los datos al terminar el proceso. La búsqueda textual usa coincidencia de tokens sin ranking. La unicidad se limita al proceso; este backend no sustituye el almacenamiento de producción."
             ]
           },
           {
