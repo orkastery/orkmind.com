@@ -5,13 +5,13 @@
 export default {
  "pt": {
   "title": "OrkMind · Agentes vêm e vão. A memória fica.",
-  "description": "Memória tipada e governada para agentes de IA, no seu PostgreSQL: a regra obrigatória volta pela tag, não pela semelhança, a busca por tags é exata e cada alteração guarda a versão anterior.",
+  "description": "Memória tipada e governada para agentes de IA, no seu PostgreSQL: pelos plugins, as regras obrigatórias entram em todo turno, a busca por tags é exata e cada alteração guarda a versão anterior.",
   "hero": {
    "badge": "Memória para agentes de IA",
    "license": "MIT",
    "title": "Agentes vêm e vão.",
    "titleMuted": "A memória fica.",
-   "lead": "O OrkMind guarda o que seus agentes precisam lembrar no seu PostgreSQL, em coleções tipadas. A regra obrigatória volta pela tag, não pela semelhança; a busca por tags é exata e cada alteração guarda a versão anterior.",
+   "lead": "O OrkMind guarda o que seus agentes precisam lembrar no seu PostgreSQL, em coleções tipadas. Pelos plugins, as regras obrigatórias entram em todo turno; a busca por tags é exata, sem depender de semelhança, e cada alteração guarda a versão anterior.",
    "talk": "Falar com a gente",
    "note": "Python 3.11 ou mais novo e um PostgreSQL com a extensão `vector`. A busca semântica é opcional: sem chave de embeddings, o OrkMind avisa e segue com a busca por tags.",
    "scoreHead": "agora · {n} memórias · 23 coleções · 11 dimensões de tag",
@@ -231,7 +231,7 @@ export default {
     },
     {
      "sem": "A similaridade decide se a regra aparece",
-     "com": "A tag bate, a regra volta; a busca semântica é opcional e só soma"
+     "com": "A busca por tags é exata, e pelos plugins a regra obrigatória entra em todo turno; a busca semântica é opcional e só soma"
     },
     {
      "sem": "Toda instrução disputa a janela de contexto",
@@ -239,7 +239,7 @@ export default {
     },
     {
      "sem": "O agente edita a regra que deveria obedecer",
-     "com": "Regra `critical` ou `protected` recusa edição e remoção pedidas como agente"
+     "com": "Regra `critical` ou `protected` recusa edição e remoção quando o pedido vem declarado como agente"
     },
     {
      "sem": "Uma edição apaga a anterior sem deixar rastro",
@@ -297,7 +297,7 @@ export default {
       ]
      ],
      "use": "Você roda o OpenClaw e quer a mesma garantia, pelo plugin de memória do repositório.",
-     "about": "As mesmas garantias do Hermes, no gancho de montagem do prompt, também medidas no benchmark."
+     "about": "A mesma injeção das obrigatórias e o mesmo alerta do Hermes, no gancho de montagem do prompt, medidos no benchmark (M1, M3 e M7). O plugin fala direto com o PostgreSQL, sem passar pela `GovernedStore`."
     },
     {
      "tag": "MCP",
@@ -485,7 +485,7 @@ export default {
      "t": "23:04",
      "tag": "gravar",
      "c": "executando",
-     "text": "Três agentes no Hermes gravam aprendizados e handoffs pela ferramenta de memória. Cada gravação vira primeiro um arquivo em `pending/`, com o hash do conteúdo."
+     "text": "Três agentes no Hermes gravam aprendizados pela ferramenta de memória. Cada gravação vira primeiro um arquivo em `pending/`, com o hash do conteúdo."
     },
     {
      "t": "01:52",
@@ -541,7 +541,7 @@ export default {
      "code": "ValidationError"
     },
     {
-     "gives": "Proteção, ACL e os sinais de risco aplicados acima do adaptador, na `GovernedStore`.",
+     "gives": "Proteção, ACL e os sinais de risco aplicados acima do adaptador, na `GovernedStore`, para tudo o que passa por ela.",
      "needs": "Regra `critical` ou `protected` não muda quando o pedido vem como agente; conflito e conteúdo suspeito ficam retidos até a revisão.",
      "code": "ProtectionError"
     },
@@ -674,6 +674,16 @@ export default {
      "s": "não existe",
      "c": "falha",
      "t": "Detecção de injeção além de uma lista curta de padrões: a mesma frase em português passa sem aviso."
+    },
+    {
+     "s": "não existe",
+     "c": "falha",
+     "t": "Proteção que não dependa do que o pedido declara: hoje a regra protegida recusa o pedido que vem declarado como agente, e só ele."
+    },
+    {
+     "s": "não existe",
+     "c": "falha",
+     "t": "ACL em todo pedido: hoje ela filtra quando o pedido traz a identidade de quem lê."
     }
    ]
   },
@@ -685,13 +695,13 @@ export default {
  },
  "en": {
   "title": "OrkMind · Agents come and go. The memory stays.",
-  "description": "Typed, governed memory for AI agents, in your PostgreSQL: the mandatory rule comes back by tag, not by similarity, tag search is exact and every change keeps the previous version.",
+  "description": "Typed, governed memory for AI agents, in your PostgreSQL: through the plugins, the mandatory rules go into every turn, tag search is exact and every change keeps the previous version.",
   "hero": {
    "badge": "Memory for AI agents",
    "license": "MIT",
    "title": "Agents come and go.",
    "titleMuted": "The memory stays.",
-   "lead": "OrkMind stores what your agents need to remember in your PostgreSQL, in typed collections. The mandatory rule comes back by tag, not by similarity; tag search is exact and every change keeps the previous version.",
+   "lead": "OrkMind stores what your agents need to remember in your PostgreSQL, in typed collections. Through the plugins, the mandatory rules go into every turn; tag search is exact, with no similarity guess, and every change keeps the previous version.",
    "talk": "Talk to us",
    "note": "Python 3.11 or newer and PostgreSQL with the `vector` extension. Semantic search is optional: without an embeddings key, OrkMind warns you and continues with tag search.",
    "scoreHead": "now · {n} memories · 23 collections · 11 tag dimensions",
@@ -911,7 +921,7 @@ export default {
     },
     {
      "sem": "Similarity decides whether the rule shows up",
-     "com": "The tag matches, the rule comes back; semantic search is optional and purely additive"
+     "com": "Tag search is exact, and through the plugins the mandatory rule goes into every turn; semantic search is optional and purely additive"
     },
     {
      "sem": "Every instruction competes for the context window",
@@ -919,7 +929,7 @@ export default {
     },
     {
      "sem": "The agent edits the rule it should obey",
-     "com": "A `critical` or `protected` rule refuses edits and deletions requested as an agent"
+     "com": "A `critical` or `protected` rule refuses edits and deletions when the request is declared as an agent"
     },
     {
      "sem": "An edit erases the previous one without a trace",
@@ -977,7 +987,7 @@ export default {
       ]
      ],
      "use": "You run OpenClaw and want the same guarantee, through the repository's memory plugin.",
-     "about": "The same guarantees as Hermes, in the prompt-build hook, also measured in the benchmark."
+     "about": "The same mandatory-rule injection and the same alert as Hermes, in the prompt-build hook, measured in the benchmark (M1, M3 and M7). The plugin talks to PostgreSQL directly, without going through `GovernedStore`."
     },
     {
      "tag": "MCP",
@@ -1165,7 +1175,7 @@ export default {
      "t": "23:04",
      "tag": "write",
      "c": "executando",
-     "text": "Three Hermes agents write lessons and handoffs through the memory tool. Each write first becomes a file in `pending/`, with the content hash."
+     "text": "Three Hermes agents write lessons through the memory tool. Each write first becomes a file in `pending/`, with the content hash."
     },
     {
      "t": "01:52",
@@ -1221,7 +1231,7 @@ export default {
      "code": "ValidationError"
     },
     {
-     "gives": "Protection, ACL and risk signals applied above the adapter, in `GovernedStore`.",
+     "gives": "Protection, ACL and risk signals applied above the adapter, in `GovernedStore`, for everything that goes through it.",
      "needs": "A `critical` or `protected` rule does not change when the request comes as an agent; conflicts and suspicious content are held until review.",
      "code": "ProtectionError"
     },
@@ -1354,6 +1364,16 @@ export default {
      "s": "does not exist",
      "c": "falha",
      "t": "Injection detection beyond a short list of patterns: the same phrase in Portuguese goes through without a warning."
+    },
+    {
+     "s": "does not exist",
+     "c": "falha",
+     "t": "Protection that does not depend on what the request declares: today a protected rule refuses the request declared as an agent, and only that one."
+    },
+    {
+     "s": "does not exist",
+     "c": "falha",
+     "t": "ACL on every request: today it filters when the request carries the reader's identity."
     }
    ]
   },
