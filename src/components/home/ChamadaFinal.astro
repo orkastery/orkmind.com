@@ -1,0 +1,30 @@
+---
+// Chamada final da home, no tema noite do kit: o símbolo (versão do fundo escuro), o título no
+// --t-display, o comando que copia e o contato por e-mail no botão primário, nunca no jade.
+import ComandoCopiavel from '../ds/ComandoCopiavel.astro';
+import TechnicalText from '../TechnicalText.astro';
+import {contato,withBase} from '../../data/i18n';
+interface Props { titulo: string; texto: string; falar: string; }
+const {titulo,texto,falar}=Astro.props;
+---
+<section class="chamada" data-tema="noite">
+ <div class="chamada-coluna">
+  <img src={withBase('/marca/simbolo-fundo-escuro.svg')} alt="" width="56" height="56"/>
+  <h2 class="chamada-titulo">{titulo}</h2>
+  <p class="chamada-texto"><TechnicalText text={texto}/></p>
+  <div class="chamada-acoes">
+   <ComandoCopiavel variante="noite"/>
+   <a class="chamada-falar" href={'mailto:'+contato}>{falar}</a>
+  </div>
+ </div>
+</section>
+<style>
+.chamada{padding:var(--secao-ampla) 0;background:var(--chao);text-align:center}
+.chamada-coluna{max-width:900px;margin:0 auto;padding:0 var(--calha);display:flex;flex-direction:column;align-items:center}
+.chamada-coluna img{width:56px;height:56px}
+.chamada-titulo{margin:var(--e-6) 0 0;font:var(--tipo-display);letter-spacing:var(--trk-display);text-wrap:balance}
+.chamada-texto{margin:var(--e-5) 0 0;max-width:46ch;font:var(--tipo-corpo);color:var(--texto-2);text-wrap:pretty}
+.chamada-acoes{margin-top:var(--e-6);display:flex;flex-wrap:wrap;gap:var(--e-3);justify-content:center;align-items:center}
+.chamada-falar{display:inline-flex;align-items:center;min-height:48px;padding:0 var(--e-5);border-radius:var(--raio-botao);background:var(--acao);color:var(--sobre-acao);font:var(--tipo-botao);text-decoration:none;box-sizing:border-box;transition:background-color var(--dur-curta) var(--curva)}
+.chamada-falar:hover{background:color-mix(in srgb,var(--acao) 86%,var(--chao))}
+</style>

@@ -1,0 +1,63 @@
+---
+// 07 · Como funciona (#caminho): as seis etapas como abas (Governar no início), os dois cartões da
+// etapa escolhida (o que ela entrega e o que o OrkMind exige para passar, com o identificador real
+// do código) e a nota da entrada retida. Cada etapa sai pronta do build; só a escolhida aparece. A
+// aba escolhida usa a cor de ação do kit (--acao), nunca o jade.
+import CabecalhoSecao from '../ds/CabecalhoSecao.astro';
+import TechnicalText from '../TechnicalText.astro';
+import {etapas,etapaDetalhe,ESTADO_INICIAL,cor} from '../../lib/home-state.mjs';
+import {codeSegments,escapeText} from '../../lib/technical-text.mjs';
+import {localeFor} from '../../data/i18n';
+const {t}=Astro.props;
+const c=t.path,abas=etapas(t,ESTADO_INICIAL.stage);
+// O identificador longo ganha pontos de quebra (<wbr>) para caber na coluna estreita; o alerta do
+// plugin é saída do produto, em português nas duas línguas.
+const codigo=(valor:string)=>codeSegments(valor).map(escapeText).join('<wbr>');
+const saidaLang=localeFor(Astro.url.pathname)==='pt'?undefined:'pt-BR';
+---
+<section id="caminho" class="caminho secao-padrao">
+ <div class="container">
+  <CabecalhoSecao sobretitulo={c.eyebrow} titulo={c.title} lead={c.lead} medidaTitulo="18ch" medidaLead="60ch"/>
+  <div class="etapas" data-reveal role="tablist" aria-label={c.title}>
+   {abas.map((f,i)=><button type="button" class="etapa" role="tab" id={'etapa-'+i} data-etapa={i} aria-selected={f.on?'true':'false'} aria-controls="caminho-painel" tabindex={f.on?'0':'-1'} style={`background:${cor(f.bg)};border-color:${cor(f.bd)};color:${cor(f.fg)}`}>
+    <span class="etapa-n">{f.n}</span>
+    <span class="etapa-nome">{f.name}</span>
+   </button>)}
+  </div>
+  <div class="caminho-detalhe" id="caminho-painel" role="tabpanel" aria-labelledby={'etapa-'+ESTADO_INICIAL.stage} aria-live="polite">
+   {c.stages.map((_:string,i:number)=>{const d=etapaDetalhe(t,i);return <div class="caminho-par" data-detalhe={i} hidden={i!==ESTADO_INICIAL.stage}>
+    <div class="caminho-cartao">
+     <div class="caminho-rotulo">{d.gives}</div>
+     <div class="caminho-texto"><TechnicalText text={d.givesText}/></div>
+    </div>
+    <div class="caminho-cartao caminho-exige">
+     <div class="caminho-rotulo">{c.needsLabel}</div>
+     <div class="caminho-texto"><TechnicalText text={d.needs}/></div>
+     <div class="caminho-codigo"><code class="codigo-liso" lang={d.code.startsWith('##')?saidaLang:undefined} set:html={codigo(d.code)}></code></div>
+    </div>
+   </div>;})}
+  </div>
+  <div class="caminho-nota"><div class="caminho-chip">{c.failChip}</div><div><TechnicalText text={c.failNote}/></div></div>
+ </div>
+</section>
+<style>
+.caminho{background:var(--superficie);border-top:1px solid var(--linha);border-bottom:1px solid var(--linha)}
+.etapas{margin-top:var(--e-7);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:var(--e-2)}
+.etapa{text-align:left;padding:var(--e-4) var(--e-4) var(--e-5);border-radius:var(--raio-cartao);cursor:pointer;border:1px solid;transition:background var(--dur-media) var(--curva),color var(--dur-media) var(--curva)}
+.etapa:hover{border-color:var(--linha-forte)!important}
+.etapa-n{display:block;font:var(--peso-destaque) var(--t-rotulo)/1 var(--f-mono)}
+.etapa-nome{display:block;margin-top:var(--e-5);font:var(--tipo-titulo-3);letter-spacing:var(--trk-titulo-3);line-height:1}
+.caminho-detalhe{margin-top:var(--e-3)}
+.caminho-par{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:var(--e-3)}
+.caminho-par[hidden]{display:none}
+.caminho-cartao{padding:var(--e-5);border-radius:var(--raio-cartao);background:var(--superficie-2)}
+.caminho-exige{background:color-mix(in srgb,var(--verificado) 6%,var(--superficie));border:1px solid color-mix(in srgb,var(--verificado) 18%,var(--superficie))}
+.caminho-rotulo{font:var(--tipo-rotulo);letter-spacing:var(--espaco-rotulo);text-transform:uppercase;color:var(--texto-3)}
+.caminho-exige .caminho-rotulo{color:var(--verificado-texto)}
+.caminho-texto{margin-top:var(--e-3);font:var(--peso-destaque) var(--t-titulo-2)/1.35 var(--f-titulo);letter-spacing:var(--trk-titulo-2);text-wrap:pretty}
+/* O identificador quebra só nos pontos marcados; o alerta, que tem espaços, quebra entre palavras. */
+.caminho-codigo{margin-top:var(--e-4);font:var(--peso-destaque) var(--t-rotulo)/1.5 var(--f-mono);color:var(--verificado-texto)}
+.caminho-codigo .codigo-liso{white-space:normal}
+.caminho-nota{margin-top:var(--e-5);display:flex;align-items:center;gap:var(--e-3);font:var(--tipo-apoio);color:var(--texto-2)}
+.caminho-chip{flex:none;display:inline-flex;align-items:center;height:28px;padding:0 var(--e-3);border-radius:var(--raio-chip);font:var(--peso-destaque) var(--t-rotulo)/1 var(--f-mono);background:color-mix(in srgb,var(--falha) 14%,var(--superficie));color:var(--falha-texto);box-sizing:border-box}
+</style>

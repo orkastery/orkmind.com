@@ -1,12 +1,13 @@
 ---
-import "@fontsource/geist-sans/400.css";
-import "@fontsource/geist-sans/500.css";
-import "@fontsource/geist-sans/600.css";
-import "@fontsource/geist-mono/400.css";
-import "@fontsource/geist-mono/500.css";
-import "../styles/global.css";
-import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
+// Moldura de toda página na Partitura do OrkMind (kit do dono): as fontes com os nomes do kit, os
+// tokens gerados de partitura/partitura.json, a base, o cabeçalho, o rodapé e a faixa da prévia.
+import '../styles/fonts.css';
+import '../../partitura/partitura.css';
+import '../styles/base.css';
+import geistLatino from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
+import hankenLatino from '@fontsource-variable/hanken-grotesk/files/hanken-grotesk-latin-wght-normal.woff2?url';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 import {localeFor,localize,locales,languageTag,ui,withBase} from '../data/i18n';
 import {releaseDaBase,textoDaFaixa,versaoDaBuild} from '../lib/previa.mjs';
 interface Props { titulo?: string; descricao?: string; }
@@ -30,24 +31,33 @@ const release=releaseDaBase(import.meta.env.BASE_URL),sha=release?versaoDaBuild(
  <meta property="og:description" content={descricao} />
  <meta property="og:type" content="website" />
  <meta property="og:url" content={origin+Astro.url.pathname} />
- <meta property="og:locale" content={{pt:'pt_BR',en:'en_US',es:'es_ES'}[locale]} />
+ <meta property="og:locale" content={{pt:'pt_BR',en:'en_US'}[locale]} />
  <meta property="og:image" content={origin+withBase('/og.png')} />
  <meta name="twitter:card" content="summary_large_image" />
- <meta name="theme-color" content="#07090e" />
+ <meta name="theme-color" content="#EEF0F2" />
  <link rel="icon" href={withBase('/favicon.ico')} sizes="32x32" />
  <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
  <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
  <link rel="manifest" href={withBase('/site.webmanifest')} />
-
+ <link rel="preload" as="font" type="font/woff2" href={geistLatino} crossorigin />
+ <link rel="preload" as="font" type="font/woff2" href={hankenLatino} crossorigin />
 </head>
-<body>{release&&<div class="previa-faixa" role="note" lang="pt-BR" data-previa={release} data-sha={sha} style="padding:.45rem 1rem;font:500 .8rem/1.4 var(--f-texto,var(--fonte-texto,system-ui,sans-serif));text-align:center;color:var(--tinta,var(--texto));background:var(--poco,var(--fundo));border-bottom:1px dashed var(--linha-forte,currentColor);">{textoDaFaixa(release)} · <code title={sha} style="font:inherit;font-family:var(--f-mono,var(--fonte-mono,monospace));background:none;padding:0;border:0;">{sha?.slice(0,7)}</code></div>}
- <a class="skip-content" href="#conteudo">{text.skip}</a>
- <Nav />
- <main id="conteudo" tabindex="-1"><slot /></main>
- <Footer />
+<body>{release&&<div class="previa-faixa" role="note" lang="pt-BR" data-previa={release} data-sha={sha}>{textoDaFaixa(release)} · <code class="codigo-liso" title={sha}>{sha?.slice(0,7)}</code></div>}
+ <a class="pular" href="#conteudo">{text.skip}</a>
+ <div class="pagina">
+  <SiteHeader />
+  <main id="conteudo" tabindex="-1"><slot /></main>
+  <SiteFooter />
+ </div>
 </body>
 </html>
+<script>
+ import '../scripts/moldura.ts';
+ import '../scripts/copiar.ts';
+</script>
 <style>
-.skip-content{position:fixed;z-index:1000;left:1rem;top:1rem;transform:translateY(-200%);padding:1rem;background:var(--tinta,var(--texto));color:var(--poco,var(--fundo));}
-.skip-content:focus{transform:none;}
+/* Faixa da prévia: aviso neutro, sem o acento (o jade é só do que espera você). */
+.previa-faixa{padding:var(--e-2) var(--e-4);font:var(--peso-destaque) var(--t-apoio)/1.4 var(--f-texto);text-align:center;color:var(--texto);background:var(--superficie);border-bottom:1px dashed var(--linha-forte)}
+.previa-faixa code{font-family:var(--f-mono)}
+main:focus{outline:none;box-shadow:none}
 </style>

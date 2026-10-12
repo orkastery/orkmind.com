@@ -1,0 +1,125 @@
+---
+// 05 · Governança: a janela do orkmind list que se atualiza sozinha (exemplo), os avisos reais da
+// gravação na 0.4.0 (terminal, sempre noite), quem revisa o que ficou retido e as quatro camadas da
+// arquitetura. Componentes do kit: tabela com cabeça mono em caixa alta, barra de seis etapas com
+// rótulo acessível, e abaixo de 768 px a tabela vira lista de cartões. O jade fica só na entrada que
+// espera você; a retida vai em brasa, com o × no rótulo da etapa.
+import CabecalhoSecao from '../ds/CabecalhoSecao.astro';
+import TechnicalText from '../TechnicalText.astro';
+import {entradas,ESTADO_INICIAL,cor} from '../../lib/home-state.mjs';
+import {localeFor} from '../../data/i18n';
+const {t}=Astro.props;
+const g=t.governance,linhas=entradas(t,ESTADO_INICIAL.tick);
+// A saída do produto sai em português nas duas línguas: na página em inglês, o leitor de tela a lê
+// como português.
+const saidaLang=localeFor(Astro.url.pathname)==='pt'?undefined:'pt-BR';
+const naoExiste=t.proof.gaps[0].s;
+---
+<section id="governanca" class="secao-padrao">
+ <div class="container">
+  <span id="produto" class="ancora-antiga" aria-hidden="true"></span><span id="produto-titulo" class="ancora-antiga" aria-hidden="true"></span>
+  <CabecalhoSecao sobretitulo={g.eyebrow} titulo={g.title} continuacao={g.titleMuted} lead={g.lead} medidaTitulo="22ch" medidaLead="60ch"/>
+  <div class="governanca" data-reveal>
+   <div class="board">
+    <div class="board-topo">
+     <div class="board-luzes" aria-hidden="true"><span></span><span></span><span></span></div>
+     <span class="board-comando">$ <code class="codigo-liso">{g.boardCmd}</code></span>
+     <span class="estica"></span>
+     <span class="board-meta">{g.boardMeta}</span>
+    </div>
+    <div class="board-tabela" role="table" aria-label={g.boardCmd}>
+     <div class="board-cabeca" role="row">{g.boardHead.map((h:string)=><div role="columnheader">{h}</div>)}</div>
+     {linhas.map((l,i)=><div class="board-linha" role="row" data-entrada={i} style={`background:${cor(l.rowBg)}`}>
+      <div class="board-entrada" role="cell"><div class="board-nome">{l.name}</div></div>
+      <div class="board-colecao" role="cell"><div>{l.coll}</div><div class="board-tags">{l.tags}</div></div>
+      <div class="board-etapas" role="cell">
+       <div class="board-segmentos" role="img" aria-label={l.barra} data-entrada-barra>{l.segs.map(s=><span style={`background:${cor(s)}`}></span>)}</div>
+       <div class="board-etapa" data-entrada-etapa>{l.phase}</div>
+      </div>
+      <div class="board-estado" role="cell" data-entrada-estado style={`color:${cor(l.fg)}`}><span style={`background:${cor(l.dot)}`} aria-hidden="true"></span><span data-entrada-rotulo>{l.label}</span></div>
+     </div>)}
+    </div>
+   </div>
+   <div class="avisos" data-tema="noite" role="region" aria-label={g.warningsTitle} tabindex="0">
+    <div class="avisos-topo"><span>{g.warningsTitle}</span><span>{g.warningsMeta}</span></div>
+    {g.warnings.map((w:any)=><div class="aviso">
+     <div class="terminal-linha"><span class="terminal-prompt" aria-hidden="true">$</span><code class="codigo-liso">{w.cmd}</code></div>
+     {w.out.map((o:string)=><div class="terminal-linha terminal-saida"><span aria-hidden="true"></span><code class="codigo-liso" lang={saidaLang}>{o}</code></div>)}
+    </div>)}
+   </div>
+   <div class="revisao holofote" data-holofote>
+    <div class="revisao-coluna">
+     <div class="rotulo">{g.reviewLabel}</div>
+     <h3 class="revisao-titulo">{g.reviewTitle}</h3>
+     <p class="revisao-texto"><TechnicalText text={g.reviewText}/></p>
+    </div>
+    <div class="revisao-coluna">
+     <div class="revisao-erro" data-tema="noite"><code class="codigo-liso revisao-classe">ProtectionError</code><span class="revisao-mensagem" lang={saidaLang}>{g.reviewError}</span></div>
+     <div class="revisao-lacuna"><div class="revisao-lacuna-s">{naoExiste}</div><div><TechnicalText text={g.reviewGap}/></div></div>
+    </div>
+   </div>
+  </div>
+  <div class="camadas" data-reveal>
+   <span id="arquitetura" class="ancora-antiga" aria-hidden="true"></span><span id="arq-titulo" class="ancora-antiga" aria-hidden="true"></span><span id="arquitetura-resumo" class="ancora-antiga" aria-hidden="true"></span>
+   {g.layers.map((l:any)=><div><div class="camada-n">{l.n}</div><h3 class="camada-t">{l.t}</h3><p class="camada-d"><TechnicalText text={l.d}/></p></div>)}
+  </div>
+ </div>
+</section>
+<style>
+/* Uma coluna: a tabela, o terminal inteiro na largura (as linhas da 0.4.0 cabem a partir de 1280 px)
+   e a revisão em duas colunas internas. */
+.governanca{margin-top:var(--e-7);display:grid;grid-template-columns:minmax(0,1fr);gap:var(--e-5)}
+.board{background:var(--superficie);border:1px solid var(--linha);border-radius:var(--raio-cartao);overflow:hidden;box-shadow:var(--sombra-1)}
+.board-topo{display:flex;flex-wrap:wrap;align-items:center;gap:var(--e-2) var(--e-3);padding:var(--e-3) var(--e-5);border-bottom:1px solid var(--linha)}
+.board-luzes{display:flex;gap:6px}
+.board-luzes span{width:10px;height:10px;border-radius:50%;background:var(--linha)}
+.board-comando{font:var(--peso-destaque) var(--t-rotulo)/1 var(--f-mono);color:var(--texto-2)}
+.estica{flex:1}
+.board-meta{font:var(--peso-texto) var(--t-rotulo)/1.3 var(--f-mono);color:var(--texto-3)}
+.board-cabeca{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1.1fr) 160px 130px;gap:var(--e-4);padding:var(--e-3) var(--e-5);font:var(--tipo-rotulo);line-height:1;letter-spacing:var(--espaco-rotulo);text-transform:uppercase;color:var(--texto-3);border-bottom:1px solid var(--texto)}
+.board-linha{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1.1fr) 160px 130px;gap:var(--e-4);align-items:center;padding:var(--e-3) var(--e-5);border-top:1px solid var(--linha);transition:background 1.4s var(--curva)}
+.board-cabeca+.board-linha{border-top:0}
+.board-entrada{min-width:0}
+.board-nome{font:var(--peso-destaque) var(--t-apoio)/1.3 var(--f-texto);color:var(--texto);overflow-wrap:anywhere}
+.board-colecao{font:var(--peso-texto) var(--t-rotulo)/1.4 var(--f-mono);color:var(--texto-2)}
+.board-tags{margin-top:3px;color:var(--texto-3)}
+/* Barra de seis etapas do kit: segmento de 6 px, raio 3. */
+.board-segmentos{display:grid;grid-template-columns:repeat(6,1fr);gap:3px}
+.board-segmentos span{height:6px;border-radius:var(--raio-segmento);transition:background var(--dur-longa) var(--curva)}
+.board-etapa{margin-top:6px;font:var(--peso-destaque) var(--t-rotulo)/1 var(--f-mono);letter-spacing:var(--espaco-rotulo);color:var(--texto-3)}
+.board-estado{display:flex;align-items:center;gap:7px;font:var(--peso-destaque) var(--t-rotulo)/1.2 var(--f-mono)}
+.board-estado>span:first-child{flex:none;width:7px;height:7px;border-radius:50%}
+/* Terminal dos avisos: bloco de código, sempre noite; a linha longa rola dentro dele, inteira. */
+.avisos{position:relative;min-width:0;background:var(--superficie);border-radius:var(--raio-cartao);padding:var(--e-5);font:var(--tipo-codigo);overflow-x:auto}
+.avisos-topo{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--e-2) var(--e-3);margin-bottom:var(--e-4);font:var(--peso-destaque) var(--t-rotulo)/1.3 var(--f-mono);color:var(--texto-2)}
+.aviso+.aviso{margin-top:var(--e-4)}
+.terminal-linha{display:grid;grid-template-columns:2ch max-content;gap:var(--e-2);color:var(--texto)}
+.terminal-prompt{color:var(--texto-2)}
+.terminal-saida{color:var(--texto-2)}
+.terminal-linha .codigo-liso{white-space:pre}
+.revisao{background-color:var(--superficie);border:1px solid var(--linha);border-radius:var(--raio-cartao);padding:var(--e-5);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:var(--e-4) var(--e-7);align-items:start}
+.revisao-coluna{display:flex;flex-direction:column;gap:var(--e-3);min-width:0}
+.revisao-titulo{margin:0;font:var(--tipo-titulo-3);letter-spacing:var(--trk-titulo-3);text-wrap:balance}
+.revisao-texto{margin:0;font:var(--tipo-apoio);color:var(--texto-2);text-wrap:pretty}
+.revisao-erro{display:flex;flex-direction:column;gap:var(--e-1);padding:var(--e-3) var(--e-4);border-radius:var(--raio-botao);background:var(--superficie);font:var(--tipo-codigo);color:var(--texto)}
+.revisao-classe.codigo-liso{color:var(--falha-texto);font-weight:var(--peso-destaque)}
+.revisao-mensagem{font-family:var(--f-mono)}
+.revisao-lacuna{display:flex;flex-direction:column;gap:var(--e-1);padding:var(--e-3) var(--e-4);border-radius:var(--raio-botao);border:1px dashed var(--linha-forte);font:var(--tipo-apoio);color:var(--texto-2)}
+.revisao-lacuna-s{font:var(--peso-destaque) var(--t-rotulo)/1.2 var(--f-mono);color:var(--falha-texto)}
+.camadas{margin-top:var(--e-7);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--e-6);border-top:1px solid var(--linha-forte);padding-top:var(--e-6)}
+.camada-n{font:var(--peso-destaque) var(--t-rotulo)/1 var(--f-mono);color:var(--texto-3)}
+.camada-t{margin:var(--e-3) 0 0;font:var(--tipo-titulo-3);letter-spacing:var(--trk-titulo-3)}
+.camada-d{margin:var(--e-2) 0 0;font:var(--tipo-apoio);color:var(--texto-2);text-wrap:pretty}
+/* Abaixo de 768 px a tabela vira lista de cartões (kit, Responsividade): entrada e estado em cima,
+   coleção e a barra de etapas embaixo; sem cabeça de tabela e sem rolagem lateral. */
+@media (max-width:767.98px){
+ .board-tabela{display:flex;flex-direction:column;gap:var(--e-2);padding:var(--e-3)}
+ .board-cabeca{display:none}
+ .board-linha{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'entrada estado' 'colecao colecao' 'etapas etapas';gap:var(--e-2) var(--e-3);padding:var(--e-3);border:1px solid var(--linha);border-radius:var(--raio-botao)}
+ .board-cabeca+.board-linha{border-top:1px solid var(--linha)}
+ .board-entrada{grid-area:entrada}
+ .board-colecao{grid-area:colecao}
+ .board-etapas{grid-area:etapas}
+ .board-estado{grid-area:estado}
+}
+</style>

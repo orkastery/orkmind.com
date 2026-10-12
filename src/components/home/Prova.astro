@@ -1,0 +1,65 @@
+---
+// 08 · Prova (#prova): os números do benchmark com o comando que prova cada um, a lacuna publicada
+// como lacuna (o número que ainda não existe: um traço, contorno tracejado, "planejado"), o terminal
+// "confira a sua instalação" com a saída real da 0.4.0 (sempre noite) e o que ainda não existe.
+import CabecalhoSecao from '../ds/CabecalhoSecao.astro';
+import TechnicalText from '../TechnicalText.astro';
+const {t}=Astro.props;
+const p=t.proof;
+---
+<section id="prova" class="prova secao-padrao">
+ <div class="container">
+  <CabecalhoSecao sobretitulo={p.eyebrow} titulo={p.title} lead={p.lead} medidaTitulo="18ch" medidaLead="62ch"/>
+  <div class="prova-grade" data-reveal>
+   <div class="numeros">
+    {p.proofs.map((n:any)=><div class="numero holofote" data-holofote>
+     <div class="numero-n">{n.n}</div>
+     <div class="numero-l">{n.l}</div>
+     <div class="numero-c">$ <code class="codigo-liso">{n.c}</code></div>
+    </div>)}
+    <div class="numero numero-lacuna">
+     <div class="numero-n" aria-hidden="true"><span class="numero-traco"></span></div>
+     <div class="numero-l">{p.gapProof.l}</div>
+     <div class="numero-s">{p.gapProof.s}</div>
+    </div>
+   </div>
+   <div class="terminal" data-tema="noite" role="region" aria-label={p.demoTitle} tabindex="0">
+    <div class="terminal-topo"><span>{p.demoTitle}</span><span>{p.demoMeta}</span></div>
+    {p.demo.map((d:any)=>d.code
+     ?<div class:list={['terminal-linha',d.kc==='saida'&&'terminal-saida']}><span class="terminal-prompt" aria-hidden="true">{d.k}</span><code class="codigo-liso">{d.v}</code></div>
+     :<p class="terminal-nota"><TechnicalText text={d.v}/></p>)}
+   </div>
+  </div>
+  <div class="lacunas">
+   <h3 class="lacunas-titulo">{p.gapsTitle}</h3>
+   {p.gaps.map((g:any)=><div class="lacuna"><div class="lacuna-s" style={`color:var(--${g.c}-texto)`}>{g.s}</div><div><TechnicalText text={g.t}/></div></div>)}
+  </div>
+ </div>
+</section>
+<style>
+.prova{background:var(--superficie)}
+.prova-grade{margin-top:var(--e-7);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:var(--e-5);align-items:stretch}
+.numeros{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:1px;background:var(--linha);border:1px solid var(--linha);border-radius:var(--raio-cartao);overflow:hidden}
+.numero{background-color:var(--superficie);padding:var(--e-5);display:flex;flex-direction:column;gap:var(--e-3)}
+.numero-n{font:var(--tipo-titulo-1);letter-spacing:var(--trk-titulo-1);font-variant-numeric:tabular-nums}
+.numero-l{flex:1;font:var(--tipo-apoio);color:var(--texto-2);text-wrap:pretty}
+.numero-c{font:var(--peso-texto) var(--t-rotulo)/1.4 var(--f-mono);color:var(--verificado-texto)}
+/* Número de prova que ainda não existe (kit): um traço no lugar do número, contorno tracejado e o
+   estado escrito. O traço é desenhado, da largura e da altura de um número da escala. */
+.numero-lacuna{background-color:var(--superficie-2);outline:1px dashed var(--linha-forte);outline-offset:-9px}
+.numero-lacuna .numero-n{display:flex;align-items:center;height:1.1em;color:var(--texto-3)}
+.numero-traco{display:block;width:.9em;height:.09em;border-radius:1px;background:currentColor}
+.numero-s{font:var(--peso-destaque) var(--t-rotulo)/1.2 var(--f-mono);color:var(--texto-3)}
+/* Terminal da prova: bloco de código, sempre noite; a linha longa rola dentro dele, inteira. */
+.terminal{position:relative;min-width:0;background:var(--superficie);border-radius:var(--raio-cartao);padding:var(--e-5);font:var(--tipo-codigo);overflow-x:auto}
+.terminal-topo{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--e-2) var(--e-3);margin-bottom:var(--e-4);font:var(--peso-destaque) var(--t-rotulo)/1.3 var(--f-mono);color:var(--texto-2)}
+.terminal-linha{display:grid;grid-template-columns:2ch max-content;gap:var(--e-2);color:var(--texto)}
+.terminal-linha .codigo-liso{white-space:pre}
+.terminal-prompt{color:var(--texto-2)}
+.terminal-saida{color:var(--texto-2)}
+.terminal-nota{margin:var(--e-3) 0 0;padding-left:calc(2ch + var(--e-2));max-width:52ch;font:var(--tipo-apoio);color:var(--texto-2)}
+.lacunas{margin-top:var(--e-5);padding:var(--e-5);border-radius:var(--raio-cartao);background:var(--superficie-2);border:1px dashed var(--linha-forte);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:var(--e-4) var(--e-6)}
+.lacunas-titulo{margin:0;font:var(--peso-titulo) var(--t-corpo)/1.35 var(--f-titulo)}
+.lacuna{display:flex;flex-direction:column;gap:var(--e-1);font:var(--tipo-apoio);color:var(--texto-2)}
+.lacuna-s{font:var(--peso-destaque) var(--t-rotulo)/1.2 var(--f-mono)}
+</style>

@@ -3,8 +3,36 @@
    foco por anel, estado sempre com rótulo, alvo de 44 px, comando e código sempre em noite,
    acento só no que espera você. Tema noite por data-tema="noite" em qualquer ancestral. */
 
-body{margin:0;background:var(--chao);color:var(--texto);font:var(--peso-texto) var(--t-corpo)/1.5 var(--f-texto);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-[data-tema="noite"]{background:var(--chao);color:var(--texto)}
+/* Papéis de texto: a escala --t-* com o peso, a entrelinha e o tracking das notas do
+   partitura.css (os mesmos nomes do site do Orkastery). Títulos em Geist 600 com tracking entre
+   -0,01 e -0,035em; corpo em Hanken 17/1,5; rótulo em Plex Mono 500 caixa alta +0,06em. */
+:root{
+ --tipo-display:var(--peso-titulo) var(--t-display)/1 var(--f-titulo);
+ --tipo-titulo-1:var(--peso-titulo) var(--t-titulo-1)/1.1 var(--f-titulo);
+ --tipo-titulo-2:var(--peso-titulo) var(--t-titulo-2)/1.15 var(--f-titulo);
+ --tipo-titulo-3:var(--peso-titulo) var(--t-titulo-3)/1.3 var(--f-titulo);
+ --tipo-corpo:var(--peso-texto) var(--t-corpo)/1.5 var(--f-texto);
+ --tipo-destaque:var(--peso-destaque) var(--t-corpo)/1.5 var(--f-texto);
+ --tipo-apoio:var(--peso-texto) var(--t-apoio)/1.45 var(--f-texto);
+ --tipo-rotulo:var(--peso-destaque) var(--t-rotulo)/1.33 var(--f-mono);
+ --tipo-codigo:var(--peso-texto) var(--t-codigo)/1.6 var(--f-mono);
+ --tipo-botao:var(--peso-destaque) 15px/1 var(--f-texto);
+ --trk-display:-0.035em;
+ --trk-titulo-1:-0.03em;
+ --trk-titulo-2:-0.02em;
+ --trk-titulo-3:-0.01em;
+ /* Estrutura do site (não é identidade): alturas e respiros feitos da escala --e-*. */
+ --altura-cabecalho:64px;
+ --alvo:44px;
+ --secao:clamp(var(--e-8),8vw,var(--e-9));
+ --secao-ampla:clamp(var(--e-8),10vw,calc(var(--e-9) + var(--e-6)));
+}
+
+body{margin:0;background:var(--chao);color:var(--texto);font:var(--tipo-corpo);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+/* Tema noite (data-tema, como no kit): o partitura.css declara --anel-foco só no :root, com o
+   chão e o foco do dia já resolvidos ali; a mesma fórmula, declarada de novo aqui, usa o chão e
+   o foco da noite. */
+[data-tema="noite"]{background:var(--chao);color:var(--texto);--anel-foco:0 0 0 2px var(--chao),0 0 0 4px var(--foco)}
 h1,h2,h3,h4{font-family:var(--f-titulo);font-weight:var(--peso-titulo);text-wrap:balance}
 p{text-wrap:pretty}
 a{color:inherit;text-decoration-color:var(--linha-forte);text-underline-offset:3px}
@@ -14,8 +42,9 @@ button{font:inherit;color:inherit}
 /* Rolagem suave nas âncoras, desligada com movimento reduzido. */
 @media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
 
-/* Foco visível em todo interativo: anel de 2 px separado do chão por 2 px (regra dura 4). */
-:focus-visible{outline:none;box-shadow:var(--anel-foco)}
+/* Foco visível em todo interativo: anel de 2 px separado do chão por 2 px (regra dura 4). O
+   contorno transparente aparece no modo de alto contraste, onde a sombra some. */
+:focus-visible{outline:2px solid transparent;outline-offset:2px;box-shadow:var(--anel-foco)}
 :focus:not(:focus-visible){outline:none}
 
 /* Movimento andante: pulso de 2,8 s só no que está vivo; fluxo dos conectores tracejados. */
@@ -32,10 +61,10 @@ button{font:inherit;color:inherit}
 .container{max-width:var(--largura);margin:0 auto;padding:0 var(--calha)}
 
 /* Rótulo mono em caixa alta (t-rotulo): sobretítulos, cabeças de tabela, metadados. */
-.rotulo{font:var(--peso-destaque) var(--t-rotulo)/1.3 var(--f-mono);letter-spacing:var(--espaco-rotulo);text-transform:uppercase;color:var(--texto-3)}
+.rotulo{font:var(--tipo-rotulo);letter-spacing:var(--espaco-rotulo);text-transform:uppercase;color:var(--texto-3)}
 
 /* Pular para o conteúdo: fora da tela até receber foco. */
-.pular{position:fixed;z-index:1000;left:var(--e-4);top:var(--e-3);transform:translateY(-200%);padding:var(--e-3) var(--e-4);border-radius:var(--raio-botao);background:var(--acao);color:var(--sobre-acao);font:var(--peso-destaque) 15px/1 var(--f-texto);text-decoration:none}
+.pular{position:fixed;z-index:1000;left:var(--e-4);top:var(--e-3);transform:translateY(-200%);display:inline-flex;align-items:center;min-height:var(--alvo);padding:0 var(--e-4);border-radius:var(--raio-botao);background:var(--acao);color:var(--sobre-acao);font:var(--tipo-botao);text-decoration:none}
 .pular:focus{transform:none}
 
 /* Texto só para leitor de tela. */
@@ -57,13 +86,19 @@ pre code{font:inherit;background:none;padding:0;border-radius:0;white-space:pre}
 
 /* Âncoras de versões anteriores da home: alvo de link antigo, sem ocupar espaço. */
 .ancora-antiga{position:absolute;width:0;height:0;overflow:hidden}
-[id]{scroll-margin-top:calc(64px + var(--e-4))}
+[id]{scroll-margin-top:calc(var(--altura-cabecalho) + var(--e-4))}
 
 /* Brilho que segue o cursor (Partitura, Movimento): luz neutra, a cor do texto a 7%, raio de
    320 px, nunca o acento; só em cartão de destaque e desligado em toque. O cartão recebe --mx e
    --my de src/scripts/moldura.ts. Use background-color, nunca o atalho background, no cartão. */
-.holofote{background-image:radial-gradient(320px circle at var(--mx,-600px) var(--my,-600px),color-mix(in srgb,var(--texto) 7%,transparent),transparent 70%)}
-@media (hover: none){.holofote{background-image:none}}
+@media (hover: hover) and (pointer: fine){
+ .holofote{background-image:radial-gradient(320px circle at var(--mx,-600px) var(--my,-600px),color-mix(in srgb,var(--texto) 7%,transparent),transparent 70%)}
+}
+
+/* Seção padrão da home: respiro vertical da estrutura do site. */
+.secao-padrao{padding:var(--secao) 0}
+/* Pulso de 2,8 s só no que está vivo. */
+.pulso{animation:pulso var(--pulso) ease-in-out infinite}
 
 /* Entrada suave ao rolar (Partitura, Movimento): 600 ms, 16 px, 80 ms entre irmãos, uma vez,
    quando 20% do bloco entra na tela. O estado inicial só vale com JS e sem movimento reduzido. */

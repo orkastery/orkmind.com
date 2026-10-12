@@ -1,0 +1,18 @@
+---
+// Chip de estado da Partitura: altura 28, raio 7, mono 12, ponto de 7 px e rótulo. O estado nunca
+// vem só pela cor (regra dura 2): o rótulo diz o estado e o glifo, quando há, reforça. "pendente"
+// usa contorno tracejado; o pulso só vai no que está vivo (executando).
+interface Props { estado: 'espera'|'executando'|'verificado'|'falha'|'pendente'; rotulo: string; glifo?: string; vivo?: boolean; }
+const {estado,rotulo,glifo,vivo=false}=Astro.props;
+---
+<span class:list={['chip',`chip-${estado}`,vivo&&'chip-vivo']} data-chip={estado}><span class="chip-ponto" aria-hidden="true"></span>{glifo&&<span aria-hidden="true">{glifo}</span>}<span data-chip-rotulo>{rotulo}</span></span>
+<style>
+.chip{display:inline-flex;align-items:center;gap:7px;min-height:28px;padding:0 10px;border-radius:var(--raio-chip);border:1px solid var(--linha);background:var(--superficie);font:var(--peso-texto) 12px/1 var(--f-mono);white-space:nowrap}
+.chip-ponto{width:7px;height:7px;border-radius:50%;flex:none}
+.chip-espera{color:var(--espera-texto)}.chip-espera .chip-ponto{background:var(--espera)}
+.chip-executando{color:var(--executando-texto)}.chip-executando .chip-ponto{background:var(--executando)}
+.chip-verificado{color:var(--verificado-texto)}.chip-verificado .chip-ponto{background:var(--verificado)}
+.chip-falha{color:var(--falha-texto)}.chip-falha .chip-ponto{background:var(--falha)}
+.chip-pendente{color:var(--texto-3);border-style:dashed}.chip-pendente .chip-ponto{box-shadow:inset 0 0 0 1.5px var(--texto-3)}
+.chip-vivo .chip-ponto{animation:pulso var(--pulso) ease-in-out infinite}
+</style>

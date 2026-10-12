@@ -1,0 +1,44 @@
+---
+// Comando copiável da Partitura ("CTA de instalação"): sempre noite, nos dois temas (regra dura 6),
+// com a luz do jade (a única exceção do acento, regra dura 1), o prompt $ em luar-2 e o rótulo
+// copiar, que vira "✓ copiado" por 1,6 s ou "× use Ctrl+C" (⌘C no Mac) se a área de transferência
+// recusar (src/scripts/copiar.ts). O comando é código e nunca parte em duas linhas: se não couber,
+// o rótulo desce de linha. Variantes: hero (com a borda de luz girando, efeito aprovado no kit),
+// cartao, noite (sobre fundo escuro) e cabecalho (compacta, sem luz).
+import {localeFor,moldura} from '../../data/i18n';
+interface Props { variante?: 'hero'|'cartao'|'noite'|'cabecalho'; comando?: string; id?: string; }
+const {variante='hero',comando='pip install orkmind',id}=Astro.props;
+const m=moldura(localeFor(Astro.url.pathname));
+const dados={'data-copiar':comando,'data-rotulo':m.copy,'data-rotulo-ok':m.copied,'data-rotulo-falha':m.copyFailed,'data-msg-ok':m.copiedMessage,'data-msg-falha':m.copyFailedMessage};
+---
+<span class:list={['comando',`comando-${variante}`]} id={id}>
+ <button type="button" class="comando-botao" aria-label={m.copyHint+': '+comando} {...dados}>
+  <span class="comando-prompt" aria-hidden="true">$</span><code class="comando-texto">{comando}</code>
+  {variante!=='cabecalho'&&<span class="comando-rotulo" data-rotulo-visivel aria-hidden="true">{m.copy}</span>}
+ </button>
+ <span class="so-leitor" role="status" data-status></span>
+</span>
+<style>
+.comando{display:inline-flex;max-width:100%;border-radius:var(--raio-botao);box-shadow:var(--luz-jade)}
+.comando-cabecalho{box-shadow:none}
+/* Borda de luz girando no comando do hero: o jade percorre o contorno; parado com movimento reduzido. */
+.comando-hero{padding:1.5px;border-radius:13.5px;background:conic-gradient(from var(--giro),transparent 0deg,transparent 230deg,var(--jade) 325deg,transparent 360deg),var(--noite-3);animation:giro 6s linear infinite}
+.comando-botao{display:flex;align-items:center;flex-wrap:wrap;row-gap:var(--e-2);column-gap:var(--e-3);min-height:52px;max-width:100%;padding:6px 6px 6px 18px;border:1px solid var(--noite-3);border-radius:var(--raio-botao);background:var(--noite-2);color:var(--luar);font:var(--peso-texto) 15px/1 var(--f-mono);cursor:pointer;text-align:left;transition:border-color var(--dur-curta) var(--curva)}
+.comando-hero .comando-botao{border-color:transparent}
+.comando-botao:hover{border-color:var(--luar-2)}
+.comando-botao:focus-visible{box-shadow:var(--anel-foco)}
+.comando-prompt{color:var(--luar-2)}
+/* O comando é código e inteiro: herda a letra do botão, sem o chip da prosa. */
+.comando-texto{display:inline;font:inherit;color:inherit;background:none;padding:0;border-radius:0;white-space:nowrap}
+.comando-rotulo{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;min-width:64px;height:36px;padding:0 var(--e-3);border-radius:9px;background:var(--noite-3);color:var(--luar);font:var(--peso-destaque) 12px/1 var(--f-mono);letter-spacing:.04em}
+/* O estado do rótulo vem no texto e no glifo (✓, ×); a cor fica só no contorno, porque água e
+   brasa não passam de 4,5:1 sobre noite-3 em 12 px. */
+.comando-rotulo[data-estado="ok"]{box-shadow:inset 0 0 0 1px var(--agua)}
+.comando-rotulo[data-estado="falha"]{box-shadow:inset 0 0 0 1px var(--brasa)}
+.comando-cartao .comando-botao{min-height:48px;font-size:14px}
+.comando-cabecalho .comando-botao{min-height:44px;padding:0 var(--e-4);font-size:13px}
+/* Quando o rótulo desce de linha, o botão ganha respiro em cima e embaixo. */
+@media (max-width:440px){.comando-botao{padding:10px 8px 10px 16px}}
+/* Abaixo de 360 px o comando inteiro só cabe numa linha com a letra um pouco menor. */
+@media (max-width:360px){.comando-botao{font-size:13px;padding-left:12px}}
+</style>

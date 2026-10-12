@@ -1,0 +1,170 @@
+---
+// 01 · Sistema: o diagrama da home do design com o sistema do OrkMind (seus agentes, a camada de
+// memória e suas funções, os oito nós em três grupos e o histórico de versões), a grade das 23
+// coleções e os quatro cartões com comando e guia. O estado inicial é o do relógio parado (tique 0);
+// o script da home avança o relógio de 2,4 s e repinta os mesmos elementos. Topologia do kit: pedido
+// em tracejado regência que anda a 2,8 s, registro em água contínua até o histórico, a camada no
+// tema noite e o jade só no "você" (o símbolo da marca) e na regra protegida que espera você.
+// Abaixo de 900 px os grupos ficam um sobre o outro, ligados por um fio só.
+import CabecalhoSecao from '../ds/CabecalhoSecao.astro';
+import TechnicalText from '../TechnicalText.astro';
+import {topo,cor} from '../../lib/home-state.mjs';
+import {localeFor,localize,withBase} from '../../data/i18n';
+const {t}=Astro.props;
+const locale=localeFor(Astro.url.pathname),s=t.system,v=topo(t,0);
+// Âncoras dos cartões da home anterior, na mesma ordem dos quatro cartões.
+const ancoras=[['memoria','ontologia-titulo'],['busca','busca-titulo','recall','recall-titulo'],['produto-resumo'],['armazenamento']];
+let no=0;
+---
+<section id="sistema" class="secao-padrao">
+ <div class="container">
+  <CabecalhoSecao id="sistema-titulo" sobretitulo={s.eyebrow} titulo={s.title} lead={s.lead} medidaTitulo="20ch" medidaLead="62ch"/>
+  <div class="diagrama" data-reveal>
+   <div class="centro">
+    <div class="voce">
+     <img src={withBase('/marca/simbolo-fundo-claro.svg')} alt="" width="36" height="36"/>
+     <div><div class="voce-titulo">{s.you}</div><div class="voce-sub">{s.youSub}</div></div>
+     <ul class="voce-hosts">{t.hosts.list.map((n:string)=><li>{n}</li>)}</ul>
+    </div>
+   </div>
+   <div class="centro" aria-hidden="true"><span class="fluxo-v fluxo-curto"></span></div>
+   <div class="camada" data-tema="noite">
+    <div>
+     <div class="camada-rotulo">{s.layer}</div>
+     <div class="camada-nome"><code class="codigo-liso">{s.layerName}</code></div>
+     <div class="camada-sub">{s.layerSub}</div>
+    </div>
+    <ul class="camada-fns">{v.coreFns.map((f,i)=><li data-fn={i} style={`background:${cor(f.bg)};color:${cor(f.fg)};border-color:${cor(f.bd)}`}>{f.t}</li>)}</ul>
+   </div>
+   <div class="ligacao" aria-hidden="true">
+    <span class="fluxo-v ligacao-tronco"></span>
+    <span class="fluxo-h ligacao-trave"></span>
+    <span class="fluxo-v ligacao-ramo"></span><span class="fluxo-v ligacao-ramo"></span><span class="fluxo-v ligacao-ramo"></span>
+   </div>
+   <div class="centro ligacao-simples" aria-hidden="true"><span class="fluxo-v fluxo-curto"></span></div>
+   <div class="grupos">
+    {v.groups.map(g=><div class="grupo holofote" data-holofote>
+     <div class="grupo-topo"><span class="quadrado" style={`background:${cor(g.color)}`}></span><span class="grupo-nome">{g.name}</span><span class="estica"></span><span class="grupo-amb">{g.env}</span></div>
+     {g.nodes.map(n=>{const id=no++;return <div class="no" data-no={id}>
+      <div class="no-topo">
+       <span class="no-nome" data-node-label>{n.n}</span>
+       <span class="no-estado" data-no-estado style={`background:${cor(n.sbg)};color:${cor(n.sfg)}`}><span class:list={['no-ponto',n.recusou&&'pulso']} data-no-ponto style={`background:${cor(n.dot)}`} aria-hidden="true"></span><span data-no-rotulo>{n.state}</span></span>
+      </div>
+      <div class="no-aresta">{n.edge}</div>
+      <span class="segmentos" data-no-segs aria-hidden="true">{n.segs.map(sg=><span style={`background:${cor(sg)}`}></span>)}</span>
+     </div>;})}
+     <div class="grupo-pe">{g.foot}</div>
+    </div>)}
+   </div>
+   <div class="ligacao ligacao-baixo" aria-hidden="true">
+    <span class="fluxo-v ligacao-ramo-baixo"></span><span class="fluxo-v ligacao-ramo-baixo"></span><span class="fluxo-v ligacao-ramo-baixo"></span>
+    <span class="fluxo-h ligacao-trave-baixo"></span>
+    <span class="fluxo-v ligacao-tronco-baixo"></span>
+   </div>
+   <div class="centro ligacao-simples ligacao-simples-baixo" aria-hidden="true"><span class="fluxo-v fluxo-curto"></span></div>
+   <div class="centro">
+    <div class="historico">
+     <code class="codigo-liso historico-tabela">memory_versions</code>
+     <span class="historico-rotulo">{s.historyLabel}</span>
+     {v.history.map((h,k)=><span class="historico-item" data-historico={k} style={`background:${cor(h.bg)};color:${cor(h.fg)}`}><span data-historico-prefixo>{h.prefixo}</span> <code class="codigo-liso">{h.nome}</code></span>)}
+    </div>
+   </div>
+  </div>
+  <div class="colecoes" data-reveal>
+   <div class="colecoes-topo">
+    <div>
+     <h3 class="colecoes-titulo">{s.collectionsTitle}</h3>
+     <div class="colecoes-sub">$ <code class="codigo-liso">{s.collectionsCmd}</code> · {s.collectionsSub}</div>
+    </div>
+    <ul class="colecoes-legenda">
+     {v.legend.map(l=><li><span class="quadrado" style={`background:${cor(l.c)}`}></span>{l.n}</li>)}
+     <li><span class="quadrado quadrado-livre"></span>{s.free}</li>
+    </ul>
+   </div>
+   <ul class="colecoes-itens">{v.collections.map((c,i)=><li data-colecao={i} style={`background:${cor(c.bg)};color:${cor(c.fg)};border:1px ${c.bs} ${cor(c.bd)}`}><code class="codigo-liso">{c.id}</code></li>)}</ul>
+  </div>
+  <div class="escala" data-reveal>
+   {s.scale.map((c,i)=><div class="escala-cartao holofote" data-holofote id={ancoras[i][0]}>
+    {ancoras[i].slice(1).map(id=><span {id} class="ancora-antiga" aria-hidden="true"></span>)}
+    <h3 class="escala-titulo">{c.t}</h3>
+    <p class="escala-texto"><TechnicalText text={c.d}/></p>
+    <code class="escala-codigo">{c.c.split(' ').map((parte:string,k:number)=><>{k>0&&' '}<span class="escala-palavra">{parte}</span></>)}</code>
+    <a class="escala-link" href={localize(c.href,locale)}>{s.read} <span aria-hidden="true">→</span></a>
+   </div>)}
+  </div>
+ </div>
+</section>
+<style>
+.diagrama{margin-top:var(--e-7);padding:clamp(var(--e-4),3vw,var(--e-6));background:var(--superficie);border:1px solid var(--linha);border-radius:var(--raio-palco);box-shadow:var(--sombra-2)}
+.centro{display:flex;justify-content:center}
+.voce{display:flex;flex-wrap:wrap;align-items:center;gap:var(--e-3) var(--e-4);padding:var(--e-3);border-radius:var(--raio-cartao);background:var(--superficie-2)}
+.voce img{width:36px;height:36px}
+.voce-titulo{font:var(--peso-destaque) 15px/1.2 var(--f-texto)}
+.voce-sub{margin-top:var(--e-1);font:var(--peso-texto) var(--t-rotulo)/1.3 var(--f-mono);color:var(--texto-3)}
+.voce-hosts{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.voce-hosts li{padding:6px var(--e-2);border-radius:var(--raio-chip);background:var(--superficie);font:var(--peso-destaque) var(--t-rotulo)/1 var(--f-mono);color:var(--texto-2)}
+.fluxo-v{display:block;width:2px;background-image:repeating-linear-gradient(to bottom,var(--executando) 0 4px,transparent 4px 9px);background-size:2px 9px;animation:fluxo var(--pulso) linear infinite}
+.fluxo-h{display:block;height:2px;background-image:repeating-linear-gradient(to right,var(--executando) 0 4px,transparent 4px 9px);background-size:9px 2px;animation:fluxoX var(--pulso) linear infinite}
+.fluxo-curto{height:34px}
+.camada{display:grid;grid-template-columns:minmax(0,250px) minmax(0,1fr);gap:var(--e-5);align-items:center;padding:var(--e-5);border-radius:var(--raio-cartao);background:var(--superficie);box-shadow:0 0 0 6px color-mix(in srgb,var(--tinta) 4%,transparent)}
+.camada-rotulo{font:var(--tipo-rotulo);letter-spacing:var(--espaco-rotulo);text-transform:uppercase;color:var(--texto-2)}
+.camada-nome{margin-top:var(--e-3);font:var(--tipo-titulo-2);letter-spacing:var(--trk-titulo-2)}
+.camada-sub{margin-top:6px;font:var(--peso-texto) var(--t-rotulo)/1.4 var(--f-mono);color:var(--texto-2)}
+.camada-fns{display:flex;flex-wrap:wrap;gap:var(--e-2);margin:0;padding:0;list-style:none}
+.camada-fns li{padding:var(--e-2) var(--e-3);border-radius:var(--raio-chip);font:var(--peso-destaque) var(--t-apoio)/1.2 var(--f-texto);border:1px solid;transition:background var(--dur-longa) var(--curva),color var(--dur-longa) var(--curva),border-color var(--dur-longa) var(--curva)}
+.ligacao{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--e-4);height:46px}
+.ligacao-tronco{position:absolute;left:calc(50% - 1px);top:0;height:14px}
+.ligacao-trave{position:absolute;top:14px;left:calc(16.666% - 5.33px);right:calc(16.666% - 5.33px)}
+.ligacao-ramo{justify-self:center;margin-top:14px;height:32px}
+.ligacao-ramo-baixo{justify-self:center;height:32px}
+.ligacao-baixo .fluxo-v,.ligacao-baixo .fluxo-h,.ligacao-simples-baixo .fluxo-v{background:var(--verificado);animation:none}
+.ligacao-trave-baixo{position:absolute;top:32px;left:calc(16.666% - 5.33px);right:calc(16.666% - 5.33px)}
+.ligacao-tronco-baixo{position:absolute;left:calc(50% - 1px);top:32px;height:14px}
+.ligacao-simples{display:none}
+.grupos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--e-4)}
+.grupo{border-radius:var(--raio-cartao);border:1px solid var(--linha);background-color:var(--superficie);padding:var(--e-4);display:flex;flex-direction:column;gap:var(--e-3)}
+.grupo-topo{display:flex;align-items:center;gap:var(--e-3)}
+.quadrado{flex:none;width:10px;height:10px;border-radius:var(--raio-segmento)}
+.quadrado-livre{border:1px dashed var(--texto-3);box-sizing:border-box}
+.grupo-nome{font:var(--peso-titulo) 15px/1.2 var(--f-titulo)}
+.estica{flex:1}
+.grupo-amb{font:var(--peso-texto) var(--t-rotulo)/1 var(--f-mono);color:var(--texto-3)}
+.no{border-radius:var(--raio-botao);background:color-mix(in srgb,var(--superficie-2) 60%,var(--superficie));padding:var(--e-3);display:flex;flex-direction:column;gap:var(--e-2)}
+.no-topo{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--e-2)}
+.no-nome{font:var(--peso-destaque) var(--t-apoio)/1.25 var(--f-texto);color:var(--texto)}
+/* Chip de estado do kit: altura 28, raio 7, mono 12, ponto de 7 px e rótulo. */
+.no-estado{display:inline-flex;align-items:center;gap:7px;min-height:28px;padding:0 10px;border-radius:var(--raio-chip);font:var(--peso-destaque) 12px/1.2 var(--f-mono);box-sizing:border-box;transition:background var(--dur-longa) var(--curva),color var(--dur-longa) var(--curva)}
+.no-ponto{flex:none;width:7px;height:7px;border-radius:50%}
+.no-aresta{font:var(--peso-texto) var(--t-rotulo)/1.4 var(--f-mono);color:var(--texto-2)}
+.segmentos{display:grid;grid-template-columns:repeat(6,1fr);gap:2px}
+.segmentos span{height:5px;border-radius:var(--raio-segmento);transition:background var(--dur-longa) var(--curva)}
+.grupo-pe{font:var(--peso-texto) var(--t-rotulo)/1.4 var(--f-mono);color:var(--texto-3)}
+.historico{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:var(--e-3) var(--e-4);padding:var(--e-4) var(--e-5);border-radius:var(--raio-cartao);background:color-mix(in srgb,var(--verificado) 6%,var(--superficie));border:1px solid color-mix(in srgb,var(--verificado) 18%,var(--superficie))}
+.historico-tabela.codigo-liso{font:var(--peso-destaque) 15px/1 var(--f-mono);color:var(--verificado-texto)}
+.historico-rotulo{font:var(--tipo-apoio);line-height:1.3;color:var(--texto-2)}
+.historico-item{padding:var(--e-2) var(--e-3);border-radius:var(--raio-chip);font:var(--peso-destaque) var(--t-rotulo)/1 var(--f-mono);transition:background var(--dur-longa) var(--curva),color var(--dur-longa) var(--curva)}
+.colecoes{margin-top:var(--e-4);padding:var(--e-5);border-radius:var(--raio-cartao);background:var(--superficie);border:1px solid var(--linha)}
+.colecoes-topo{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--e-3) var(--e-5)}
+.colecoes-titulo{margin:0;font:var(--tipo-titulo-3);letter-spacing:var(--trk-titulo-3);text-wrap:balance}
+.colecoes-sub{margin-top:6px;font:var(--peso-texto) var(--t-rotulo)/1.4 var(--f-mono);color:var(--texto-3)}
+.colecoes-legenda{display:flex;flex-wrap:wrap;gap:var(--e-2) var(--e-4);margin:0;padding:0;list-style:none;font:var(--peso-destaque) var(--t-rotulo)/1 var(--f-texto);color:var(--texto-2)}
+.colecoes-legenda li{display:flex;align-items:center;gap:7px}
+.colecoes-itens{margin:var(--e-4) 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:6px}
+.colecoes-itens li{padding:var(--e-3) 6px;border-radius:var(--raio-chip);font:var(--peso-destaque) var(--t-rotulo)/1 var(--f-mono);text-align:center;transition:background var(--dur-longa) var(--curva),color var(--dur-longa) var(--curva),border-color var(--dur-longa) var(--curva)}
+.escala{margin-top:var(--e-4);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--e-3)}
+.escala-cartao{position:relative;padding:var(--e-5);border-radius:var(--raio-cartao);background-color:var(--superficie);border:1px solid var(--linha);display:flex;flex-direction:column;gap:var(--e-3)}
+.escala-titulo{margin:0;font:var(--tipo-titulo-3);letter-spacing:var(--trk-titulo-3);text-wrap:balance}
+.escala-texto{margin:0;flex:1;font:var(--tipo-apoio);color:var(--texto-2);text-wrap:pretty}
+/* O comando do cartão fica inteiro numa linha; maior que a coluna, quebra dentro do próprio chip, só
+   entre as palavras do comando (nunca no meio de um nome, como no hífen de memory-provider). */
+.escala-codigo{align-self:flex-start;max-width:100%;margin-top:6px;font:var(--peso-destaque) var(--t-rotulo)/1.4 var(--f-mono);padding:var(--e-2) var(--e-3);border-radius:var(--raio-chip);background:var(--superficie-2);color:var(--texto);box-sizing:border-box;overflow-wrap:normal}
+.escala-palavra{white-space:nowrap}
+.escala-link{align-self:flex-start;display:inline-flex;align-items:center;gap:var(--e-2);min-height:var(--alvo);font:var(--tipo-botao);color:var(--texto);text-decoration:underline;text-decoration-color:var(--linha-forte);text-underline-offset:3px}
+.escala-link:hover{text-decoration-color:var(--texto)}
+@media (max-width:899.98px){
+ .camada{grid-template-columns:minmax(0,1fr)}
+ .ligacao{display:none}
+ .ligacao-simples{display:flex}
+ .grupos{grid-template-columns:minmax(0,1fr)}
+}
+</style>

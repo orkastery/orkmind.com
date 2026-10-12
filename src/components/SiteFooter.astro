@@ -1,0 +1,34 @@
+---
+// Rodapé no tema noite: a assinatura para fundo escuro, a frase, três colunas com destino real e
+// a linha final. Os links do site levam à página na língua; os de fora, ao destino oficial.
+import {localeFor,localize,moldura,destinoExterno,withBase} from '../data/i18n';
+const locale=localeFor(Astro.url.pathname),m=moldura(locale);
+const destino=(alvo:string)=>alvo.startsWith('/')?localize(alvo,locale):destinoExterno(alvo,locale);
+---
+<footer class="rodape" data-tema="noite">
+ <div class="rodape-grade">
+  <div class="rodape-marca">
+   <img src={withBase('/marca/assinatura-fundo-escuro.svg')} alt="OrkMind" width="137" height="28"/>
+   <p>{m.tagline}</p>
+  </div>
+  {m.columns.map((col,i)=><nav class="rodape-coluna" aria-labelledby={'rodape-'+i}>
+   <span class="rotulo rodape-titulo" id={'rodape-'+i}>{col.title}</span>
+   {col.links.map(([label,alvo])=><a href={destino(alvo)}>{label}</a>)}
+  </nav>)}
+ </div>
+ <div class="rodape-base"><div class="rodape-base-linha"><span>{m.rights}</span><span>{m.maintainer}</span></div></div>
+</footer>
+<style>
+.rodape{background:var(--chao);color:var(--texto-2);border-top:1px solid var(--linha)}
+.rodape-grade{max-width:var(--largura);margin:0 auto;padding:var(--e-8) var(--calha) var(--e-7);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));gap:var(--e-6)}
+.rodape-marca{grid-column:span 2;min-width:min(260px,100%)}
+@media (max-width:480px){.rodape-marca{grid-column:auto}}
+.rodape-marca img{height:28px;width:auto}
+.rodape-marca p{margin:var(--e-5) 0 0;max-width:40ch;font:var(--peso-texto) 15px/1.6 var(--f-texto);color:var(--texto-2)}
+.rodape-coluna{display:flex;flex-direction:column;gap:0;font:var(--peso-texto) 15px/1.3 var(--f-texto)}
+.rodape-titulo{color:var(--texto-3);margin-bottom:var(--e-2)}
+.rodape-coluna a{display:flex;align-items:center;min-height:44px;color:var(--texto);text-decoration:none}
+.rodape-coluna a:hover{text-decoration:underline;text-decoration-color:var(--linha-forte)}
+.rodape-base{max-width:var(--largura);margin:0 auto;padding:0 var(--calha) var(--e-6)}
+.rodape-base-linha{padding-top:var(--e-5);display:flex;flex-wrap:wrap;gap:var(--e-3);justify-content:space-between;font:var(--peso-texto) 13px/1.4 var(--f-mono);color:var(--texto-3);border-top:1px solid var(--linha)}
+</style>
