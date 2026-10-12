@@ -90,6 +90,7 @@ const translations={
 };
 const t=(key:keyof typeof translations)=>translations[key][locale];
 import Icone from "./Icone.astro";
+import TechnicalText from "./TechnicalText.astro";
 
 const capacidadesCore = [
   {
@@ -130,33 +131,33 @@ const capacidadesCore = [
 <section class="secao produto" id="produto" aria-labelledby="produto-titulo">
   <div class="container">
     <div class="produto-cabeca">
-      <h2 class="titulo-display" id="produto-titulo">{t("t12")}</h2>
+      <h2 class="titulo-display" id="produto-titulo"><TechnicalText text={t("t12")}/></h2>
       <p class="prosa">
-        {t("t13")}
+        <TechnicalText text={t("t13")}/>
       </p>
     </div>
 
     <div class="metade" data-revelar>
       <div class="metade-texto">
         <p class="metade-selo"><Icone nome="package" tamanho={16} /> OrkMind 0.4.0</p>
-        <h3 class="titulo-display">{t("t14")}</h3>
+        <h3 class="titulo-display"><TechnicalText text={t("t14")}/></h3>
         <p class="prosa">
-          {t("t15")}
+          <TechnicalText text={t("t15")}/>
         </p>
         <ul class="capacidades" role="list">
           {capacidadesCore.map((c) => (
             <li>
               <Icone nome={c.icone} tamanho={20} classe="capacidade-icone" />
               <div>
-                <strong>{c.titulo}</strong>
-                <p>{c.desc}</p>
+                <strong><TechnicalText text={c.titulo}/></strong>
+                <p><TechnicalText text={c.desc}/></p>
               </div>
             </li>
           ))}
         </ul>
       </div>
       <div class="metade-visual metade-visual-core">
-        <p class="prosa">{t("t16")}</p>
+        <p class="prosa"><TechnicalText text={t("t16")}/></p>
         <pre class="core-terminal"><code>pip show orkmind
 orkmind store info
 orkmind --help</code></pre>

@@ -73,6 +73,43 @@ kbd {
   font-family: var(--fonte-mono);
 }
 
+/* Código inline em qualquer lugar do site (comando, caminho, flag, identificador), marcado
+   por crase no texto e renderizado por src/lib/technical-text.mjs. Atômico: um código que
+   cabe na coluna nunca se parte entre linhas; um maior que ela quebra dentro do próprio chip,
+   nos <wbr> que o renderizador põe depois de separador. */
+:not(pre) > code {
+  display: inline-block;
+  max-width: 100%;
+  font-size: 0.86em;
+  line-height: 1.3;
+  color: var(--texto);
+  background: var(--fundo-4);
+  border: 1px solid var(--linha-forte);
+  border-radius: 0.35em;
+  padding: 0.04em 0.35em;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Inline-block não recebe o sublinhado do link: o código o aplica a si mesmo, também dentro
+   da unidade sem quebra. */
+a > code,
+a .code-unit,
+a .code-unit > code {
+  text-decoration: inherit;
+}
+
+/* Unidade sem quebra: o que encosta no chip (parêntese, pontuação) viaja com ele, sem
+   parêntese órfão no fim da linha. O chip reserva a folga do que foi colado (--folga, gravada
+   pelo renderizador) e continua podendo quebrar por dentro. */
+.code-unit {
+  white-space: nowrap;
+}
+
+.code-unit > code {
+  max-width: calc(100% - var(--folga, 2ch) - 1px);
+}
+
 .container {
   width: min(100% - 2.5rem, var(--container));
   margin-inline: auto;
