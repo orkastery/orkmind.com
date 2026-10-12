@@ -1,4 +1,4 @@
-# OrkMind — site e documentação
+# OrkMind: site e documentação
 
 Site estático Astro com português em `/`, inglês em `/en/` e espanhol em `/es/`.
 Todas as páginas HTML têm idioma, canonical, alternates recíprocos e seletor para
@@ -20,11 +20,13 @@ npm run check:i18n
 npm run check:public
 npm run check:content
 npm run test:docs
+npm run test:code
+npm run check:code
 ```
 
 O prebuild confere o snapshot e a revisão editorial. O postbuild confere HTML,
-links, fragmentos, idiomas, metadados, padrões públicos e semântica, e executa
-canários negativos. Build aprovado não é revisão visual nem prova de naturalidade
+links, fragmentos, idiomas, metadados, padrões públicos, semântica e o código no
+texto, e executa canários negativos. Build aprovado não é revisão visual nem prova de naturalidade
 da tradução. Links externos são inventariados, mas não consultados pela prova offline.
 `parse5` já integra a árvore do Astro; a mesma versão do lockfile é declarada
 diretamente para os auditores de HTML, sem adicionar outro parser.
@@ -77,6 +79,40 @@ A página editorial `roadmap` contextualiza o mês em `docs-standards.ts` (Orkas
 ou `docs-retrieval.ts` (OrkMind): atualize-a na mesma revisão e registre os hashes.
 Uma intenção não é uma capacidade entregue. Datas de revisão não são prazos de entrega.
 
+## Código no texto
+
+Todo comando, caminho, flag e identificador técnico citado nas páginas sai como
+código, e o código não se parte no meio da linha. No texto editorial (catálogos
+`docs-*.ts`, `home.ts`, `docs-diagrams.ts` e as traduções dos componentes da home),
+a crase marca o código: ``Configure `ORKMIND_DATABASE_URL` no ambiente``. O
+renderizador `src/lib/technical-text.mjs`, usado por `TechnicalText.astro`,
+transforma a crase em `<code>`, escapa o resto e reprova crase sem par. No SVG o
+trecho vira `tspan.code`, em fonte monoespaçada; `<title>`, `meta description` e o
+`title`/`desc` do SVG recebem o texto sem a marcação.
+
+O chip é atômico (`inline-block` com `max-width: 100%`): um código que cabe na
+coluna nunca se parte entre linhas, e um maior que ela quebra dentro do próprio
+chip, nos pontos que o renderizador marca com `<wbr>` depois de `/`, `.`, `_`, `-`,
+`=` e `:` e na troca de minúscula para maiúscula. O que encosta no chip
+(parêntese, vírgula, dois-pontos) viaja com ele numa `.code-unit` sem quebra, que
+reserva a folga do que foi colado.
+
+Marque com crase o que a fonte marca como código: executável (`orkmind`, `ork`,
+`ruff`), comando, opção, variável de ambiente, arquivo, caminho, classe, função,
+campo, operação, estado, coleção, contrato, código de erro e a branch `main`. Nome
+de produto e de padrão fica em prosa: OrkMind, PostgreSQL, Qdrant, Hermes,
+OpenClaw, MCP, CLI, ACL, AES-256-GCM, append-only. Mudar o texto de um catálogo
+das docs pede a revisão editorial do artigo (`docs:sync --review`, acima).
+
+`check:code` lê a prosa visível das páginas geradas e reprova executável, opção,
+variável de ambiente, `snake_case`, `camelCase`, `PascalCase` composto, arquivo,
+identificador pontuado ou versionado, caminho, marcador e link de wiki fora de
+`code`. As exceções são exatas e ficam no próprio script (nomes de produto,
+`Node.js`, `e/ou`). Identificador em palavra comum (`get`, `pending`, `source`) só
+o contexto distingue: a auditoria não o vê, e a marcação depende de quem escreve.
+`check:code` também reprova código com escala própria dentro do parágrafo, unidade
+colada a mais de 12 caracteres e a falta das regras do chip no CSS gerado.
+
 ## Tipografia, caixa e diagramas
 
 Preserve `src/styles/tokens.css`, logos, fontes e paleta da marca. Títulos, menus,
@@ -107,8 +143,14 @@ npm run check:visual -- --output /diretorio/privado/screenshots
 ```
 
 O verificador intercepta todas as requisições, serve somente `dist` em memória e
-bloqueia destinos externos. Exercita home, índice e arquitetura nos três idiomas,
-1280/390 px e esquemas claro/escuro: 36 screenshots, overflow e navegação por teclado.
+bloqueia destinos externos. Exercita home, índice, arquitetura e Contribuir nos três
+idiomas, 1280/700/390/320 px e esquemas claro/escuro: 96 screenshots, overflow,
+navegação por teclado e o diagrama do sistema. Em todas as páginas de cada idioma,
+nas mesmas larguras e esquemas, confere o código inline (não se parte entre
+linhas, não solta o que encosta nele, não passa da coluna, uma escala por bloco,
+sublinhado do link) e uma só borda esquerda de conteúdo. `--plan` lista a matriz
+sem abrir o navegador; `--dist` aponta outro build, para provar que uma guarda
+reprova a regressão.
 Os PNGs e `report.json` ficam fora do repositório público. Se o navegador não puder
 iniciar, o comando falha e registra o impedimento; não muda sandbox nem permissões.
 A inspeção humana das imagens ainda é necessária para avaliar qualidade visual.
