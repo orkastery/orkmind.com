@@ -8,7 +8,7 @@ const list=(flag,all,valid)=>{if(!args.includes(flag))return all;const values=ar
 const widths=list('--widths',['1440','1280','1024','768','390','320'],v=>/^\d+$/.test(v)&&Number(v)>=200&&Number(v)<=3000).map(Number),schemes=list('--schemes',['light','dark'],v=>['light','dark'].includes(v)),locales=list('--locales',['pt','en'],v=>['pt','en'].includes(v));
 // Rotas com captura, teclado e interações; as guardas de código e de borda varrem todas as páginas.
 const routes=['/','/docs/','/docs/arquitetura/','/docs/contribuir/'];
-const checks=['overflow','keyboard','touchTargets','contrast','copy','menu','reducedMotion','diagramLabels','systemSelection','integrations','stageTabs','inlineCodeAtomic','adjacentTextWithCode','codeWithinColumn','codeBreaksAtSeparators','oneCodeScalePerBlock','linkUnderlineOnCode','oneContentEdge'];
+const checks=['overflow','keyboard','focusVisible','touchTargets','contrast','copy','menu','reducedMotion','stopMotion','diagramLabels','systemSelection','integrations','stageTabs','inlineCodeAtomic','adjacentTextWithCode','codeWithinColumn','codeBreaksAtSeparators','oneCodeScalePerBlock','linkUnderlineOnCode','oneContentEdge'];
 const dist=resolve(args.includes('--dist')?args[args.indexOf('--dist')+1]:'dist');
 const htmlFiles=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?htmlFiles(resolve(dir,e.name)):e.name==='index.html'?[resolve(dir,e.name)]:[]);
 const allRoutes=existsSync(dist)?htmlFiles(dist).map(f=>'/'+relative(dist,f).replace(/index\.html$/,'')).filter(p=>!/^\/(en|es)\//.test(p)).sort():[];
@@ -101,6 +101,21 @@ const contrastAudit=()=>{
  }
  return {measured,lowest:Number(lowest.toFixed(2)),failures};
 };
+// Foco visível em cada parada do Tab (regra dura 4 do kit, WCAG 2.4.7 e 2.4.11): o anel existe, não
+// é recortado por um contêiner com rolagem ou recorte e o cabeçalho fixo não fica por cima.
+const focusState=()=>{
+ const el=document.activeElement;if(!el||el===document.body)return null;
+ const cs=getComputedStyle(el),r=el.getBoundingClientRect();
+ const ring=cs.boxShadow!=='none'||(cs.outlineStyle!=='none'&&!/rgba\(0, 0, 0, 0\)|transparent/.test(cs.outlineColor)&&parseFloat(cs.outlineWidth)>0);
+ let clipped=null;
+ // Só conta o recorte de quem cabe no contêiner: a linha mais larga que a matriz que rola mostra o
+ // anel no pedaço visível, como a própria linha.
+ for(let a=el.parentElement;a&&a!==document.body;a=a.parentElement){const s=getComputedStyle(a);if([s.overflowX,s.overflowY].some(o=>o!=='visible')){const b=a.getBoundingClientRect(),cabeX=r.width+8<=b.width,cabeY=r.height+8<=b.height;if((cabeX&&(r.left-4<b.left-0.5||r.right+4>b.right+0.5))||(cabeY&&(r.top-4<b.top-0.5||r.bottom+4>b.bottom+0.5))){clipped=a.tagName.toLowerCase()+'.'+[...a.classList].join('.');break;}}}
+ const header=document.querySelector('[data-cabecalho]');let covered=false;
+ // Por cima é quem o navegador desenha no centro do focado: o cabeçalho fixo cobrindo o elemento.
+ if(header&&!header.contains(el)){const x=Math.min(Math.max(r.left+r.width/2,0),innerWidth-1),y=Math.min(Math.max(r.top+Math.min(r.height/2,12),0),innerHeight-1),top=document.elementFromPoint(x,y);covered=!!top&&header.contains(top)&&!el.contains(top);}
+ return {name:el.tagName.toLowerCase()+'.'+[...el.classList].join('.')+' "'+(el.getAttribute('aria-label')||el.textContent||'').trim().slice(0,24)+'"',ring,clipped,covered,size:r.width>0&&r.height>0};
+};
 // All responses come from dist; no request is allowed to reach a network.
 const serve=(context,origin)=>context.route('**/*',async route=>{
  const url=new URL(route.request().url());if(url.origin!==origin)return route.abort('blockedbyclient');
@@ -170,6 +185,27 @@ try{
     return diagram;
    };
    await auditLayout();
+   // Foco em cada parada do Tab, do topo da página até voltar ao começo (a 1280 e a 390, no claro).
+   let focusStops=null;
+   if(scheme==='light'&&[1280,390].includes(width)){
+    await page.goto('http://docs.local'+localized,{waitUntil:'networkidle'});await page.evaluate(()=>document.fonts.ready);
+    const seen=new Set(),problems=[];let first=null;
+    for(let i=0;i<260;i++){
+     await page.keyboard.press('Tab');
+     const f=await page.evaluate(focusState);if(!f)continue;
+     if(first===null)first=f.name;else if(f.name===first&&seen.size>3)break;
+     seen.add(f.name);
+     if(!f.size)continue;
+     if(!f.ring)problems.push('no ring: '+f.name);
+     if(f.clipped)problems.push('clipped by '+f.clipped+': '+f.name);
+     if(f.covered)problems.push('under the header: '+f.name);
+    }
+    if(problems.length)throw Error('Focus not visible '+localized+' '+width+': '+[...new Set(problems)].slice(0,8).join(', '));
+    if(seen.size<5)throw Error('Focus audit reached too few stops '+localized+' '+width+': '+seen.size);
+    focusStops=seen.size;
+    await page.goto('http://docs.local'+localized,{waitUntil:'networkidle'});await page.evaluate(()=>document.fonts.ready);
+    await page.locator('details').evaluateAll(nodes=>nodes.forEach(n=>n.open=true));
+   }
    // Etapas do caminho: cada aba mostra o próprio par de cartões; a seta leva à próxima aba.
    for(const tab of await page.locator('[role="tab"][data-etapa]').all()) {
     await tab.click();
@@ -208,7 +244,7 @@ try{
    await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
    await page.screenshot({path:resolve(output,shot),fullPage:true});
    if(errors.length)throw Error(errors.join('; '));
-   results.push({path:localized,width,scheme,screenshot:shot,overflow:0,keyboard:true,touchTargets:true,contrastMeasured:contrast.measured,contrastLowest:contrast.lowest,diagramBoxes:diagram.boxes,labelsContained:true,inlineCodeAtomic:true,adjacentTextWithCode:true,codeWithinColumn:true,codeBreaksAtSeparators:true,oneCodeScalePerBlock:true,linkUnderlineOnCode:true,oneContentEdge:true});await page.close();
+   results.push({path:localized,width,scheme,screenshot:shot,overflow:0,keyboard:true,focusStops,touchTargets:true,contrastMeasured:contrast.measured,contrastLowest:contrast.lowest,diagramBoxes:diagram.boxes,labelsContained:true,inlineCodeAtomic:true,adjacentTextWithCode:true,codeWithinColumn:true,codeBreaksAtSeparators:true,oneCodeScalePerBlock:true,linkUnderlineOnCode:true,oneContentEdge:true});await page.close();
   }
   // Varredura das guardas de código e de borda em todas as páginas da língua, sem captura.
   const sweep=await context.newPage(),sweepErrors=[];sweep.on('pageerror',e=>sweepErrors.push(e.message));
@@ -261,7 +297,18 @@ try{
   const reduced=await motion(true),free=await motion(false);
   if(reduced.canvasMoved||reduced.runningAnimations)throw Error('Reduced motion still moves '+locale+': '+JSON.stringify(reduced));
   if(!free.canvasMoved||!free.runningAnimations)throw Error('Motion missing without preference '+locale+': '+JSON.stringify(free));
-  results.push({path:home.replace(origin,''),interactions:{copy:true,copyRefusal:true,menuEscape:true,reducedMotion:reduced,motion:free}});
+  // O botão para todo o movimento (canvas, relógio e animações) e o retoma; some com movimento reduzido.
+  {const {ctx,page}=await open({reducedMotion:'no-preference'});
+   const button=page.locator('[data-movimento]'),canvas=page.locator('[data-caminho]');
+   await canvas.scrollIntoViewIfNeeded();await button.click();await page.waitForTimeout(300);
+   const frame=()=>canvas.evaluate(c=>c.toDataURL());const a=await frame();await page.waitForTimeout(1200);const b=await frame();
+   const running=await page.evaluate(()=>document.getAnimations().filter(x=>x.playState==='running').length);
+   if(a!==b||running)throw Error('Stop motion button does not stop '+locale+': '+JSON.stringify({canvasMoved:a!==b,running}));
+   await button.click();await page.waitForTimeout(300);const c=await frame();await page.waitForTimeout(1200);const d=await frame();
+   if(c===d)throw Error('Stop motion button does not resume '+locale);
+   await ctx.close();}
+  {const {ctx,page}=await open({});if(await page.locator('[data-movimento]').isVisible())throw Error('Stop motion button shown with reduced motion '+locale);await ctx.close();}
+  results.push({path:home.replace(origin,''),interactions:{copy:true,copyRefusal:true,menuEscape:true,reducedMotion:reduced,motion:free,stopMotion:true}});
  }
  const shots=results.filter(r=>r.screenshot).length,audits=results.filter(r=>r.audit).length;
  if(!audits||!shots)throw Error('Empty matrix: nothing was checked');
