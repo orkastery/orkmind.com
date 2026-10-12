@@ -206,7 +206,9 @@ A lógica da página (o relógio do diagrama e do `orkmind list`, as integraçõ
 e a noite pela rolagem) são funções puras em `src/lib/home-state.mjs`: o build as chama
 com o estado inicial e o navegador (`src/scripts/home.ts`) com o estado que muda. O canvas
 do hero está em `src/lib/caminho.mjs`. Com movimento reduzido nada se move sozinho; sem
-JavaScript, nada fica escondido (a noite sai inteira). `test:home` confere o relógio, a
+movimento reduzido, o botão "Parar o movimento" do cartão vivo para e retoma o canvas, o
+relógio e as animações (WCAG 2.2.2). Sem JavaScript, nada fica escondido (a noite sai
+inteira). `test:home` confere o relógio, a
 recusa da regra protegida, a matriz das integrações, as abas, a noite, o jade só no que
 espera você (com canários) e a forma do inglês igual à do português.
 
@@ -245,9 +247,13 @@ O verificador intercepta todas as requisições, serve somente `dist` em memóri
 bloqueia destinos externos. Exercita home, índice, arquitetura e Contribuir nos dois
 idiomas, 1440/1280/1024/768/390/320 px e esquemas claro/escuro: 96 screenshots, estouro
 lateral, navegação por teclado (o link de pular, o menu do estreito e o seletor de
-língua), alvos de toque de 44 px, os oito nós do diagrama (cada um abre e fecha a própria
+língua), o foco em cada parada do Tab a 1280 e 390 px (anel presente, sem recorte e sem o
+cabeçalho por cima), alvos de toque de 44 px, contraste medido contra o fundo efetivo
+(4,5:1, ou 3:1 no texto grande), os oito nós do diagrama (cada um abre e fecha a própria
 descrição), as integrações, as abas das etapas (também pelas setas) e as linhas longas dos
-terminais, que rolam dentro do próprio bloco. Em todas as páginas de cada idioma,
+terminais, que rolam dentro do próprio bloco. Uma vez por língua, confere copiar (sucesso e
+recusa da área de transferência), o menu do estreito com Esc, o movimento reduzido sem nada
+rodando e o botão que para o movimento. Em todas as páginas de cada idioma,
 nas mesmas larguras e esquemas, confere o código inline (não se parte entre
 linhas, não solta o que encosta nele, não passa da coluna, uma escala por bloco,
 sublinhado do link, e o chip maior que a coluna só quebra depois de separador, em
