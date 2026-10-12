@@ -5,7 +5,7 @@ const locale=localeFor(Astro.url.pathname),text=ui(locale);
 const links=[{href:'/',label:text.home},{href:'/docs/',label:text.docs},{href:'/docs/arquitetura/',label:text.concepts},{href:'/#contato',label:text.contact}];
 ---
 <header class="site-header">
- <div class="site-header-inner">
+ <div class="site-header-inner container">
  <a class="site-brand" href={localize('/',locale)} aria-label={'OrkMind · '+text.home}><span aria-hidden="true"><span class="brand-dot" aria-hidden="true"></span></span><span>OrkMind</span></a>
  <nav class="site-links" aria-label={text.navigation}>{links.map(link=><a href={localize(link.href,locale)} aria-current={Astro.url.pathname===localize(link.href,locale)?'page':undefined}>{link.label}</a>)}</nav>
  <LanguageSelector/>
@@ -13,7 +13,8 @@ const links=[{href:'/',label:text.home},{href:'/docs/',label:text.docs},{href:'/
 </header>
 <style>
 .site-header{position:relative;z-index:50;border-bottom:1px solid var(--linha-forte);background:var(--poco,var(--fundo));color:var(--tinta,var(--texto));}
-.site-header-inner{max-width:1280px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:1.25rem;padding:1.2rem 1.5rem;flex-wrap:wrap;}
+/* A borda esquerda vem da grade .container (global.css), a mesma do conteúdo e do rodapé. */
+.site-header-inner{display:flex;align-items:center;justify-content:space-between;gap:1.25rem;padding-block:1.2rem;flex-wrap:wrap;}
 .site-brand{display:inline-flex;align-items:center;gap:.65rem;font:500 1.3rem var(--f-display,var(--fonte-display));text-decoration:none;color:inherit;}
 .site-brand>span{display:inline-flex;}
 .site-brand svg{color:var(--latao);}
@@ -24,6 +25,6 @@ const links=[{href:'/',label:text.home},{href:'/docs/',label:text.docs},{href:'/
 .site-links a{padding:.5rem .2rem;color:inherit;text-decoration:none;text-underline-offset:.35em;}
 .site-links a[aria-current],.site-links a:hover{text-decoration:underline;}
 a:focus-visible{outline:2px solid currentColor;outline-offset:4px;}
-@media(max-width:760px){.site-header-inner{gap:1rem;padding:1rem 1.25rem;}.site-links{order:3;flex-basis:100%;}.site-brand{font-size:1.2rem;}}
+@media(max-width:760px){.site-header-inner{gap:1rem;padding-block:1rem;}.site-links{order:3;flex-basis:100%;}.site-brand{font-size:1.2rem;}}
 @media(max-width:480px){.site-header-inner{display:grid;grid-template-columns:1fr;gap:.5rem;}.site-links{gap:.25rem .85rem;}}
 </style>

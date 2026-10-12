@@ -1,0 +1,9 @@
+---
+// Texto com o código marcado por crase (src/lib/technical-text.mjs); com code, o valor
+// inteiro é código. O HTML sai da mesma função que os testes conferem.
+import {technicalHtml, codeHtml} from '../lib/technical-text.mjs';
+interface Props { text?: string; code?: string; }
+const {text, code} = Astro.props;
+const html = code === undefined ? technicalHtml(text) : codeHtml(code);
+---
+<Fragment set:html={html} />

@@ -1,11 +1,12 @@
 ---
+import TechnicalText from './TechnicalText.astro';
 import { localize, ui } from '../data/i18n';
 const {articles,locale,current}=Astro.props,text=ui(locale);
 const groups=[...new Set(articles.map(a=>a.group))];
 ---
 <nav class="docs-navigation" aria-label={text.contents}>
  <details open data-docs-nav><summary>{text.contents}</summary>
- {groups.map(group=><div class="nav-group"><p>{text[group]}</p><ul>{articles.filter(a=>a.group===group).map(a=><li><a href={localize('/docs/'+a.slug+'/',locale)} aria-current={a.slug===current?'page':undefined}>{a.translations[locale].title}</a></li>)}</ul></div>)}
+ {groups.map(group=><div class="nav-group"><p>{text[group]}</p><ul>{articles.filter(a=>a.group===group).map(a=><li><a href={localize('/docs/'+a.slug+'/',locale)} aria-current={a.slug===current?'page':undefined}><TechnicalText text={a.translations[locale].title}/></a></li>)}</ul></div>)}
  </details>
 </nav>
 <script>
