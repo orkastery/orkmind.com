@@ -1,6 +1,6 @@
 import {fileURLToPath} from 'node:url';
-import {pages,attrs,content,distArg} from './check-links.mjs';
-export function checkContent(dist=distArg()){
+import {pages,attrs,content,distArg,siteBase} from './check-links.mjs';
+export function checkContent(dist=distArg(),base=siteBase()){
  const all=pages(dist);let diagrams=0;
  for(const p of all){
   if(p.nodes.filter(n=>n.tagName==='main').length!==1||p.nodes.filter(n=>n.tagName==='h1').length!==1)throw Error('Expected one main and h1: '+p.path);
@@ -28,7 +28,7 @@ export function checkContent(dist=distArg()){
   if(!labels.includes(expected))throw Error('Untranslated system diagram: '+locale);
   const contribution=all.find(p=>p.path===prefix+'/docs/contribuir/');
   if(!contribution)throw Error('Missing contribution page: '+locale);
-  for(const entry of [home,all.find(p=>p.path===prefix+'/docs/')])if(!entry?.nodes.some(n=>n.tagName==='a'&&attrs(n).href===prefix+'/docs/contribuir/'))throw Error('Missing contribution navigation: '+locale);
+  for(const entry of [home,all.find(p=>p.path===prefix+'/docs/')])if(!entry?.nodes.some(n=>n.tagName==='a'&&attrs(n).href===base+prefix+'/docs/contribuir/'))throw Error('Missing contribution navigation: '+locale);
   if(!contribution.nodes.some(n=>n.tagName==='a'&&attrs(n).href?.endsWith('/discussions')))throw Error('Missing feature discussion link');
   if(!contribution.nodes.some(n=>n.tagName==='a'&&attrs(n).href?.endsWith('/CONTRIBUTING.md')))throw Error('Missing contribution source');
   const visible=content(home.nodes.find(n=>n.tagName==='main'));
