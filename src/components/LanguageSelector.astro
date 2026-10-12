@@ -1,11 +1,12 @@
 ---
 // Seletor de língua em pílula (Partitura): PT-BR em / e inglês em /en/, mono 12, a língua atual
-// em tinta, como o botão de tema do kit. Cada opção leva à mesma página na outra língua.
+// em tinta, como o botão de tema do kit. Cada opção leva à mesma página na outra língua; o nome
+// acessível começa pelo rótulo visível ("PT, Português"), como pede o WCAG 2.5.3.
 import {locales,languageName,languageTag,localeFor,localize,moldura,ui} from '../data/i18n';
 const locale=localeFor(Astro.url.pathname),text=ui(locale),m=moldura(locale);
 ---
 <nav class="linguas" aria-label={text.language} data-language-selector>
- {locales.map(l=><a href={localize(Astro.url.pathname,l)} hreflang={languageTag[l]} lang={languageTag[l]} aria-current={l===locale?'page':undefined} title={languageName[l]}><span aria-hidden="true">{m.languageShort[l]}</span><span class="so-leitor">{languageName[l]}</span></a>)}
+ {locales.map(l=><a href={localize(Astro.url.pathname,l)} hreflang={languageTag[l]} lang={languageTag[l]} aria-current={l===locale?'page':undefined} title={languageName[l]}><span>{m.languageShort[l]}</span><span class="so-leitor">, {languageName[l]}</span></a>)}
 </nav>
 <style>
 .linguas{display:flex;align-items:center;gap:2px;padding:2px;border:1px solid var(--linha);border-radius:var(--raio-botao);background:var(--superficie);font:var(--peso-destaque) 12px/1 var(--f-mono);letter-spacing:.04em;flex:none}

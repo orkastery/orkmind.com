@@ -1,5 +1,6 @@
 // Interações da home: o relógio de 2,4 s (diagrama, coleções, histórico e orkmind list), a
-// descrição de cada nó, as integrações, as etapas em abas, a noite pela rolagem e o canvas do hero. O estado inicial veio
+// descrição de cada nó, as integrações, as etapas em abas, a noite pela rolagem, o canvas do hero e
+// o botão que para e retoma todo o movimento (WCAG 2.2.2). O estado inicial veio
 // pronto do build; aqui só se recalcula com as mesmas funções (src/lib/home-state.mjs) e se repinta o
 // mesmo elemento. Com movimento reduzido, nada se move sozinho: o canvas fica parado e o relógio
 // não anda; cliques, teclado e rolagem continuam valendo.
@@ -14,13 +15,16 @@ if (dados) {
  const $ = <T extends Element = HTMLElement>(sel: string, raiz: ParentNode = document) => [...raiz.querySelectorAll<T & HTMLElement>(sel)];
  const pinta = (el: HTMLElement | undefined | null, estilo: Record<string, string>) => { if (el) for (const [k, v] of Object.entries(estilo)) el.style.setProperty(k, v); };
 
- // Canvas do hero: a contagem viva no topo do cartão.
+ // Canvas do hero: a contagem viva no topo do cartão. Parado pelo botão, ele não volta ao entrar na tela.
+ let parado = false, visivel = false;
  const canvas = document.querySelector<HTMLCanvasElement>('[data-caminho]');
+ let caminho: {parar(): void, retomar(): void} | null = null;
  if (canvas) {
   const vivo = Object.fromEntries($('[data-vivo]').map(el => [el.dataset.vivo, el]));
-  const caminho = iniciarCaminho(canvas, {etapas: t.path.stages, nomes: t.hero.names, etiqueta: t.hero.waitTag, reduzir,
+  const quadro = iniciarCaminho(canvas, {etapas: t.path.stages, nomes: t.hero.names, etiqueta: t.hero.waitTag, reduzir,
    aoContar: (c: {run: number, wait: number, ok: number}) => { for (const k of ['run', 'wait', 'ok'] as const) if (vivo[k]) vivo[k].textContent = String(c[k]); }});
-  if ('IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(en => en.isIntersecting ? caminho.retomar() : caminho.parar())).observe(canvas);
+  caminho = quadro;
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(en => { visivel = en.isIntersecting; if (visivel && !parado) quadro.retomar(); else quadro.parar(); })).observe(canvas);
  }
 
  // Diagrama do sistema, coleções e histórico pelo relógio.
@@ -64,7 +68,21 @@ if (dados) {
    const rot = $('[data-entrada-rotulo]', linha)[0]; if (rot) rot.textContent = l.label;
   });
  }
- if (!reduzir) setInterval(() => { estado.tick++; pintaTopo(estado.tick); pintaEntradas(estado.tick); }, TICK_MS);
+ let relogio = 0;
+ const ligarRelogio = () => { relogio = window.setInterval(() => { estado.tick++; pintaTopo(estado.tick); pintaEntradas(estado.tick); }, TICK_MS); };
+ if (!reduzir) ligarRelogio();
+
+ // Parar e retomar todo o movimento: o relógio, o canvas e as animações (que ficam onde estão).
+ const botaoMovimento = document.querySelector<HTMLButtonElement>('[data-movimento]');
+ if (botaoMovimento && !reduzir) {
+  botaoMovimento.hidden = false;
+  botaoMovimento.addEventListener('click', () => {
+   parado = !parado;
+   document.documentElement.classList.toggle('movimento-parado', parado);
+   botaoMovimento.textContent = (parado ? botaoMovimento.dataset.retomar : botaoMovimento.dataset.parar) || '';
+   if (parado) { clearInterval(relogio); caminho?.parar(); } else { ligarRelogio(); if (visivel) caminho?.retomar(); }
+  });
+ }
 
  // Integrações: a linha escolhida e os dois cartões dela.
  function pintaIntegracoes() {

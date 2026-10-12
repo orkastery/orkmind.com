@@ -39,8 +39,12 @@ a{color:inherit;text-decoration-color:var(--linha-forte);text-underline-offset:3
 a:hover{text-decoration-color:currentColor}
 ::selection{background:color-mix(in srgb,var(--foco) 22%,transparent)}
 button{font:inherit;color:inherit}
-/* Rolagem suave nas âncoras, desligada com movimento reduzido. */
+/* Rolagem suave nas âncoras, desligada com movimento reduzido. O que recebe foco ou é alvo de
+   âncora nunca fica embaixo do cabeçalho fixo. */
 @media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
+html{scroll-padding-top:calc(var(--altura-cabecalho) + var(--e-4))}
+/* O controle da home para todo o movimento (WCAG 2.2.2): as animações ficam onde estão. */
+.movimento-parado *,.movimento-parado *::before,.movimento-parado *::after{animation-play-state:paused!important}
 
 /* Foco visível em todo interativo: anel de 2 px separado do chão por 2 px (regra dura 4). O
    contorno transparente aparece no modo de alto contraste, onde a sombra some. */
@@ -87,7 +91,6 @@ pre code{font:inherit;background:none;padding:0;border-radius:0;white-space:pre}
 
 /* Âncoras de versões anteriores da home: alvo de link antigo, sem ocupar espaço. */
 .ancora-antiga{position:absolute;width:0;height:0;overflow:hidden}
-[id]{scroll-margin-top:calc(var(--altura-cabecalho) + var(--e-4))}
 
 /* Brilho que segue o cursor (Partitura, Movimento): luz neutra, a cor do texto a 7%, raio de
    320 px, nunca o acento; só em cartão de destaque e desligado em toque. O cartão recebe --mx e

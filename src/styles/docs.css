@@ -37,8 +37,7 @@
 .docs-lead{margin:var(--e-5) 0 0;font:var(--tipo-corpo);color:var(--texto-2);text-wrap:pretty}
 .docs-eyebrow{margin:0;font:var(--tipo-rotulo);letter-spacing:var(--espaco-rotulo);text-transform:uppercase;color:var(--texto-3)}
 .docs-reading>header,.docs-article>header{padding-bottom:var(--e-2)}
-.docs-section{margin:var(--e-7) 0;scroll-margin-top:88px}
-.docs-section h2[id],.docs-legacy li[id]{scroll-margin-top:88px}
+.docs-section{margin:var(--e-7) 0}
 .docs-reading ul{padding-left:22px}
 .docs-reading li{margin:var(--e-2) 0}
 .docs-reading li::marker{color:color-mix(in srgb,var(--texto-3) 60%,var(--linha))}

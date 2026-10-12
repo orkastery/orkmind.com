@@ -2,6 +2,8 @@
 // Hero da home do design: grade de pontos, selo, título em dois tons, parágrafo, o comando que
 // copia (com a borda de luz do jade girando, a única exceção do acento), contato, nota e o cartão
 // vivo do caminho de uma memória (canvas com a contagem viva). O h1 vai no --t-display do kit.
+// O botão do cartão para e retoma todo o movimento da home (WCAG 2.2.2): o canvas, o relógio e as
+// animações. Ele só aparece com JavaScript e sem movimento reduzido, quando há o que parar.
 import ComandoCopiavel from '../ds/ComandoCopiavel.astro';
 import TechnicalText from '../TechnicalText.astro';
 import {pacote,versao} from '../../data/release.mjs';
@@ -29,6 +31,7 @@ const {t}=Astro.props;
      <span><span class="hero-ponto hero-ponto-espera" aria-hidden="true"></span><span data-vivo="wait">0</span> {t.hero.live.wait}</span>
      <span><span class="hero-ponto hero-ponto-ok" aria-hidden="true"></span><span data-vivo="ok">0</span> {t.hero.live.ok}</span>
     </div>
+    <button type="button" class="hero-movimento" data-movimento data-parar={t.hero.motionStop} data-retomar={t.hero.motionResume} hidden>{t.hero.motionStop}</button>
    </div>
    <div class="hero-canvas-caixa"><canvas data-caminho role="img" aria-label={t.hero.canvasLabel}></canvas></div>
   </div>
@@ -59,6 +62,9 @@ const {t}=Astro.props;
 .hero-ponto-executando{background:var(--executando)}
 .hero-ponto-espera{background:var(--espera);box-shadow:0 0 0 3px color-mix(in srgb,var(--espera) 25%,transparent)}
 .hero-ponto-ok{background:var(--verificado)}
+.hero-movimento{display:inline-flex;align-items:center;min-height:var(--alvo);padding:0 var(--e-4);border:1px solid var(--linha-forte);border-radius:var(--raio-botao);background:var(--superficie);font:var(--peso-destaque) var(--t-apoio)/1 var(--f-texto);color:var(--texto);cursor:pointer;box-sizing:border-box;transition:border-color var(--dur-curta) var(--curva)}
+.hero-movimento:hover{border-color:var(--texto)}
+.hero-movimento[hidden]{display:none}
 .hero-canvas-caixa{padding:var(--e-4) var(--e-5) var(--e-5)}
 .hero-canvas-caixa canvas{display:block;width:100%;height:clamp(340px,36vw,440px)}
 @media (max-width:440px){.hero-caminho-topo,.hero-canvas-caixa{padding-left:var(--e-4);padding-right:var(--e-4)}}

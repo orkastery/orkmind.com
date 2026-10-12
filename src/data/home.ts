@@ -43,7 +43,9 @@ export default {
     "users/perfis",
     "project/web"
    ],
-   "canvasLabel": "Ilustração animada do caminho de uma memória: vinte memórias passam pelas seis etapas do OrkMind (gravar, validar, governar, recuperar, injetar e auditar). Algumas esperam você na governança; as que entram no contexto do turno acendem um anel."
+   "canvasLabel": "Ilustração animada do caminho de uma memória: vinte memórias passam pelas seis etapas do OrkMind (gravar, validar, governar, recuperar, injetar e auditar). Algumas esperam você na governança; as que entram no contexto do turno acendem um anel.",
+   "motionStop": "Parar o movimento",
+   "motionResume": "Retomar o movimento"
   },
   "hosts": {
    "label": "A memória chega por onde seus agentes já trabalham",
@@ -705,7 +707,9 @@ export default {
     "users/profiles",
     "project/web"
    ],
-   "canvasLabel": "Animated illustration of a memory's path: twenty memories move through OrkMind's six stages (write, validate, govern, retrieve, inject and audit). Some wait for you at governance; those that enter the turn context light up a ring."
+   "canvasLabel": "Animated illustration of a memory's path: twenty memories move through OrkMind's six stages (write, validate, govern, retrieve, inject and audit). Some wait for you at governance; those that enter the turn context light up a ring.",
+   "motionStop": "Stop the motion",
+   "motionResume": "Resume the motion"
   },
   "hosts": {
    "label": "Memory reaches your agents where they already work",
