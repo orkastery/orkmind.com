@@ -100,8 +100,9 @@ reserva a folga do que foi colado.
 Marque com crase o que a fonte marca como código: executável (`orkmind`, `ork`,
 `ruff`), comando, opção, variável de ambiente, arquivo, caminho, classe, função,
 campo, operação, estado, coleção, contrato, código de erro e a branch `main`. Nome
-de produto e de padrão fica em prosa: OrkMind, PostgreSQL, Qdrant, Hermes,
-OpenClaw, MCP, CLI, ACL, AES-256-GCM, append-only. Mudar o texto de um catálogo
+de produto e de padrão fica em prosa: OrkMind, PostgreSQL, Hermes, OpenClaw, MCP,
+CLI, ACL, AES-256-GCM, append-only. `pgvector`, `memory` e `qdrant` são código quando
+nomeiam o backend configurado; "PostgreSQL com pgvector", a extensão, fica em prosa. Mudar o texto de um catálogo
 das docs pede a revisão editorial do artigo (`docs:sync --review`, acima).
 
 `check:code` lê a prosa visível das páginas geradas e reprova executável, opção,

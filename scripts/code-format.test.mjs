@@ -130,6 +130,10 @@ test('a backtick left in visible text fails the audit; rendered code has none',(
  assert.equal(backtickViolations('<ul><li>`rule`: Regras</li></ul>').length,1);
  assert.deepEqual(backtickViolations(`<ul><li>${technicalHtml('`rule`: Regras')}</li></ul>`),[]);
  assert.deepEqual(backtickViolations('<pre><code>echo `date`</code></pre><script>let a=`x`</script>'),[]);
+ // O texto puro do title, da meta e do SVG também não pode trazer a marcação.
+ assert.equal(backtickViolations('<head><title>`NativeMemoryProvider` · Docs</title><meta name="description" content="A `GovernedStore` aplica"></head>').length,2);
+ assert.equal(backtickViolations('<svg><title>`x`</title><desc>ok</desc></svg><a aria-label="`ork` docs" href="#">Docs</a>').length,2);
+ assert.deepEqual(backtickViolations(`<head><title>${plainText('`NativeMemoryProvider` · Docs')}</title></head>`),[]);
 });
 test('a long inline code needs a break point so it never breaks inside a word',()=>{
  const path='orkastery/docs/guias/contribuir/versoes-e-publicacao.md';

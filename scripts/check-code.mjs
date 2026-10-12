@@ -66,10 +66,16 @@ export function violations(html) {
  return [...new Set(prose(dom).split(/[\u0000\u0001]/).flatMap(findings))];
 }
 // Crase na prosa visível é marcação que vazou: o renderizador nunca emite crase. Pega o
-// identificador de uma palavra (rule, get, pending) que a auditoria por padrão não vê.
+// identificador de uma palavra (rule, get, pending) que a auditoria por padrão não vê. Vale também
+// para o que plainText deveria limpar: title da página e do SVG, meta e atributos de texto.
+const textAttributes = ['title', 'content', 'aria-label', 'alt', 'placeholder'];
 export function backtickViolations(html) {
  const dom = typeof html === 'string' ? parse(html) : html;
- return prose(dom).split(/[\u0000\u0001]/).filter(text => text.includes('`')).map(text => text.trim().slice(0, 80));
+ const visible = prose(dom).split(/[\u0000\u0001]/).filter(text => text.includes('`'));
+ const nodes = walk(dom), textOf = n => (n.childNodes || []).filter(c => c.nodeName === '#text').map(c => c.value).join('');
+ const titles = nodes.filter(n => ['title', 'desc'].includes(n.tagName)).map(textOf).filter(text => text.includes('`'));
+ const attributes = nodes.filter(n => n.tagName !== 'script').flatMap(n => (n.attrs || []).filter(a => textAttributes.includes(a.name) && a.value.includes('`')).map(a => `${n.tagName}[${a.name}]: ${a.value}`));
+ return [...visible, ...titles, ...attributes].map(text => text.trim().slice(0, 80));
 }
 // Código maior que a coluna estreita (mais de 30 caracteres, a largura de uma linha a 320 px)
 // precisa de ponto de quebra (<wbr> ou espaço); sem ele, quebraria no meio da palavra.
