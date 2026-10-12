@@ -3,15 +3,15 @@
 // raiz, compila uma prévia de exemplo de uma cópia da árvore de trabalho, monta a publicação e a confere.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join, relative } from 'node:path';
+import { join } from 'node:path';
 import {
   PREFIXO_DA_PREVIA, releaseValida, baseDaRelease, normalizarBase, releaseDaBase, baseDoAmbiente,
   textoDaFaixa, ROBOTS_DA_RAIZ, temRegraDoRobots, versaoDaBuild
 } from '../src/lib/previa.mjs';
 import { root, siteBase, pages, checkLinks } from './check-links.mjs';
-import { comporPublicacao, verificarPublicacao, hashesDe, executar, PASTA_DAS_PREVIAS } from './publicar.mjs';
+import { comporPublicacao, verificarPublicacao, hashesDe, executar, copiarArvoreDeTrabalho, PASTA_DAS_PREVIAS } from './publicar.mjs';
 
 test('release aceita no caminho da prévia', () => {
   for (const release of ['0.5.5', '1.0.0-rc.1', '2026.10', 'v0.6.0', 'a', 'x'.repeat(64)]) assert.ok(releaseValida(release), release);
@@ -57,6 +57,25 @@ test('SHA e data vêm do motor quando ele os passa', () => {
   assert.deepEqual(versaoDaBuild({ SITE_SHA: 'a'.repeat(40), SITE_DATA: '2000-01-01T00:00:00Z' }), { sha: 'a'.repeat(40), data: '2000-01-01T00:00:00Z' });
 });
 
+test('a cópia da árvore de trabalho deixa de fora dependências e build, mesmo com node_modules em link', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'copia-arvore-'));
+  try {
+    const origem = join(dir, 'origem'), destino = join(dir, 'destino'), deps = join(dir, 'deps');
+    mkdirSync(join(origem, 'dist'), { recursive: true });
+    mkdirSync(deps);
+    writeFileSync(join(origem, 'a.txt'), 'a');
+    writeFileSync(join(origem, '.gitignore'), 'node_modules/' + String.fromCharCode(10));
+    writeFileSync(join(origem, 'dist', 'index.html'), 'build');
+    symlinkSync(deps, join(origem, 'node_modules'), 'dir');
+    symlinkSync('a.txt', join(origem, 'b.txt'));
+    assert.equal(executar('git', ['init', '-q', origem]).status, 0);
+    copiarArvoreDeTrabalho(origem, destino);
+    assert.equal(readFileSync(join(destino, 'a.txt'), 'utf8'), 'a');
+    assert.equal(lstatSync(join(destino, 'b.txt')).isSymbolicLink(), true);
+    for (const fora of ['node_modules', 'dist', '.git']) assert.equal(existsSync(join(destino, fora)), false, fora);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 // Árvore composta.
 const RELEASE = '0.0.0-teste';
 const catalogo = JSON.parse(readFileSync(join(root, 'src/data/docs-catalog.ts'), 'utf8').replace(/^export default /, '').replace(/;\s*$/, ''));
@@ -66,24 +85,6 @@ const pular = siteBase() ? 'build de prévia: a árvore composta é conferida a 
   : !existsSync(join(root, 'dist', 'index.html')) ? 'sem build de produção em dist/'
   : false;
 
-/** Copia os arquivos versionados e os novos não ignorados, como estão no disco, e liga o node_modules. */
-function copiarArvoreDeTrabalho(destino) {
-  const git = executar('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], { cwd: root });
-  const lista = git.status === 0 ? git.saida.split(String.fromCharCode(0)).filter(Boolean) : null;
-  mkdirSync(destino, { recursive: true });
-  if (lista) {
-    for (const rel of lista) {
-      if (!existsSync(join(root, rel))) continue;
-      mkdirSync(dirname(join(destino, rel)), { recursive: true });
-      cpSync(join(root, rel), join(destino, rel));
-    }
-  } else {
-    cpSync(root, destino, { recursive: true, filter: f => !/^(node_modules|dist|\.astro|\.git)(\/|$)/.test(relative(root, f)) });
-  }
-  symlinkSync(join(root, 'node_modules'), join(destino, 'node_modules'), 'dir');
-  return destino;
-}
-
 let tmp = null, arvore = null;
 before(() => {
   if (pular) return;
@@ -92,7 +93,8 @@ before(() => {
   cpSync(join(root, 'dist'), producao, { recursive: true });
   const versao = JSON.parse(readFileSync(join(producao, 'versao.json'), 'utf8'));
   const sha = /^[0-9a-f]{40}$/.test(versao.sha || '') ? versao.sha : '0'.repeat(40);
-  const fonte = copiarArvoreDeTrabalho(join(tmp, 'fonte'));
+  const fonte = copiarArvoreDeTrabalho(root, join(tmp, 'fonte'));
+  symlinkSync(join(root, 'node_modules'), join(fonte, 'node_modules'), 'dir');
   const build = executar('npm', ['run', 'build'], {
     cwd: fonte, env: { ...process.env, SITE_BASE: baseDaRelease(RELEASE), SITE_SHA: sha, SITE_DATA: versao.data ?? '' }
   });

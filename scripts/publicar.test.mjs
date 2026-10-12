@@ -4,11 +4,11 @@
 // Quatro builds de verdade, reaproveitadas por commit e base; roda com npm run test:publicar.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync, appendFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync, appendFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
 import { root } from './check-links.mjs';
-import { executar } from './publicar.mjs';
+import { executar, copiarArvoreDeTrabalho } from './publicar.mjs';
 
 const pular = process.env.SITE_TESTE_PREVIA === '0' ? 'SITE_TESTE_PREVIA=0' : false;
 let tmp = null, repo = null, cache = null, rodada = 0;
@@ -41,12 +41,7 @@ before(() => {
   tmp = mkdtempSync(join(tmpdir(), 'publicar-ensaio-'));
   repo = join(tmp, 'repo'); cache = join(tmp, 'cache');
   mkdirSync(repo); mkdirSync(cache);
-  const lista = git(root, 'ls-files', '-z', '--cached', '--others', '--exclude-standard').split(String.fromCharCode(0)).filter(Boolean);
-  for (const rel of lista) {
-    if (!existsSync(join(root, rel))) continue;
-    mkdirSync(dirname(join(repo, rel)), { recursive: true });
-    cpSync(join(root, rel), join(repo, rel));
-  }
+  copiarArvoreDeTrabalho(root, repo);
   git(repo, 'init', '-q', '-b', 'main');
   git(repo, 'add', '--', '.');
   git(repo, 'commit', '-q', '-m', 'A');

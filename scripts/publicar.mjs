@@ -5,11 +5,11 @@
 //
 //   node scripts/publicar.mjs --saida <pasta> [--repo <clone>] [--maximo <n>] [--cache <pasta>] [--resumo <arquivo>]
 //   node scripts/publicar.mjs --ensaio [--repo <clone>] [--maximo <n>]   (só mostra o que publicaria)
-import {appendFileSync,closeSync,cpSync,existsSync,mkdirSync,mkdtempSync,openSync,readdirSync,readFileSync,rmSync,symlinkSync,writeFileSync} from 'node:fs';
+import {appendFileSync,closeSync,cpSync,existsSync,lstatSync,mkdirSync,mkdtempSync,openSync,readdirSync,readFileSync,readlinkSync,rmSync,symlinkSync,writeFileSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {tmpdir} from 'node:os';
-import {join,relative,resolve,sep} from 'node:path';
+import {dirname,join,relative,resolve,sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {root,files,checkLinks} from './check-links.mjs';
 import {checkPrevia} from './check-previa.mjs';
@@ -99,6 +99,28 @@ export function executar(comando,args,{cwd,env}={}){
  const resultado={status:r.error?null:r.status,erro:r.error??null,saida:readFileSync(saida,'utf8'),erros:readFileSync(erros,'utf8')};
  rmSync(dir,{recursive:true,force:true});
  return resultado;
+}
+
+const FORA_DA_COPIA=/^(node_modules|dist|\.astro|\.git)(\/|$)/;
+
+/**
+ * Copia a árvore de trabalho (arquivos versionados e os novos não ignorados, como estão no disco) para
+ * destino, sem dependências, build nem .git, preservando links simbólicos. Sem git, copia a pasta inteira
+ * com o mesmo filtro. Os testes compilam a partir desta cópia.
+ */
+export function copiarArvoreDeTrabalho(origem,destino){
+ const lista=executar('git',['ls-files','-z','--cached','--others','--exclude-standard'],{cwd:origem});
+ mkdirSync(destino,{recursive:true});
+ if(lista.status!==0){cpSync(origem,destino,{recursive:true,filter:f=>!FORA_DA_COPIA.test(relative(origem,f).split(sep).join('/'))});return destino;}
+ for(const rel of lista.saida.split(String.fromCharCode(0)).filter(Boolean)){
+  const de=join(origem,rel),para=join(destino,rel);
+  if(FORA_DA_COPIA.test(rel)||!existsSync(de))continue;
+  const tipo=lstatSync(de);
+  if(tipo.isDirectory())continue;
+  mkdirSync(dirname(para),{recursive:true});
+  if(tipo.isSymbolicLink())symlinkSync(readlinkSync(de),para);else cpSync(de,para);
+ }
+ return destino;
 }
 
 function git(repo,args){
