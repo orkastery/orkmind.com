@@ -1,5 +1,5 @@
-// Interações da home: o relógio de 2,4 s (diagrama, coleções, histórico e orkmind list), as
-// integrações, as etapas em abas, a noite pela rolagem e o canvas do hero. O estado inicial veio
+// Interações da home: o relógio de 2,4 s (diagrama, coleções, histórico e orkmind list), a
+// descrição de cada nó, as integrações, as etapas em abas, a noite pela rolagem e o canvas do hero. O estado inicial veio
 // pronto do build; aqui só se recalcula com as mesmas funções (src/lib/home-state.mjs) e se repinta o
 // mesmo elemento. Com movimento reduzido, nada se move sozinho: o canvas fica parado e o relógio
 // não anda; cliques, teclado e rolagem continuam valendo.
@@ -45,6 +45,12 @@ if (dados) {
   });
   v.collections.forEach((c: any, i: number) => pinta($(`[data-colecao="${i}"]`)[0], {background: cor(c.bg), color: cor(c.fg), border: `1px ${c.bs} ${cor(c.bd)}`}));
  }
+ // Cada nó do diagrama abre e fecha a própria descrição.
+ $<HTMLButtonElement>('[data-no-botao]').forEach(botao => botao.addEventListener('click', () => {
+  const aberto = botao.getAttribute('aria-expanded') !== 'true', desc = document.getElementById(botao.getAttribute('aria-controls') || '');
+  botao.setAttribute('aria-expanded', String(aberto));
+  if (desc) desc.hidden = !aberto;
+ }));
  // orkmind list pelo relógio.
  function pintaEntradas(tick: number) {
   entradas(t, tick).forEach((l: any, i: number) => {
@@ -86,8 +92,9 @@ if (dados) {
  }
  abas.forEach(aba => {
   aba.addEventListener('click', () => { estado.stage = Number(aba.dataset.etapa); pintaEtapas(); });
+  // A seta parte da aba que tem o foco (com o roving tabindex, é a escolhida).
   aba.addEventListener('keydown', e => {
-   const n = abas.length, alvo = ({ArrowRight: estado.stage + 1, ArrowDown: estado.stage + 1, ArrowLeft: estado.stage - 1, ArrowUp: estado.stage - 1, Home: 0, End: n - 1} as Record<string, number>)[e.key];
+   const n = abas.length, aqui = Number(aba.dataset.etapa), alvo = ({ArrowRight: aqui + 1, ArrowDown: aqui + 1, ArrowLeft: aqui - 1, ArrowUp: aqui - 1, Home: 0, End: n - 1} as Record<string, number>)[e.key];
    if (alvo === undefined) return;
    e.preventDefault(); estado.stage = (alvo + n) % n; pintaEtapas(true);
   });

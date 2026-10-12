@@ -78,11 +78,13 @@ export default {
      "nodes": [
       {
        "n": "Orquestrador",
-       "edge": "Lê contexto autorizado, devolve evidências"
+       "edge": "Lê contexto autorizado, devolve evidências",
+       "d": "Coordena o trabalho com contexto citável do Company Brain e devolve fases, decisões, claims e artefatos à memória empresarial."
       },
       {
        "n": "Sub-agentes",
        "edge": "Leem contexto, gravam aprendizados",
+       "d": "Executam tarefas especializadas. Recebem contexto sob medida pelas tags e devolvem aprendizados ao sistema.",
        "guarded": true
       }
      ]
@@ -93,15 +95,18 @@ export default {
      "nodes": [
       {
        "n": "Runtimes e sessões",
-       "edge": "Gravam estado e histórico de sessão"
+       "edge": "Gravam estado e histórico de sessão",
+       "d": "Cada sessão nasce e morre, mas o que ela descobriu fica. O estado de sessão é uma coleção tipada da ontologia."
       },
       {
        "n": "Agentes temporários",
-       "edge": "Herdam contexto, deixam registro"
+       "edge": "Herdam contexto, deixam registro",
+       "d": "Vivem minutos e desaparecem. Sem memória externa, tudo o que viram sumiria junto com eles."
       },
       {
        "n": "Skills",
-       "edge": "Consultam instruções de uso"
+       "edge": "Consultam instruções de uso",
+       "d": "Capacidades reutilizáveis do sistema. O conhecimento sobre quando e como usá-las mora na coleção de `tools`."
       }
      ]
     },
@@ -111,15 +116,18 @@ export default {
      "nodes": [
       {
        "n": "Plugins",
-       "edge": "Injetam regras em cada turno"
+       "edge": "Injetam regras em cada turno",
+       "d": "Estendem os runtimes por dentro. Os plugins do OrkMind injetam regras mandatórias em todo turno de conversa."
       },
       {
        "n": "Integrações",
-       "edge": "Transportam leitura e escrita"
+       "edge": "Transportam leitura e escrita",
+       "d": "MCP, provider de memória e API idempotente: caminhos oficiais para qualquer runtime falar com a memória."
       },
       {
        "n": "Ambiente",
-       "edge": "Vira fatos e referências"
+       "edge": "Vira fatos e referências",
+       "d": "Repositórios, serviços e infraestrutura. Fatos verificáveis sobre o ambiente viram memória consultável."
       }
      ]
     }
@@ -732,11 +740,13 @@ export default {
      "nodes": [
       {
        "n": "Orchestrator",
-       "edge": "Reads authorized context, returns evidence"
+       "edge": "Reads authorized context, returns evidence",
+       "d": "Coordinates work using citable Company Brain context and returns phases, decisions, claims and artifacts to shared memory."
       },
       {
        "n": "Subagents",
        "edge": "Read context, record lessons",
+       "d": "Run specialized tasks, receive context selected by tags and return lessons to the system.",
        "guarded": true
       }
      ]
@@ -747,15 +757,18 @@ export default {
      "nodes": [
       {
        "n": "Runtimes and sessions",
-       "edge": "Record session state and history"
+       "edge": "Record session state and history",
+       "d": "Sessions end, but their findings can remain. Session state is a typed collection in the ontology."
       },
       {
        "n": "Temporary agents",
-       "edge": "Inherit context, leave a record"
+       "edge": "Inherit context, leave a record",
+       "d": "Short-lived agents can leave findings in external memory for later work."
       },
       {
        "n": "Skills",
-       "edge": "Retrieve usage instructions"
+       "edge": "Retrieve usage instructions",
+       "d": "Reusable capabilities. Knowledge about when and how to use them belongs in the `tools` collection."
       }
      ]
     },
@@ -765,15 +778,18 @@ export default {
      "nodes": [
       {
        "n": "Plugins",
-       "edge": "Inject rules each turn"
+       "edge": "Inject rules each turn",
+       "d": "Extend runtimes. Configured OrkMind plugins inject mandatory rules into each conversation turn."
       },
       {
        "n": "Integrations",
-       "edge": "Transport reads and writes"
+       "edge": "Transport reads and writes",
+       "d": "MCP, memory provider and idempotent API: official paths for runtimes to access memory."
       },
       {
        "n": "Environment",
-       "edge": "Provides facts and references"
+       "edge": "Provides facts and references",
+       "d": "Repositories, services and infrastructure. Verifiable environment facts become retrievable memory."
       }
      ]
     }

@@ -57,7 +57,7 @@ const saidaLang=localeFor(Astro.url.pathname)==='pt'?undefined:'pt-BR';
 .caminho-texto{margin-top:var(--e-3);font:var(--peso-destaque) var(--t-titulo-2)/1.35 var(--f-titulo);letter-spacing:var(--trk-titulo-2);text-wrap:pretty}
 /* O identificador quebra só nos pontos marcados; o alerta, que tem espaços, quebra entre palavras. */
 .caminho-codigo{margin-top:var(--e-4);font:var(--peso-destaque) var(--t-rotulo)/1.5 var(--f-mono);color:var(--verificado-texto)}
-.caminho-codigo .codigo-liso{white-space:normal}
+.caminho-codigo .codigo-liso{display:inline-block;max-width:100%;white-space:normal}
 .caminho-nota{margin-top:var(--e-5);display:flex;align-items:center;gap:var(--e-3);font:var(--tipo-apoio);color:var(--texto-2)}
 .caminho-chip{flex:none;display:inline-flex;align-items:center;height:28px;padding:0 var(--e-3);border-radius:var(--raio-chip);font:var(--peso-destaque) var(--t-rotulo)/1 var(--f-mono);background:color-mix(in srgb,var(--falha) 14%,var(--superficie));color:var(--falha-texto);box-sizing:border-box}
 </style>

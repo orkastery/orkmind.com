@@ -8,6 +8,7 @@ import CabecalhoSecao from '../ds/CabecalhoSecao.astro';
 import Chip from '../ds/Chip.astro';
 import TechnicalText from '../TechnicalText.astro';
 import {entradas,ESTADO_INICIAL,cor} from '../../lib/home-state.mjs';
+import {escapeText} from '../../lib/technical-text.mjs';
 import {localeFor} from '../../data/i18n';
 const {t}=Astro.props;
 const g=t.governance,linhas=entradas(t,ESTADO_INICIAL.tick);
@@ -15,6 +16,9 @@ const g=t.governance,linhas=entradas(t,ESTADO_INICIAL.tick);
 // como português.
 const saidaLang=localeFor(Astro.url.pathname)==='pt'?undefined:'pt-BR';
 const naoExiste=t.proof.gaps[0].s;
+// Os avisos são transcrição: um <pre>, com o prompt fora da leitura em voz e a saída em texto-2.
+const linguaDaSaida=saidaLang?` lang="${saidaLang}"`:'';
+const avisos=g.warnings.map((w:any)=>[`<span class="terminal-prompt" aria-hidden="true">$ </span>${escapeText(w.cmd)}`,...w.out.map((o:string)=>`<span class="terminal-saida"${linguaDaSaida}>${escapeText(o)}</span>`)].join('\n')).join('\n\n');
 ---
 <section id="governanca" class="secao-padrao">
  <div class="container">
@@ -41,12 +45,9 @@ const naoExiste=t.proof.gaps[0].s;
      </div>)}
     </div>
    </div>
-   <div class="avisos" data-tema="noite" role="region" aria-label={g.warningsTitle} tabindex="0">
+   <div class="avisos" data-tema="noite">
     <div class="avisos-topo"><span>{g.warningsTitle}</span><span>{g.warningsMeta}</span></div>
-    {g.warnings.map((w:any)=><div class="aviso">
-     <div class="terminal-linha"><span class="terminal-prompt" aria-hidden="true">$</span><code class="codigo-liso">{w.cmd}</code></div>
-     {w.out.map((o:string)=><div class="terminal-linha terminal-saida"><span aria-hidden="true"></span><code class="codigo-liso" lang={saidaLang}>{o}</code></div>)}
-    </div>)}
+    <pre class="avisos-bloco" tabindex="0" aria-label={g.warningsTitle}><code set:html={avisos}></code></pre>
    </div>
    <div class="revisao holofote" data-holofote>
     <div class="revisao-coluna">
@@ -90,14 +91,11 @@ const naoExiste=t.proof.gaps[0].s;
 .board-etapa{margin-top:6px;font:var(--peso-destaque) var(--t-rotulo)/1 var(--f-mono);letter-spacing:var(--espaco-rotulo);color:var(--texto-3)}
 .board-estado{display:flex;align-items:center;gap:7px;font:var(--peso-destaque) var(--t-rotulo)/1.2 var(--f-mono)}
 .board-estado>span:first-child{flex:none;width:7px;height:7px;border-radius:50%}
-/* Terminal dos avisos: bloco de código, sempre noite; a linha longa rola dentro dele, inteira. */
-.avisos{position:relative;min-width:0;background:var(--superficie);border-radius:var(--raio-cartao);padding:var(--e-5);font:var(--tipo-codigo);overflow-x:auto}
+/* Terminal dos avisos: bloco de código, sempre noite; a linha longa rola dentro do <pre>, inteira. */
+.avisos{min-width:0;background:var(--superficie);border-radius:var(--raio-cartao);padding:var(--e-5)}
 .avisos-topo{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--e-2) var(--e-3);margin-bottom:var(--e-4);font:var(--peso-destaque) var(--t-rotulo)/1.3 var(--f-mono);color:var(--texto-2)}
-.aviso+.aviso{margin-top:var(--e-4)}
-.terminal-linha{display:grid;grid-template-columns:2ch max-content;gap:var(--e-2);color:var(--texto)}
-.terminal-prompt{color:var(--texto-2)}
-.terminal-saida{color:var(--texto-2)}
-.terminal-linha .codigo-liso{white-space:pre}
+.avisos-bloco{margin:0;padding:2px;font:var(--tipo-codigo);color:var(--texto);overflow-x:auto;border-radius:var(--raio-segmento)}
+.avisos-bloco :global(.terminal-prompt),.avisos-bloco :global(.terminal-saida){color:var(--texto-2)}
 .revisao{background-color:var(--superficie);border:1px solid var(--linha);border-radius:var(--raio-cartao);padding:var(--e-5);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:var(--e-4) var(--e-7);align-items:start}
 .revisao-coluna{display:flex;flex-direction:column;gap:var(--e-3);min-width:0}
 .revisao-titulo{margin:0;font:var(--tipo-titulo-3);letter-spacing:var(--trk-titulo-3);text-wrap:balance}

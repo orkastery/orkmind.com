@@ -66,7 +66,7 @@ export function topo(t, tick) {
   const nodes = gr.nodes.map(n => {
    seed++;
    const recusou = recusa && !!n.guarded;
-   return {n: n.n, edge: n.edge, recusou, state: recusou ? s.refused : s.active, dot: recusou ? C.wait : C.ok,
+   return {n: n.n, edge: n.edge, d: n.d, recusou, state: recusou ? s.refused : s.active, dot: recusou ? C.wait : C.ok,
     sbg: recusou ? C.waitS : C.okS, sfg: recusou ? C.waitT : C.okT, segs: segs(seed * 2 + Math.floor((tick + seed) / 3))};
   });
   return {name: gr.name, env: gr.env, color: MC[gi], nodes, foot: fill(s.foot, {n: nodes.length})};

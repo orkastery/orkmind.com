@@ -5,8 +5,13 @@
 import CabecalhoSecao from '../ds/CabecalhoSecao.astro';
 import Chip from '../ds/Chip.astro';
 import TechnicalText from '../TechnicalText.astro';
+import {escapeText} from '../../lib/technical-text.mjs';
 const {t}=Astro.props;
 const p=t.proof;
+// O terminal é transcrição: um <pre> com o prompt em luar-2 (fora da leitura em voz) e a saída em
+// texto-2. A nota fica fora do bloco, em prosa.
+const bloco=p.demo.filter((d:any)=>d.code).map((d:any)=>d.kc==='prompt'?`<span class="terminal-prompt" aria-hidden="true">$ </span>${escapeText(d.v)}`:`<span class="terminal-saida">${escapeText(d.v)}</span>`).join('\n');
+const notas=p.demo.filter((d:any)=>!d.code);
 ---
 <section id="prova" class="prova secao-padrao">
  <div class="container">
@@ -24,11 +29,10 @@ const p=t.proof;
      <div><Chip estado="pendente" rotulo={p.gapProof.s}/></div>
     </div>
    </div>
-   <div class="terminal" data-tema="noite" role="region" aria-label={p.demoTitle} tabindex="0">
+   <div class="terminal" data-tema="noite">
     <div class="terminal-topo"><span>{p.demoTitle}</span><span>{p.demoMeta}</span></div>
-    {p.demo.map((d:any)=>d.code
-     ?<div class:list={['terminal-linha',d.kc==='saida'&&'terminal-saida']}><span class="terminal-prompt" aria-hidden="true">{d.k}</span><code class="codigo-liso">{d.v}</code></div>
-     :<p class="terminal-nota"><TechnicalText text={d.v}/></p>)}
+    <pre class="terminal-bloco" tabindex="0" aria-label={p.demoTitle}><code set:html={bloco}></code></pre>
+    {notas.map((d:any)=><p class="terminal-nota"><TechnicalText text={d.v}/></p>)}
    </div>
   </div>
   <div class="lacunas">
@@ -50,14 +54,12 @@ const p=t.proof;
 .numero-lacuna{background-color:var(--superficie-2);outline:1px dashed var(--linha-forte);outline-offset:-9px}
 .numero-lacuna .numero-n{display:flex;align-items:center;height:1.1em;color:var(--texto-3)}
 .numero-traco{display:block;width:.9em;height:.09em;border-radius:1px;background:currentColor}
-/* Terminal da prova: bloco de código, sempre noite; a linha longa rola dentro dele, inteira. */
-.terminal{position:relative;min-width:0;background:var(--superficie);border-radius:var(--raio-cartao);padding:var(--e-5);font:var(--tipo-codigo);overflow-x:auto}
+/* Terminal da prova: bloco de código, sempre noite; a linha longa rola dentro do <pre>, inteira. */
+.terminal{min-width:0;background:var(--superficie);border-radius:var(--raio-cartao);padding:var(--e-5)}
 .terminal-topo{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--e-2) var(--e-3);margin-bottom:var(--e-4);font:var(--peso-destaque) var(--t-rotulo)/1.3 var(--f-mono);color:var(--texto-2)}
-.terminal-linha{display:grid;grid-template-columns:2ch max-content;gap:var(--e-2);color:var(--texto)}
-.terminal-linha .codigo-liso{white-space:pre}
-.terminal-prompt{color:var(--texto-2)}
-.terminal-saida{color:var(--texto-2)}
-.terminal-nota{margin:var(--e-3) 0 0;padding-left:calc(2ch + var(--e-2));max-width:52ch;font:var(--tipo-apoio);color:var(--texto-2)}
+.terminal-bloco{margin:0;padding:2px;font:var(--tipo-codigo);color:var(--texto);overflow-x:auto;border-radius:var(--raio-segmento)}
+.terminal-bloco :global(.terminal-prompt),.terminal-bloco :global(.terminal-saida){color:var(--texto-2)}
+.terminal-nota{margin:var(--e-3) 0 0;max-width:52ch;font:var(--tipo-apoio);color:var(--texto-2)}
 .lacunas{margin-top:var(--e-5);padding:var(--e-5);border-radius:var(--raio-cartao);background:var(--superficie-2);border:1px dashed var(--linha-forte);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:var(--e-4) var(--e-6)}
 .lacunas-titulo{margin:0;font:var(--peso-titulo) var(--t-corpo)/1.35 var(--f-titulo)}
 .lacuna{display:flex;flex-direction:column;align-items:flex-start;gap:var(--e-2);font:var(--tipo-apoio);color:var(--texto-2)}
