@@ -26,6 +26,14 @@ export function checkContent(dist=distArg(),base=siteBase()){
   if(labels.length!==8||new Set(labels).size!==8)throw Error('Missing system diagram labels: '+locale);
   const expected={pt:'Agentes temporários',en:'Temporary agents'}[locale];
   if(!labels.includes(expected))throw Error('Untranslated system diagram: '+locale);
+  // A home do design: as seções na ordem da página (as âncoras da navegação entre elas), o cartão
+  // vivo com descrição acessível e o comando que copia.
+  const secoes=['topo','sistema','problema','contato','integracoes','governanca','noite','caminho','prova'];
+  const ids=home.nodes.filter(n=>n.tagName==='section').map(n=>attrs(n).id).filter(id=>secoes.includes(id));
+  if(ids.join()!==secoes.join())throw Error('Home sections missing or out of order: '+locale+' ('+ids.join()+')');
+  const canvas=home.nodes.find(n=>n.tagName==='canvas'&&'data-caminho' in attrs(n));
+  if(!canvas||attrs(canvas).role!=='img'||!attrs(canvas)['aria-label'])throw Error('Hero canvas without accessible description: '+locale);
+  if(!home.nodes.some(n=>attrs(n)['data-copiar']==='pip install orkmind'))throw Error('Missing copy command: '+locale);
   const contribution=all.find(p=>p.path===prefix+'/docs/contribuir/');
   if(!contribution)throw Error('Missing contribution page: '+locale);
   for(const entry of [home,all.find(p=>p.path===prefix+'/docs/')])if(!entry?.nodes.some(n=>n.tagName==='a'&&attrs(n).href===base+prefix+'/docs/contribuir/'))throw Error('Missing contribution navigation: '+locale);

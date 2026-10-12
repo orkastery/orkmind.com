@@ -26,8 +26,10 @@
     "test:publicar": "node scripts/publicar.test.mjs",
     "test:code": "node scripts/code-format.test.mjs",
     "check:code": "node scripts/check-code.mjs",
+    "check:design": "node scripts/check-design.mjs",
+    "test:design": "node scripts/design-check.test.mjs",
     "prebuild": "npm run docs:check",
-    "postbuild": "npm run check:links && npm run check:i18n && npm run check:redirecionamentos && npm run check:public && npm run check:content && npm run test:docs && npm run test:home && npm run test:redirecionamentos && npm run test:code && npm run check:code && npm run check:previa && npm run test:previa"
+    "postbuild": "npm run check:links && npm run check:i18n && npm run check:redirecionamentos && npm run check:public && npm run check:content && npm run test:docs && npm run test:home && npm run test:redirecionamentos && npm run test:code && npm run check:code && npm run check:design && npm run test:design && npm run check:previa && npm run test:previa"
   },
   "dependencies": {
     "@fontsource-variable/geist": "5.3.0",
