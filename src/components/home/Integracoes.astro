@@ -1,0 +1,92 @@
+---
+// 04 · Integrações: a matriz de Hermes, OpenClaw, MCP e CLI pelas seis etapas (linhas clicáveis,
+// Hermes no início), se a regra chega em todo turno, a legenda, os dois cartões da escolhida e o
+// fecho. Bloco contínuo: a etapa acontece sozinha; tracejado: só quando alguém pede. Nenhum jade
+// aqui: integração não espera você. Os textos de cada integração saem prontos do build (só a
+// escolhida aparece), com o código formatado pelo TechnicalText. No estreito a matriz rola na
+// horizontal dentro do próprio cartão, como o kit manda para a matriz de modos.
+import CabecalhoSecao from '../ds/CabecalhoSecao.astro';
+import TechnicalText from '../TechnicalText.astro';
+import {integracoes,integracaoDetalhe,ESTADO_INICIAL,cor} from '../../lib/home-state.mjs';
+const {t}=Astro.props;
+const m=t.integrations,linhas=integracoes(t,ESTADO_INICIAL.integration);
+---
+<section id="integracoes" class="secao-padrao">
+ <div class="container">
+  <CabecalhoSecao sobretitulo={m.eyebrow} titulo={m.title} lead={m.lead} medidaTitulo="22ch" medidaLead="62ch"/>
+  <div class="matriz" data-reveal>
+   <div class="matriz-rolagem">
+    <div class="matriz-tabela">
+     <div class="matriz-cabeca" aria-hidden="true">
+      <span></span>
+      <div class="matriz-etapas">{t.path.stages.map((e:string)=><div>{e}</div>)}</div>
+      <span class="matriz-turno">{m.turnHead}</span>
+     </div>
+     {linhas.map((l,i)=><button type="button" class="integracao" data-integracao={i} aria-controls="integracoes-detalhe" style={`background:${cor(l.bg)}`}>
+      <span class="integracao-tag">{l.tag}</span>
+      <span class="integracao-blocos">{l.blocks.map(b=><span class="integracao-bloco" style={`grid-column:${b.col}`}>
+       <span class:list={['integracao-faixa',b.sobDemanda&&'integracao-faixa-pedido']} style={`background:${cor(b.bg)};color:${cor(b.fg)};border-color:${cor(b.bd)}`}>{b.label}</span>
+      </span>)}</span>
+      <span class="integracao-turno"><span class="integracao-turno-rotulo">{m.turnHead}: </span>{l.turn}</span>
+     </button>)}
+    </div>
+   </div>
+  </div>
+  <ul class="integracoes-legenda">
+   <li><span class="amostra amostra-pedido" aria-hidden="true"></span>{m.legendDemand}</li>
+   <li><span class="amostra" aria-hidden="true"></span>{m.legendBlock}</li>
+  </ul>
+  <div class="integracoes-detalhe" id="integracoes-detalhe">
+   <div class="integracoes-cartao">
+    {m.list.map((_:any,i:number)=>{const d=integracaoDetalhe(t,i);return <div class:list={['integracoes-item',i===ESTADO_INICIAL.integration&&'ativo']} data-integracao-texto={i}>
+     <div class="integracoes-rotulo">{d.when}</div>
+     <div class="integracoes-texto"><TechnicalText text={d.use}/></div>
+    </div>;})}
+   </div>
+   <div class="integracoes-cartao">
+    {m.list.map((it:any,i:number)=>{const d=integracaoDetalhe(t,i);return <div class:list={['integracoes-item',i===ESTADO_INICIAL.integration&&'ativo']} data-integracao-texto={i}>
+     <div class="integracoes-rotulo">{it.tag} · {m.aboutLabel}</div>
+     <div class="integracoes-texto"><TechnicalText text={d.about}/></div>
+    </div>;})}
+   </div>
+  </div>
+  <p class="integracoes-fecho">{m.closing} <span>{m.closingOk}</span></p>
+ </div>
+</section>
+<style>
+/* A rolagem lateral só aparece abaixo de 760 px de matriz; a folga de 4 px deixa o anel de foco
+   das linhas inteiro dentro dela. Posicionada, ela recorta também o texto só para leitor de tela
+   (absoluto), que de outro modo alargaria a página. */
+.matriz{margin-top:var(--e-7);background:var(--superficie);border:1px solid var(--linha);border-radius:var(--raio-cartao);padding:var(--e-2)}
+.matriz-rolagem{position:relative;overflow-x:auto;padding:4px}
+.matriz-tabela{min-width:760px}
+.matriz-cabeca{display:grid;grid-template-columns:130px minmax(0,1fr) 96px;gap:var(--e-4);padding:var(--e-3) var(--e-4) var(--e-2)}
+.matriz-etapas{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;font:var(--tipo-rotulo);line-height:1;letter-spacing:var(--espaco-rotulo);text-transform:uppercase;color:var(--texto-3)}
+.matriz-etapas>div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.matriz-turno{font:var(--tipo-rotulo);line-height:1;letter-spacing:var(--espaco-rotulo);text-transform:uppercase;color:var(--texto-3);text-align:right}
+.integracao{position:relative;display:grid;grid-template-columns:130px minmax(0,1fr) 96px;gap:var(--e-4);align-items:center;width:100%;min-height:var(--alvo);text-align:left;padding:var(--e-3) var(--e-4);border-radius:var(--raio-cartao);border:0;cursor:pointer;transition:background var(--dur-media) var(--curva)}
+.integracao:hover{background:color-mix(in srgb,var(--superficie-2) 60%,var(--superficie))!important}
+.integracao[aria-pressed='true']{box-shadow:inset 2px 0 0 var(--texto)}
+.integracao:focus-visible{box-shadow:var(--anel-foco)}
+.integracao-tag{font:var(--tipo-titulo-3);letter-spacing:var(--trk-titulo-3);color:var(--texto)}
+.integracao-blocos{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.integracao-bloco{display:flex;align-items:center;min-width:0}
+.integracao-faixa{flex:1;min-width:0;height:34px;border-radius:var(--raio-chip);border:1px solid;box-sizing:border-box;display:flex;align-items:center;padding:0 var(--e-3);font:var(--peso-destaque) var(--t-rotulo)/1 var(--f-mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background var(--dur-media) var(--curva),color var(--dur-media) var(--curva),border-color var(--dur-media) var(--curva)}
+.integracao-faixa-pedido{border-style:dashed}
+.integracao-turno{font:var(--tipo-titulo-3);letter-spacing:var(--trk-titulo-3);text-align:right;color:var(--texto)}
+/* Na matriz, o "todo turno" vem da cabeça da coluna: o rótulo da linha fica só para leitor de tela. */
+.integracao-turno-rotulo{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.integracoes-legenda{margin:var(--e-3) 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:var(--e-3) var(--e-5);font:var(--peso-destaque) var(--t-apoio)/1.4 var(--f-texto);color:var(--texto-2)}
+.integracoes-legenda li{display:flex;align-items:center;gap:var(--e-2)}
+.amostra{flex:none;width:18px;height:10px;border-radius:var(--raio-segmento);background:var(--texto);box-sizing:border-box}
+.amostra-pedido{background:transparent;border:1px dashed var(--texto)}
+.integracoes-detalhe{margin-top:var(--e-4);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:var(--e-3)}
+.integracoes-cartao{padding:var(--e-5);border-radius:var(--raio-cartao);background:var(--superficie);border:1px solid var(--linha)}
+.integracoes-rotulo{font:var(--tipo-rotulo);letter-spacing:var(--espaco-rotulo);text-transform:uppercase;color:var(--texto-3)}
+.integracoes-texto{margin-top:var(--e-3);font:var(--tipo-destaque);text-wrap:pretty}
+/* Sem JavaScript os textos das quatro integrações ficam um embaixo do outro; com ele, só os da escolhida. */
+.integracoes-item+.integracoes-item{margin-top:var(--e-5)}
+:global(.js) .integracoes-item:not(.ativo){display:none}
+.integracoes-fecho{margin:var(--e-7) 0 0;font:var(--tipo-titulo-1);letter-spacing:var(--trk-titulo-1);max-width:24ch;text-wrap:balance}
+.integracoes-fecho span{display:block;color:var(--verificado-texto)}
+</style>

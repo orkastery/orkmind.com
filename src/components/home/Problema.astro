@@ -1,0 +1,44 @@
+---
+// 02 · O problema: a frase do arquivo de instrução, as três dores e a tabela Sem OrkMind / Com
+// OrkMind. Dor em brasa (falha), resposta em água (verificado), sempre com o texto dizendo o quê.
+import TechnicalText from '../TechnicalText.astro';
+const {t}=Astro.props;
+const p=t.problem;
+---
+<section id="problema" class="secao-padrao">
+ <div class="container">
+  <div class="rotulo">{p.eyebrow}</div>
+  <h2 class="problema-titulo" data-reveal>{p.title}</h2>
+  <div class="problema-grade" data-reveal>
+   <div>
+    <p class="problema-frase"><TechnicalText text={p.quote}/> <span class="problema-continuacao">{p.quoteMuted}</span></p>
+    <div class="dores">
+     {p.pains.map((d:any)=><div class="dor"><span class="dor-n">{d.n}</span><span class="dor-t">{d.t}</span></div>)}
+    </div>
+   </div>
+   <div class="comparacao holofote" data-holofote role="table" aria-label={p.without+' / '+p.with}>
+    <div class="comparacao-cabeca" role="row"><div role="columnheader">{p.without}</div><div role="columnheader" class="comparacao-com">{p.with}</div></div>
+    {p.compare.map((c:any)=><div class="comparacao-linha" role="row"><div role="cell" class="comparacao-sem-texto"><TechnicalText text={c.sem}/></div><div role="cell" class="comparacao-com-texto"><TechnicalText text={c.com}/></div></div>)}
+   </div>
+  </div>
+ </div>
+</section>
+<style>
+.problema-titulo{margin:var(--e-4) 0 0;font:var(--tipo-titulo-1);letter-spacing:var(--trk-titulo-1);max-width:18ch;text-wrap:balance}
+.problema-grade{margin-top:var(--e-7);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:var(--e-7) var(--e-8);align-items:start}
+.problema-frase{margin:0;font:var(--peso-destaque) var(--t-titulo-2)/1.32 var(--f-titulo);letter-spacing:var(--trk-titulo-2);color:var(--texto);text-wrap:pretty}
+.problema-continuacao{color:var(--texto-3)}
+.dores{margin-top:var(--e-7);display:flex;flex-direction:column;border-top:1px solid var(--linha-forte)}
+.dor{display:grid;grid-template-columns:56px minmax(0,1fr);gap:var(--e-2);padding:var(--e-4) 0;border-bottom:1px solid var(--linha-forte)}
+.dor-n{font:var(--peso-destaque) var(--t-rotulo)/1.9 var(--f-mono);color:var(--falha-texto)}
+.dor-t{font:var(--tipo-corpo);color:var(--texto-2)}
+.comparacao{background-color:var(--superficie);border:1px solid var(--linha);border-radius:var(--raio-cartao);overflow:hidden}
+.comparacao-cabeca{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);font:var(--tipo-rotulo);line-height:1.2;letter-spacing:var(--espaco-rotulo);text-transform:uppercase;color:var(--texto-3);border-bottom:1px solid var(--linha)}
+.comparacao-cabeca>div{padding:var(--e-4) var(--e-5)}
+.comparacao-cabeca .comparacao-com{color:var(--verificado-texto);background:color-mix(in srgb,var(--verificado) 6%,var(--superficie))}
+.comparacao-linha{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);border-bottom:1px solid var(--linha)}
+.comparacao-linha:last-child{border-bottom:0}
+.comparacao-sem-texto{padding:var(--e-4) var(--e-5);font:var(--tipo-apoio);color:var(--texto-3)}
+.comparacao-com-texto{padding:var(--e-4) var(--e-5);font:var(--peso-destaque) var(--t-apoio)/1.45 var(--f-texto);color:var(--texto);background:color-mix(in srgb,var(--verificado) 4%,var(--superficie))}
+@media (max-width:400px){.comparacao-cabeca>div,.comparacao-sem-texto,.comparacao-com-texto{padding:var(--e-3) var(--e-4)}}
+</style>

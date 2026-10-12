@@ -29,21 +29,6 @@ export default {
         "Filters and orders",
         "Reads and writes"
       ]
-    },
-    "es": {
-      "title": "De la integración a la memoria",
-      "description": "La integración aporta contexto. `SemanticLayer` organiza etiquetas y presupuesto. `GovernedStore` aplica acceso y protección antes de consultar el backend. La integración decide cómo entran los resultados en el prompt.",
-      "nodes": [
-        "Integración · contexto",
-        "`SemanticLayer` · etiquetas",
-        "`GovernedStore` · acceso",
-        "Backend · persistencia"
-      ],
-      "edges": [
-        "Detecta y consulta",
-        "Filtra y ordena",
-        "Lee y escribe"
-      ]
     }
   },
   "retrieval": {
@@ -71,19 +56,6 @@ export default {
       "edges": [
         "Selects",
         "Organizes"
-      ]
-    },
-    "es": {
-      "title": "Recuperación con límites explícitos",
-      "description": "Las etiquetas exactas seleccionan candidatos. Acceso, caducidad y riesgo filtran los resultados. Prioridad y presupuesto organizan la proyección. La búsqueda semántica puede añadir contexto sin sustituir reglas.",
-      "nodes": [
-        "Etiquetas · coincidencia exacta",
-        "Gobernanza · filtros",
-        "Contexto · prioridad y presupuesto"
-      ],
-      "edges": [
-        "Selecciona",
-        "Organiza"
       ]
     }
   },
@@ -113,19 +85,6 @@ export default {
         "Reads capabilities",
         "Applies configuration"
       ]
-    },
-    "es": {
-      "title": "Persistencia y capacidades",
-      "description": "`GovernedStore` aplica reglas comunes sobre backends con distintas capacidades. `pgvector` es la referencia de producción; `memory` es volátil; `qdrant` es experimental y está limitado al laboratorio en las fuentes revisadas.",
-      "nodes": [
-        "`GovernedStore` · contrato",
-        "`StoreCapabilities` · límites",
-        "Backend seleccionado"
-      ],
-      "edges": [
-        "Consulta capacidades",
-        "Aplica la configuración"
-      ]
     }
   },
   "governance": {
@@ -153,19 +112,6 @@ export default {
       "edges": [
         "Processes",
         "Confirms"
-      ]
-    },
-    "es": {
-      "title": "Intención, intento y confirmación",
-      "description": "El spool guarda la intención en `pending`. El drainer verifica el hash e intenta persistir. Solo una confirmación real conduce a `done`; los fallos siguen pendientes o pasan a `failed` para revisión.",
-      "nodes": [
-        "`pending` · intención en disco",
-        "Drainer · hash e intento",
-        "`done` · `entry_id` confirmado"
-      ],
-      "edges": [
-        "Procesa",
-        "Confirma"
       ]
     }
   }

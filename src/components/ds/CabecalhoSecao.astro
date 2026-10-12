@@ -1,0 +1,16 @@
+---
+// Abertura de seção: o rótulo mono em caixa alta ("01 · Sistema"), o título em Geist 600 na escala
+// --t-titulo-1 (com a continuação em texto-3, se houver) e o parágrafo de abertura em texto-2.
+// medidaTitulo e medidaLead são as larguras de leitura da home do design (em ch).
+import TechnicalText from '../TechnicalText.astro';
+interface Props { sobretitulo: string; titulo: string; continuacao?: string; lead?: string; medidaTitulo?: string; medidaLead?: string; id?: string; }
+const {sobretitulo,titulo,continuacao,lead,medidaTitulo='20ch',medidaLead='60ch',id}=Astro.props;
+---
+<div class="rotulo">{sobretitulo}</div>
+<h2 class="secao-titulo" data-reveal style={`max-width:${medidaTitulo}`} id={id}>{titulo}{continuacao&&<> <span class="secao-continuacao">{continuacao}</span></>}</h2>
+{lead&&<p class="secao-lead" style={`max-width:${medidaLead}`}><TechnicalText text={lead}/></p>}
+<style>
+.secao-titulo{margin:var(--e-4) 0 0;font:var(--tipo-titulo-1);letter-spacing:var(--trk-titulo-1);text-wrap:balance}
+.secao-continuacao{color:var(--texto-3)}
+.secao-lead{margin:var(--e-5) 0 0;font:var(--tipo-corpo);color:var(--texto-2);text-wrap:pretty}
+</style>

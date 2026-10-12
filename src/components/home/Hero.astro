@@ -1,0 +1,71 @@
+---
+// Hero da home do design: grade de pontos, selo, título em dois tons, parágrafo, o comando que
+// copia (com a borda de luz do jade girando, a única exceção do acento), contato, nota e o cartão
+// vivo do caminho de uma memória (canvas com a contagem viva). O h1 vai no --t-display do kit.
+// O botão do cartão para e retoma todo o movimento da home (WCAG 2.2.2): o canvas, o relógio e as
+// animações. Ele só aparece com JavaScript e sem movimento reduzido, quando há o que parar.
+import ComandoCopiavel from '../ds/ComandoCopiavel.astro';
+import TechnicalText from '../TechnicalText.astro';
+import {pacote,versao,estagio} from '../../data/release.mjs';
+import {preencher} from '../../lib/home-state.mjs';
+import {DENSIDADE} from '../../lib/caminho.mjs';
+const {t}=Astro.props;
+---
+<section id="topo" class="hero">
+ <div class="hero-pontos" aria-hidden="true"></div>
+ <div class="container hero-conteudo">
+  <div class="hero-selo"><span class="hero-ponto-selo" aria-hidden="true"></span><span>{t.hero.badge}</span><small class="hero-barra" aria-hidden="true">/</small><span><code class="codigo-liso">{pacote}</code> <code class="codigo-liso">{versao}</code> {estagio}</span><small class="hero-barra" aria-hidden="true">/</small><span>{t.hero.license}</span></div>
+  <h1 id="hero-titulo" class="hero-titulo">{t.hero.title} <span class="hero-continuacao">{t.hero.titleMuted}</span></h1>
+  <p class="hero-lead"><TechnicalText text={t.hero.lead}/></p>
+  <div id="instalar" class="hero-acoes">
+   <span id="instalar-titulo" class="ancora-antiga" aria-hidden="true"></span>
+   <ComandoCopiavel variante="hero"/>
+   <a class="hero-falar" href="#contato">{t.hero.talk} <span class="hero-seta" aria-hidden="true">→</span></a>
+  </div>
+  <p class="hero-nota"><TechnicalText text={t.hero.note}/></p>
+  <div class="hero-caminho">
+   <div class="hero-caminho-topo">
+    <div class="hero-caminho-titulo">{preencher(t.hero.scoreHead,{n:DENSIDADE})}</div>
+    <div class="hero-vivo" aria-live="off">
+     <span><span class="hero-ponto hero-ponto-executando" aria-hidden="true"></span><span data-vivo="run">0</span> {t.hero.live.run}</span>
+     <span><span class="hero-ponto hero-ponto-espera" aria-hidden="true"></span><span data-vivo="wait">0</span> {t.hero.live.wait}</span>
+     <span><span class="hero-ponto hero-ponto-ok" aria-hidden="true"></span><span data-vivo="ok">0</span> {t.hero.live.ok}</span>
+    </div>
+    <button type="button" class="hero-movimento" data-movimento data-parar={t.hero.motionStop} data-retomar={t.hero.motionResume} hidden>{t.hero.motionStop}</button>
+   </div>
+   <div class="hero-canvas-caixa"><canvas data-caminho role="img" aria-label={t.hero.canvasLabel}></canvas></div>
+  </div>
+ </div>
+</section>
+<style>
+.hero{position:relative;padding:var(--secao-ampla) 0 var(--e-8)}
+.hero-pontos{position:absolute;left:0;right:0;top:0;height:760px;background-image:radial-gradient(color-mix(in srgb,var(--texto) 10%,transparent) 1px,transparent 1.3px);background-size:24px 24px;-webkit-mask-image:radial-gradient(70% 62% at 28% 18%,var(--texto) 15%,transparent 72%);mask-image:radial-gradient(70% 62% at 28% 18%,var(--texto) 15%,transparent 72%);pointer-events:none}
+.hero-conteudo{position:relative}
+.hero-selo{display:inline-flex;flex-wrap:wrap;align-items:center;gap:var(--e-2) var(--e-3);min-height:32px;padding:var(--e-1) var(--e-3);border-radius:var(--raio-pilula);background:var(--superficie);border:1px solid var(--linha);font:var(--peso-destaque) var(--t-rotulo)/1.3 var(--f-mono);color:var(--texto-2);box-sizing:border-box}
+.hero-ponto-selo{width:7px;height:7px;border-radius:50%;background:var(--verificado)}
+.hero-barra{font-size:inherit;color:var(--linha-forte)}
+.hero-titulo{margin:var(--e-6) 0 0;font:var(--tipo-display);letter-spacing:var(--trk-display);max-width:16ch;text-wrap:balance}
+/* As duas frases do título ficam em linhas próprias, também no estreito. */
+.hero-continuacao{display:block;color:var(--texto-3)}
+.hero-lead{margin:var(--e-6) 0 0;max-width:58ch;font:var(--tipo-corpo);color:var(--texto-2);text-wrap:pretty}
+.hero-acoes{margin-top:var(--e-6);display:flex;flex-wrap:wrap;gap:var(--e-3);align-items:center}
+.hero-falar{display:inline-flex;align-items:center;gap:var(--e-2);min-height:48px;padding:0 var(--e-5);border-radius:var(--raio-botao);background:var(--superficie);border:1px solid var(--linha-forte);font:var(--tipo-botao);color:var(--texto);text-decoration:none;box-sizing:border-box;transition:border-color var(--dur-curta) var(--curva)}
+.hero-falar:hover{border-color:var(--texto)}
+.hero-seta{color:var(--texto-3)}
+.hero-nota{margin:var(--e-4) 0 0;max-width:72ch;font:var(--tipo-apoio);color:var(--texto-3);text-wrap:pretty}
+.hero-caminho{margin-top:var(--e-8);background:var(--superficie);border:1px solid var(--linha);border-radius:var(--raio-palco);box-shadow:var(--sombra-2);overflow:hidden}
+.hero-caminho-topo{display:flex;flex-wrap:wrap;gap:var(--e-3) var(--e-5);align-items:center;justify-content:space-between;padding:var(--e-4) var(--e-5);border-bottom:1px solid var(--linha)}
+.hero-caminho-titulo{font:var(--peso-destaque) var(--t-rotulo)/1.33 var(--f-mono);color:var(--texto-2)}
+.hero-vivo{display:flex;gap:var(--e-2) var(--e-4);font:var(--tipo-apoio);color:var(--texto-2);flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.hero-vivo>span{display:flex;align-items:center;gap:var(--e-2)}
+.hero-ponto{width:7px;height:7px;border-radius:50%}
+.hero-ponto-executando{background:var(--executando)}
+.hero-ponto-espera{background:var(--espera);box-shadow:0 0 0 3px color-mix(in srgb,var(--espera) 25%,transparent)}
+.hero-ponto-ok{background:var(--verificado)}
+.hero-movimento{display:inline-flex;align-items:center;min-height:var(--alvo);padding:0 var(--e-4);border:1px solid var(--linha-forte);border-radius:var(--raio-botao);background:var(--superficie);font:var(--peso-destaque) var(--t-apoio)/1 var(--f-texto);color:var(--texto);cursor:pointer;box-sizing:border-box;transition:border-color var(--dur-curta) var(--curva)}
+.hero-movimento:hover{border-color:var(--texto)}
+.hero-movimento[hidden]{display:none}
+.hero-canvas-caixa{padding:var(--e-4) var(--e-5) var(--e-5)}
+.hero-canvas-caixa canvas{display:block;width:100%;height:clamp(340px,36vw,440px)}
+@media (max-width:440px){.hero-caminho-topo,.hero-canvas-caixa{padding-left:var(--e-4);padding-right:var(--e-4)}}
+</style>

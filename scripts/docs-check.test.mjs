@@ -7,10 +7,10 @@ import { validate, hash, sourceHash, reviewArticles, inventory } from './check-d
 function fixture(run) {
  const root=mkdtempSync(resolve(tmpdir(),'docs-contract-'));
  const data=resolve(root,'src/data');mkdirSync(data,{recursive:true});
- const article={slug:'start',group:'start',sources:['docs/start.md'],translations:Object.fromEntries(['pt','en','es'].map(locale=>[locale,{title:locale,description:locale+' documentation',sections:[{id:'begin',title:locale,paragraphs:[locale+' content']}]}]))};
+ const article={slug:'start',group:'start',sources:['docs/start.md'],translations:Object.fromEntries(['pt','en'].map(locale=>[locale,{title:locale,description:locale+' documentation',sections:[{id:'begin',title:locale,paragraphs:[locale+' content']}]}]))};
  const sources=[{path:'docs/start.md',sha256:hash('source'),category:'docs',treatment:'article',targets:['start']}];
  const snapshot={schemaVersion:1,product:'orkmind',sources,inventoryHash:hash(JSON.stringify(sources)),reviews:{start:{}}};
- for(const locale of ['pt','en','es']) snapshot.reviews.start[locale]={sourceHash:sourceHash(article,snapshot),contentHash:hash(JSON.stringify(article.translations[locale])),reviewer:'fixture',date:'2026-09-28'};
+ for(const locale of ['pt','en']) snapshot.reviews.start[locale]={sourceHash:sourceHash(article,snapshot),contentHash:hash(JSON.stringify(article.translations[locale])),reviewer:'fixture',date:'2026-09-28'};
  const save=()=>{
   writeFileSync(resolve(data,'docs-catalog.ts'),'export default '+JSON.stringify({schemaVersion:1,modules:['docs-start.ts']})+';');
   writeFileSync(resolve(data,'docs-start.ts'),'export default '+JSON.stringify([article])+';');
@@ -19,7 +19,7 @@ function fixture(run) {
  save();try{run({root,article,snapshot,save});}finally{rmSync(root,{recursive:true,force:true});}
 }
 test('reviewed, translated content passes',()=>fixture(({root})=>assert.equal(validate(root).articles,1)));
-test('missing translation fails even schema validation',()=>fixture(({root,article,save})=>{delete article.translations.es;save();assert.throws(()=>validate(root,{schemaOnly:true}),/locale/);}));
+test('missing translation fails even schema validation',()=>fixture(({root,article,save})=>{delete article.translations.en;save();assert.throws(()=>validate(root,{schemaOnly:true}),/locale/);}));
 test('editing text invalidates editorial review',()=>fixture(({root,article,save})=>{article.translations.en.sections[0].paragraphs=['New unreviewed meaning'];save();assert.throws(()=>validate(root),/stale/);}));
 test('source revision invalidates all affected translations',()=>fixture(({root,snapshot,save})=>{snapshot.sources[0].sha256=hash('changed');snapshot.inventoryHash=hash(JSON.stringify(snapshot.sources));save();assert.throws(()=>validate(root),/stale/);}));
 test('snapshot corruption is detected',()=>fixture(({root,snapshot,save})=>{snapshot.sources[0].sha256='invalid';save();assert.throws(()=>validate(root),/integrity/);}));
@@ -44,7 +44,7 @@ function outputFixture(run){
 }
 function edit(dir,path,change){const file=resolve(dir,path);writeFileSync(file,change(readFileSync(file,'utf8')));}
 test('built output passes links, locale, content and public checks',()=>{
- assert.ok(checkLinks().checked>0);assert.equal(checkI18n().locales,3);assert.equal(checkPublic().findings,0);assert.ok(checkContent().accessibleDiagrams>0);
+ assert.ok(checkLinks().checked>0);assert.equal(checkI18n().locales,2);assert.equal(checkPublic().findings,0);assert.ok(checkContent().accessibleDiagrams>0);
 });
 test('missing internal destination fails',()=>outputFixture(dir=>{
  edit(dir,'index.html',s=>s.replace('</main>','<a href="'+B+'/missing-canary/">Broken</a></main>'));
@@ -63,7 +63,7 @@ test('wrong language fails',()=>outputFixture(dir=>{
  assert.throws(()=>checkI18n(dir),/Wrong html language/);
 }));
 test('missing selector fails',()=>outputFixture(dir=>{
- edit(dir,'es/index.html',s=>s.replace('data-language-selector','data-missing-selector'));
+ edit(dir,'en/index.html',s=>s.replace('data-language-selector','data-missing-selector'));
  assert.throws(()=>checkI18n(dir),/Missing language selector/);
 }));
 test('personal data canary is rejected without printing its value',()=>outputFixture(dir=>{

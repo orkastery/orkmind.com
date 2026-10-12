@@ -1,0 +1,11 @@
+---
+// /es/docs/<artigo>/ antiga: redireciona para o mesmo artigo em inglês (o espanhol saiu do site).
+import Redirecionamento from '../../../layouts/Redirecionamento.astro';
+import catalog from '../../../data/docs-catalog';
+export function getStaticPaths(){
+ const modules=import.meta.glob('../../../data/docs-*.ts',{eager:true});
+ return catalog.modules.flatMap(file=>modules['../../../data/'+file].default).map(article=>({params:{slug:article.slug}}));
+}
+const {slug}=Astro.params;
+---
+<Redirecionamento destino={'/docs/'+slug+'/'}/>

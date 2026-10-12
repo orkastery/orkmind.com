@@ -12,7 +12,7 @@ test('catalog declares local modules and a public source', () => {
 });
 test('monthly summary is explicit in each language', () => {
  const r = read('../src/data/roadmap.json');
- assert.deepEqual(Object.keys(r.summary).sort(), ['en','es','pt']);
- assert.equal(new Set(Object.values(r.summary)).size, 3);
+ assert.deepEqual(Object.keys(r.summary).sort(), ['en','pt']);
+ assert.equal(new Set(Object.values(r.summary)).size, 2);
  assert.ok(Date.parse(r.nextReview) > Date.parse(r.updatedAt));
 });

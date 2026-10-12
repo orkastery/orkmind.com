@@ -1,14 +1,17 @@
 ---
-import { locales, languageName, languageTag, localeFor, localize, ui } from '../data/i18n';
-const locale=localeFor(Astro.url.pathname), text=ui(locale);
+// Seletor de língua em pílula (Partitura): PT-BR em / e inglês em /en/, mono 12, a língua atual
+// em tinta, como o botão de tema do kit. Cada opção leva à mesma página na outra língua; o nome
+// acessível começa pelo rótulo visível ("PT, Português"), como pede o WCAG 2.5.3.
+import {locales,languageName,languageTag,localeFor,localize,moldura,ui} from '../data/i18n';
+const locale=localeFor(Astro.url.pathname),text=ui(locale),m=moldura(locale);
 ---
-<nav class="language-selector" aria-label={text.language} data-language-selector>
- {locales.map(l=><a href={localize(Astro.url.pathname,l)} hreflang={languageTag[l]} lang={languageTag[l]} aria-current={l===locale?'page':undefined}>{languageName[l]}</a>)}
+<nav class="linguas" aria-label={text.language} data-language-selector>
+ {locales.map(l=><a href={localize(Astro.url.pathname,l)} hreflang={languageTag[l]} lang={languageTag[l]} aria-current={l===locale?'page':undefined} title={languageName[l]}><span>{m.languageShort[l]}</span><span class="so-leitor">, {languageName[l]}</span></a>)}
 </nav>
 <style>
-.language-selector{display:flex;flex-wrap:wrap;gap:.25rem;align-items:center;font:500 .85rem/1.4 var(--f-texto,var(--fonte-texto));}
-.language-selector a{padding:.5rem .65rem;color:inherit;text-decoration:none;border:1px solid transparent;border-radius:6px;min-height:38px;}
-.language-selector a[aria-current]{border-color:currentColor;}
-.language-selector a:hover{text-decoration:underline;}
-.language-selector a:focus-visible{outline:2px solid currentColor;outline-offset:3px;}
+.linguas{display:flex;align-items:center;gap:2px;padding:2px;border:1px solid var(--linha);border-radius:var(--raio-botao);background:var(--superficie);font:var(--peso-destaque) 12px/1 var(--f-mono);letter-spacing:.04em;flex:none}
+/* Alvo de toque de 44 px (regra dura 5 do kit). */
+.linguas a{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0 var(--e-2);border-radius:10px;color:var(--texto-3);text-decoration:none}
+.linguas a[aria-current]{background:var(--acao);color:var(--sobre-acao)}
+.linguas a:not([aria-current]):hover{color:var(--texto)}
 </style>

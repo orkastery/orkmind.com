@@ -14,7 +14,10 @@ export function files(dir,excluir=[]){return readdirSync(dir,{withFileTypes:true
 export function pages(dist=distArg(),excluir=[]) {
  const list=files(dist,excluir).filter(f=>f.endsWith('.html')).map(file=>{
   const source=readFileSync(file,'utf8'),dom=parse(source),nodes=walk(dom),path='/'+relative(dist,file).replaceAll('\\','/').replace(/index\.html$/,'');
-  return {file,path,source,dom,nodes,ids:nodes.map(n=>attrs(n).id).filter(Boolean)};
+  // Página de redirecionamento (as URLs /es/ antigas): o destino do meta refresh, ou null.
+  const refresh=nodes.find(n=>n.tagName==='meta'&&(attrs(n)['http-equiv']||'').toLowerCase()==='refresh');
+  const redirecionamento=refresh?((attrs(refresh).content||'').match(/url=(.+)$/i)?.[1]?.trim()||''):null;
+  return {file,path,source,dom,nodes,ids:nodes.map(n=>attrs(n).id).filter(Boolean),redirecionamento};
  });
  if(!list.length)throw Error('No built HTML pages');return list;
 }

@@ -1,0 +1,42 @@
+---
+// 03 · Para quem (#contato): o cartão claro de quem constrói, com o comando que copia, e o cartão no
+// tema noite de times e empresas ("Um Company Brain governado"), com o contato por e-mail no botão
+// primário do kit, nunca no jade.
+import ComandoCopiavel from '../ds/ComandoCopiavel.astro';
+import TechnicalText from '../TechnicalText.astro';
+import {contato} from '../../data/i18n';
+const {t}=Astro.props;
+const a=t.audience;
+---
+<section id="contato" class="secao-padrao">
+ <div class="container">
+  <span id="contato-titulo" class="ancora-antiga" aria-hidden="true"></span>
+  <div class="rotulo">{a.eyebrow}</div>
+  <div class="publico">
+   <div class="publico-cartao holofote" data-holofote data-reveal>
+    <div class="publico-rotulo">{a.builders.label}</div>
+    <h2 class="publico-titulo">{a.builders.title}</h2>
+    <p class="publico-texto"><TechnicalText text={a.builders.text}/></p>
+    <ComandoCopiavel variante="cartao"/>
+   </div>
+   <div class="publico-cartao publico-escuro" data-tema="noite" data-reveal>
+    <div class="publico-rotulo">{a.teams.label}</div>
+    <h2 class="publico-titulo">{a.teams.title}</h2>
+    <p class="publico-texto"><TechnicalText text={a.teams.text}/></p>
+    <a class="publico-contato" href={'mailto:'+contato}>{a.teams.cta} <span aria-hidden="true">→</span></a>
+   </div>
+  </div>
+ </div>
+</section>
+<style>
+.publico{margin-top:var(--e-5);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:var(--e-4)}
+.publico-cartao{padding:clamp(var(--e-5),3.4vw,var(--e-7));border-radius:var(--raio-palco);background-color:var(--superficie);border:1px solid var(--linha);display:flex;flex-direction:column;align-items:flex-start;gap:var(--e-4)}
+.publico-escuro{border-color:transparent}
+.publico-rotulo{font:var(--tipo-rotulo);letter-spacing:var(--espaco-rotulo);text-transform:uppercase;color:var(--texto-3)}
+.publico-titulo{margin:0;font:var(--tipo-titulo-1);letter-spacing:var(--trk-titulo-1);text-wrap:balance}
+.publico-texto{margin:0;flex:1;font:var(--tipo-corpo);color:var(--texto-2);text-wrap:pretty}
+.publico-contato{display:inline-flex;align-items:center;gap:var(--e-2);min-height:var(--alvo);padding:0 var(--e-5);border-radius:var(--raio-botao);background:var(--acao);color:var(--sobre-acao);font:var(--tipo-botao);text-decoration:none;box-sizing:border-box;transition:background-color var(--dur-curta) var(--curva)}
+.publico-contato:hover{background:color-mix(in srgb,var(--acao) 86%,var(--chao))}
+/* Abaixo de 360 px o respiro do cartão cede para o comando caber inteiro numa linha. */
+@media (max-width:360px){.publico-cartao{padding:var(--e-5) var(--e-4)}}
+</style>

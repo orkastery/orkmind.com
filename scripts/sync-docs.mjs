@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import { root, read, hash, articles, inventory, reviewArticles } from './check-docs.mjs';
 const args=process.argv.slice(2), arg=k=>args.includes(k)?args[args.indexOf(k)+1]:undefined;
 const source=arg('--source');
-if(!source) throw Error('Usage: node scripts/sync-docs.mjs --source LOCAL_REPOSITORY [--orkastery-source LOCAL_ORKASTERY] [--review pt,en,es --reviewer NAME --articles SLUG,SLUG]');
+if(!source) throw Error('Usage: node scripts/sync-docs.mjs --source LOCAL_REPOSITORY [--orkastery-source LOCAL_ORKASTERY] [--review pt,en --reviewer NAME --articles SLUG,SLUG]');
 const catalog=read(resolve(root,'src/data/docs-catalog.ts')), product=catalog.repository.split('/').at(-1);
 const file=resolve(root,'src/data/docs-sources.json'), previous=existsSync(file)?read(file):{reviews:{}};
 const all=articles(), sources=inventory(resolve(source),product,catalog.externalSources||[],arg('--orkastery-source')).map(s=>{

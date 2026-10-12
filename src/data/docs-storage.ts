@@ -81,43 +81,6 @@ export default [
             "code": "orkmind store --help"
           }
         ]
-      },
-      "es": {
-        "title": "Elija y opere un backend",
-        "description": "Compare durabilidad, búsqueda, idempotencia y límites de migración.",
-        "sections": [
-          {
-            "id": "pgvector",
-            "title": "`pgvector`: referencia para producción",
-            "paragraphs": [
-              "El backend predeterminado usa PostgreSQL con pgvector. Ofrece persistencia duradera, búsqueda textual con ranking, índice único de contenido, filtrado ACL y ordenación en la base. Compruebe las capacidades de la instalación antes de investigar diferencias de resultados."
-            ],
-            "code": "orkmind store info"
-          },
-          {
-            "id": "memory",
-            "title": "`memory`: pruebas y desarrollo",
-            "paragraphs": [
-              "`memory` no necesita un servicio externo, pero pierde los datos al terminar el proceso. La búsqueda textual usa coincidencia de tokens sin ranking. La unicidad se limita al proceso; este backend no sustituye el almacenamiento de producción."
-            ]
-          },
-          {
-            "id": "qdrant",
-            "title": "`qdrant`: solo laboratorio",
-            "paragraphs": [
-              "La guía revisada marca `qdrant` como experimental y no habilitado para producción. Registra cuestiones pendientes de identidad de perfiles y eliminación por TTL. No utilice este backend para datos de producción basándose en esta documentación.",
-              "La idempotencia es best-effort: las escrituras simultáneas pueden duplicar contenido porque no existe un índice único equivalente. La búsqueda textual no tiene ranking y la capa gobernada puede advertir cuando se satura la ventana de candidatos."
-            ]
-          },
-          {
-            "id": "migracao",
-            "title": "Migre con pérdidas declaradas",
-            "paragraphs": [
-              "La exportación no elimina el origen. El formato transporta entradas y embeddings; las versiones antiguas e instantáneas incluidas en el dump no se reinsertan en el destino con el contrato actual. La pérdida exige aceptación explícita. Compruebe recuentos, capacidades y restauración antes de cambiar el backend del runtime."
-            ],
-            "code": "orkmind store --help"
-          }
-        ]
       }
     }
   }

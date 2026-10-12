@@ -1,0 +1,30 @@
+---
+// Página estática de redirecionamento de uma URL antiga em espanhol (/es/...) para a mesma página em
+// inglês. O espanhol saiu do site por decisão do dono; o link antigo continua chegando ao lugar certo:
+// o script troca a página mantendo o fragmento (#âncora), e o meta refresh cobre quem está sem
+// JavaScript. Fora do índice dos buscadores e com o canonical na página em inglês.
+// scripts/check-redirecionamentos.mjs confere cada uma destas páginas no build.
+import {localize} from '../data/i18n';
+import {releaseDaBase} from '../lib/previa.mjs';
+interface Props { destino: string; }
+const {destino}=Astro.props;
+const alvo=localize(destino,'en');
+const origin='https://orkmind.com';
+const release=releaseDaBase(import.meta.env.BASE_URL);
+---
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <meta name="robots" content={release?'noindex, nofollow':'noindex'} />
+ <meta http-equiv="refresh" content={'0; url='+alvo} data-redirecionamento={alvo} />
+ <link rel="canonical" href={origin+alvo} />
+ <title>OrkMind</title>
+ <meta name="description" content="This page is now available in English." />
+ <script is:inline define:vars={{alvo}}>location.replace(alvo+location.hash);</script>
+</head>
+<body>
+ <main><h1>OrkMind</h1><p>This page is now available in English: <a href={alvo}>open the English version</a>.</p></main>
+</body>
+</html>

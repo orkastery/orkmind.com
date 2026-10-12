@@ -1,0 +1,68 @@
+---
+// Cabeçalho da Partitura ("Header do site", Partitura Componentes): assinatura, navegação, seletor
+// de língua e o comando que copia. Fixo no topo, translúcido. Na home as âncoras são da própria
+// página; nas outras, levam à home na língua. Abaixo de 768 px vira menu (botão com aria-expanded);
+// sem JavaScript, o painel fica aberto embaixo da linha do cabeçalho.
+import LanguageSelector from './LanguageSelector.astro';
+import ComandoCopiavel from './ds/ComandoCopiavel.astro';
+import {localeFor,localize,moldura,unlocalize,withBase,destinoExterno} from '../data/i18n';
+const locale=localeFor(Astro.url.pathname),m=moldura(locale);
+const naHome=unlocalize(Astro.url.pathname)==='/';
+const home=localize('/',locale);
+const ancora=(hash:string)=>naHome?hash:home+hash;
+const nasDocs=unlocalize(Astro.url.pathname).startsWith('/docs/');
+const navegacao=locale==='en'?'Main navigation':'Navegação principal';
+---
+<header class="cabecalho" data-cabecalho>
+ <div class="cabecalho-linha">
+  <a class="cabecalho-marca" href={naHome?'#topo':home}><img src={withBase('/marca/assinatura-fundo-claro.svg')} alt="OrkMind" width="127" height="26"/></a>
+  <button type="button" class="cabecalho-menu" data-menu aria-expanded="false" aria-controls="cabecalho-painel" data-abrir={m.menuOpen} data-fechar={m.menuClose}>
+   <span class="so-leitor" data-menu-rotulo>{m.menuOpen}</span><span class="cabecalho-menu-icone" aria-hidden="true"></span>
+  </button>
+  <div class="cabecalho-painel" id="cabecalho-painel" data-painel>
+   <nav class="cabecalho-nav" aria-label={navegacao}>
+    {m.nav.map(([hash,label])=><a href={ancora(hash)}>{label}</a>)}
+    <a href={localize('/docs/',locale)} aria-current={nasDocs?'page':undefined}>{m.docs}</a>
+    <a href={destinoExterno('github',locale)}>{m.github} <span aria-hidden="true">↗</span></a>
+   </nav>
+   <div class="cabecalho-acoes">
+    <LanguageSelector/>
+    <ComandoCopiavel variante="cabecalho"/>
+   </div>
+  </div>
+ </div>
+</header>
+<style>
+.cabecalho{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--chao) 86%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(14px);backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--linha)}
+.cabecalho-linha{max-width:var(--largura);margin:0 auto;padding:0 var(--calha);min-height:64px;display:flex;align-items:center;gap:var(--e-5)}
+.cabecalho-marca{display:flex;align-items:center;flex:none;min-height:44px}
+.cabecalho-marca img{height:26px;width:auto;display:block}
+.cabecalho-painel{flex:1;display:flex;align-items:center;gap:var(--e-5);min-width:0}
+.cabecalho-nav{flex:1;display:flex;justify-content:center;gap:var(--e-5);font:var(--peso-destaque) 15px/1 var(--f-texto);white-space:nowrap}
+.cabecalho-nav a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;color:var(--texto-2);text-decoration:none;border-radius:var(--raio-chip)}
+.cabecalho-nav a:hover,.cabecalho-nav a[aria-current]{color:var(--texto)}
+.cabecalho-acoes{display:flex;align-items:center;gap:var(--e-3);flex:none}
+.cabecalho-menu{display:none;margin-left:auto;width:44px;height:44px;border:1px solid var(--linha-forte);border-radius:var(--raio-botao);background:var(--superficie);cursor:pointer;align-items:center;justify-content:center}
+.cabecalho-menu-icone,.cabecalho-menu-icone::before,.cabecalho-menu-icone::after{display:block;width:16px;height:1.5px;background:var(--texto);border-radius:1px;position:relative}
+.cabecalho-menu-icone::before,.cabecalho-menu-icone::after{content:'';position:absolute;left:0}
+.cabecalho-menu-icone::before{top:-5px}
+.cabecalho-menu-icone::after{top:5px}
+.cabecalho-menu[aria-expanded="true"] .cabecalho-menu-icone{background:transparent}
+.cabecalho-menu[aria-expanded="true"] .cabecalho-menu-icone::before{top:0;transform:rotate(45deg)}
+.cabecalho-menu[aria-expanded="true"] .cabecalho-menu-icone::after{top:0;transform:rotate(-45deg)}
+/* Acima de 1024 px cabe tudo numa linha; entre 768 e 1024 o comando do cabeçalho sai (ele se
+   repete logo abaixo, no hero). Abaixo de 768 px vira menu, como no kit. */
+@media (max-width:1023px){.cabecalho-acoes :global(.comando-cabecalho){display:none}}
+@media (max-width:767px){
+ .cabecalho-linha{flex-wrap:wrap;gap:0 var(--e-3)}
+ .cabecalho-menu{display:inline-flex}
+ /* O painel aberto rola dentro de si quando passa da janela (janela baixa, zoom): o fim dele nunca
+    fica fora de alcance embaixo do cabeçalho fixo. */
+ .cabecalho-painel{flex-basis:100%;flex-direction:column;align-items:stretch;gap:var(--e-3);padding:4px 4px var(--e-4);max-height:calc(100vh - var(--altura-cabecalho));max-height:calc(100dvh - var(--altura-cabecalho));overflow-y:auto;overscroll-behavior:contain;box-sizing:border-box}
+ .cabecalho-nav{flex-direction:column;justify-content:flex-start;gap:0}
+ .cabecalho-nav a{justify-content:flex-start;border-top:1px solid var(--linha);padding:0 var(--e-1)}
+ .cabecalho-acoes{flex-wrap:wrap}
+ .cabecalho-acoes :global(.comando-cabecalho){display:inline-flex}
+ :global(.js) .cabecalho-painel[hidden]{display:none}
+}
+</style>

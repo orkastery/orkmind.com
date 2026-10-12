@@ -1,0 +1,14 @@
+---
+// Separador de seção da Partitura: linha que se dissolve nas pontas e o ponto do acento (7 px) no
+// centro. No máximo um por dobra de tela. fundo: a cor do chão em volta do ponto (chao ou superficie).
+interface Props { fundo?: 'chao'|'superficie'; }
+const {fundo='chao'}=Astro.props;
+---
+<div aria-hidden="true" class:list={['separador',fundo==='superficie'&&'separador-superficie']}><div class="container"><div class="separador-fio"><span></span></div></div></div>
+<style>
+.separador{background:var(--chao)}
+.separador-superficie{background:var(--superficie)}
+.separador-fio{position:relative;height:1px;background:linear-gradient(to right,transparent,var(--linha-forte) 12%,var(--linha-forte) 88%,transparent)}
+.separador-fio span{position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--espera);box-shadow:0 0 0 5px var(--chao)}
+.separador-superficie .separador-fio span{box-shadow:0 0 0 5px var(--superficie)}
+</style>

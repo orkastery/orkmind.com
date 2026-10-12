@@ -1,7 +1,0 @@
----
-import {externos,type Destino} from '../data/externos';
-import {localeFor,ui} from '../data/i18n';
-const {destino,selo=true,...rest}=Astro.props;
-const target=externos[destino as Destino],text=ui(localeFor(Astro.url.pathname));
----
-{target.aberto?<a href={target.url} rel="noopener" {...rest}><slot/></a>:<span {...rest}><slot/>{selo&&<small> · {text.soon}</small>}</span>}

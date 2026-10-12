@@ -49,27 +49,6 @@ export default [
             ]
           }
         ]
-      },
-      "es": {
-        "title": "Recuperación de contexto relevante",
-        "description": "Combine filtros deterministas, prioridad y búsqueda semántica opcional.",
-        "sections": [
-          {
-            "id": "tags",
-            "title": "Coincidencia exacta",
-            "paragraphs": [
-              "Las consultas por etiquetas usan contención exacta. Si falta una regla, compruebe etiquetas, alcance, ACL, caducidad y backend activo antes de atribuir el resultado al modelo. La detección de contexto sugiere etiquetas; no sustituye las reglas de acceso."
-            ],
-            "code": "orkmind search --tags '{\"skill\":[\"testing\"]}'\norkmind detect --text \"review the tests\""
-          },
-          {
-            "id": "semantica",
-            "title": "Semántica y presupuesto",
-            "paragraphs": [
-              "Texto y vectores pueden combinarse mediante RRF cuando están configurados. Esto amplía el descubrimiento sin sustituir la recuperación determinista de reglas. El presupuesto prioriza entradas críticas y obligatorias; la saturación y degradación deben aparecer en la respuesta o el diagnóstico."
-            ]
-          }
-        ]
       }
     }
   },
@@ -121,27 +100,6 @@ export default [
             "code": "orkmind federation --help"
           }
         ]
-      },
-      "es": {
-        "title": "Memoria federada por proyecto",
-        "description": "Consulte fuentes autorizadas conservando aislamiento y procedencia.",
-        "sections": [
-          {
-            "id": "identidade",
-            "title": "Identidad y dos capas de acceso",
-            "paragraphs": [
-              "La federación es recall de solo lectura entre memorias separadas por proyecto. El perfil autoriza las fuentes; `GovernedStore` vuelve a aplicar la ACL de cada entrada. `system_owner`, `builder` y `agent` tienen alcances distintos. Los perfiles ausentes o malformados se deniegan."
-            ]
-          },
-          {
-            "id": "resultado",
-            "title": "Resultados con procedencia y lagunas",
-            "paragraphs": [
-              "Cada resultado conserva `source`, `project` y `producer`. El contrato `orkmind.federated-recall/v1` declara `unavailable_sources` sin eliminar resultados sanos. El manifiesto guarda nombres de variables; no copie credenciales ni identidades de ejemplos a producción."
-            ],
-            "code": "orkmind federation --help"
-          }
-        ]
       }
     }
   },
@@ -174,19 +132,6 @@ export default [
             "title": "September 2026 summary",
             "paragraphs": [
               "Work tracks integrations, governed memory and documentation. Consult the repository for proposals and actual state; plans do not mean a capability is already available."
-            ]
-          }
-        ]
-      },
-      "es": {
-        "title": "Dirección del producto",
-        "description": "Resumen mensual y seguimiento en el repositorio.",
-        "sections": [
-          {
-            "id": "resumo",
-            "title": "Resumen de septiembre de 2026",
-            "paragraphs": [
-              "La evolución abarca integraciones, memoria gobernada y documentación. Consulte el repositorio para seguir propuestas y estado real; los planes no significan que una capacidad ya esté disponible."
             ]
           }
         ]
