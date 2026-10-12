@@ -21,7 +21,7 @@ const aliases=Astro.props.aliases||{};
  <div class="docs-reading">
  {article?<DocsArticle {article} {articles} {locale}><slot /></DocsArticle>:<>
  <header><p class="docs-eyebrow">{text.docs}</p><h1>{text.indexTitle}</h1><p class="docs-lead">{text.indexDescription}</p></header>
- {[...new Set(articles.map(a=>a.group))].map(group=><section class="docs-section"><h2>{text[group]}</h2><div class="docs-cards">{articles.filter(a=>a.group===group).map(a=><a class="docs-card" href={localize('/docs/'+a.slug+'/',locale)}><h3><TechnicalText text={a.translations[locale].title}/></h3><p><TechnicalText text={a.translations[locale].description}/></p><span>{text.read} →</span></a>)}</div></section>)}
+ {[...new Set(articles.map(a=>a.group))].map(group=><section class="docs-section docs-grupo" id={group}><h2>{text[group]}</h2><div class="docs-cards">{articles.filter(a=>a.group===group).map(a=><a class="docs-card" href={localize('/docs/'+a.slug+'/',locale)}><h3><TechnicalText text={a.translations[locale].title}/></h3><p><TechnicalText text={a.translations[locale].description}/></p><span>{text.read} →</span></a>)}</div></section>)}
  </>}
  {Object.keys(aliases).length>0&&<aside class="docs-legacy"><h2>{text.legacy}</h2><ul>{Object.entries(aliases).map(([id,target])=>{const a=articles.find(a=>a.slug===target);return <li id={id}><a href={localize('/docs/'+target+'/',locale)}><TechnicalText text={a.translations[locale].title}/></a></li>})}</ul></aside>}
  </div>

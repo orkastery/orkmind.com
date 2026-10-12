@@ -16,14 +16,18 @@ const height=d.nodes.length*112-28;
  <figcaption><strong><TechnicalText text={d.title+'.'}/></strong> <TechnicalText text={d.description}/></figcaption>
 </figure>
 <style>
-.docs-diagram{margin:2rem 0;padding:1.25rem;background:var(--doc-panel,var(--painel,var(--fundo-3)));border:1px solid var(--linha-forte);border-radius:12px;}
-svg{width:100%;max-width:540px;display:block;margin:auto;color:var(--doc-text,var(--tinta,var(--texto)));}
-rect{fill:transparent;stroke:currentColor;stroke-width:1.2;}
-text{fill:currentColor;font:24px var(--f-texto,var(--fonte-texto));}
-.edge-label{font-size:21px;}
+/* Diagrama das docs na Partitura: cartão em papel, nós em névoa clara, texto em Hanken e mono, o
+   conector em linha neutra (o diagrama não tem estado, então nenhuma cor de estado). */
+.docs-diagram{margin:var(--e-6) 0;padding:var(--e-5);background:var(--superficie);border:1px solid var(--linha);border-radius:var(--raio-cartao)}
+svg{width:100%;max-width:540px;display:block;margin:auto;color:var(--texto)}
+rect{fill:color-mix(in srgb,var(--superficie-2) 60%,var(--superficie));stroke:color-mix(in srgb,var(--texto) 18%,transparent);stroke-width:1.2}
+text{fill:currentColor;font:500 23px var(--f-texto)}
+.node-detail{fill:var(--texto-3);font:400 19px var(--f-mono)}
+.edge-label{fill:var(--texto-3);font:400 19px var(--f-mono)}
 /* Código no SVG: o renderizador marca o trecho como tspan.code, em fonte monoespaçada. */
-:global(svg tspan.code){font-family:var(--f-mono,var(--fonte-mono));}
-.connector{fill:none;stroke:currentColor;stroke-width:1.5;}
-figcaption{font-size:.9rem;line-height:1.65;margin-top:1rem;}
-@media(max-width:550px){.docs-diagram{padding:.75rem;}text,.edge-label{font-size:24px;}}
+:global(svg tspan.code){font-family:var(--f-mono)}
+.connector{fill:none;stroke:color-mix(in srgb,var(--texto-3) 60%,var(--linha));stroke-width:1.5}
+figcaption{margin-top:var(--e-3);font:var(--tipo-apoio);color:var(--texto-3)}
+figcaption strong{color:var(--texto);font-weight:var(--peso-destaque)}
+@media(max-width:550px){.docs-diagram{padding:var(--e-3)}}
 </style>
