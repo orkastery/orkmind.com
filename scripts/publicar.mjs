@@ -249,7 +249,10 @@ export function publicar({repo=root,saida=null,maximo=PREVIAS_MAXIMO,cache=null,
 export function conferirTagDoDisparo(plano,tag,maximo){
  if(!tag)return;
  if(tag.startsWith('producao-')&&tag!==plano.raiz.tag)throw Error('A tag '+tag+' não vira a raiz: a raiz é a maior tag producao-AAAAMMDD-HHMM pelo nome, hoje '+plano.raiz.tag+(TAG_DE_PRODUCAO.test(tag)?'':', e esta tag está fora do padrão')+'. Nada foi publicado.');
- if(tag.startsWith(PREFIXO_DA_TAG_DE_PREVIA)&&!plano.previas.some(p=>p.tag===tag))throw Error('A prévia '+tag+' fica fora do teto de '+maximo+' prévias pela ordem de versão. Apague uma prévia antiga ou suba PREVIAS_MAXIMO. Nada foi publicado.');
+ if(tag.startsWith(PREFIXO_DA_TAG_DE_PREVIA)&&!plano.previas.some(p=>p.tag===tag)){
+  if(!plano.foraDoTeto.includes(tag))throw Error('A tag '+tag+' não existe neste clone. Nada foi publicado.');
+  throw Error('A prévia '+tag+' fica fora do teto de '+maximo+' prévias pela ordem de versão. Apague uma prévia antiga ou suba PREVIAS_MAXIMO. Nada foi publicado.');
+ }
 }
 
 function resumoEmMarkdown(resultado){

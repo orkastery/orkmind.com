@@ -19,7 +19,9 @@ export function checkPrevia(dist=distArg(),base=siteBase(),{excluir=[],robots=tr
   const metas=p.nodes.filter(n=>n.tagName==='meta'&&(attrs(n).name||'').toLowerCase()==='robots');
   const faixas=p.nodes.filter(n=>'data-previa' in attrs(n));
   if(release){
-   if(metas.length!==1||attrs(metas[0]).content!=='noindex, nofollow')throw Error('Página da prévia sem noindex, nofollow: '+p.path);
+   // Pelos tokens, não pelo texto exato: a conferência da árvore também lê prévias compiladas por commits antigos.
+   const diretivas=metas.length===1?(attrs(metas[0]).content||'').toLowerCase().split(',').map(d=>d.trim()):[];
+   if(!diretivas.includes('noindex')||!diretivas.includes('nofollow'))throw Error('Página da prévia sem noindex, nofollow: '+p.path);
    const faixa=faixas[0],rotulo=faixa?content(faixa).replace(/\s+/g,' '):'';
    if(faixas.length!==1||attrs(faixa)['data-previa']!==release||attrs(faixa)['data-sha']!==versao.sha||(conferirTexto&&(!rotulo.includes(textoDaFaixa(release))||!rotulo.includes(versao.sha.slice(0,7)))))throw Error('Página da prévia sem a faixa da release com o SHA: '+p.path);
   }else{

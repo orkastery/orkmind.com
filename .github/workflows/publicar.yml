@@ -20,9 +20,12 @@ permissions:
 
 concurrency:
   # Só a execução que publica entra na fila do Pages: o apagamento de uma branch ou de outra tag cai
-  # num grupo próprio e não pode tomar o lugar (nem cancelar) de uma publicação pendente.
+  # num grupo próprio e não pode tomar o lugar (nem cancelar) de uma publicação pendente. queue: max mantém na
+  # fila todas as execuções pendentes (o padrão guarda uma só e cancela a anterior), então uma execução que
+  # reprova pela própria tag não descarta a publicação válida que esperava atrás dela.
   group: ${{ (github.event_name != 'delete' || (github.event.ref_type == 'tag' && startsWith(github.event.ref, 'validacao-'))) && 'pages' || format('pages-ignorado-{0}', github.run_id) }}
   cancel-in-progress: false
+  queue: max
 
 jobs:
   compilar:

@@ -28,7 +28,9 @@ function motor({ maximo, ensaio = false, repositorio = repo, extras = [] } = {})
   if (ensaio) args.push('--ensaio'); else args.push('--saida', saida);
   if (maximo !== undefined) args.push('--maximo', String(maximo));
   args.push(...extras);
-  const { SITE_BASE, GITHUB_STEP_SUMMARY, ...env } = process.env;
+  // Sem a configuração git de quem roda (versionsort.suffix global mudaria a ordem das prévias).
+  const { SITE_BASE, GITHUB_STEP_SUMMARY, ...herdado } = process.env;
+  const env = { ...herdado, GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOSYSTEM: '1' };
   const r = executar(process.execPath, args, { cwd: root, env });
   for (const linha of (r.saida + r.erros).split('\n')) if (/^(Raiz|Prévia|Fora do teto|Tags producao|build|Publicação|Nenhuma|Tag de prévia|Commit de prévia|A pasta)/.test(linha)) console.log('# rodada ' + rodada + ': ' + linha);
   return { code: r.status, saida, resumo: existsSync(resumo) ? JSON.parse(readFileSync(resumo, 'utf8')) : null, texto: r.saida + r.erros };
@@ -167,6 +169,9 @@ test('a tag do disparo precisa entrar na publicação', { skip: pular }, () => {
   assert.equal(foraDoTeto.code, 1);
   assert.match(foraDoTeto.texto, /A prévia validacao-9.9.2 fica fora do teto de 0/);
   semFalha(motor({ ensaio: true, extras: ['--tag-do-disparo', 'validacao-9.9.2'] }));
+  const inexistente = motor({ ensaio: true, extras: ['--tag-do-disparo', 'validacao-0.0.1'] });
+  assert.equal(inexistente.code, 1);
+  assert.match(inexistente.texto, /A tag validacao-0.0.1 não existe neste clone/);
 });
 
 test('o cache não reaproveita build que reprovou no postbuild', { skip: pular }, () => {
@@ -191,8 +196,13 @@ test('o cache não reaproveita build que reprovou no postbuild', { skip: pular }
 
 test('o workflow publica a árvore composta só por tag, com permissões por job', () => {
   const texto = readFileSync(join(root, '.github/workflows/publicar.yml'), 'utf8');
+  // A mesma condição decide quem entra na fila do Pages e quem compila; o passo Compor só passa a tag no push de tag.
+  const condicao = "github.event_name != 'delete' || (github.event.ref_type == 'tag' && startsWith(github.event.ref, 'validacao-'))";
+  assert.ok(texto.includes('\n  group: $' + '{{ (' + condicao + ") && 'pages' || format('pages-ignorado-{0}', github.run_id) }}\n"), 'grupo de concurrency');
+  assert.ok(texto.includes('\n    if: ' + condicao + '\n'), 'if do job compilar');
+  assert.ok(texto.includes('\n          if [ "$GITHUB_EVENT_NAME" = push ] && [ "$GITHUB_REF_TYPE" = tag ]; then\n'), 'if do passo Compor');
   for (const trecho of ["tags: ['producao-*', 'validacao-*']", '\n  delete:\n', '\n  workflow_dispatch:\n',
-    "startsWith(github.event.ref, 'validacao-')", "format('pages-ignorado-{0}', github.run_id)", 'cancel-in-progress: false',
+    "startsWith(github.event.ref, 'validacao-')", "format('pages-ignorado-{0}', github.run_id)", 'cancel-in-progress: false', '\n  queue: max\n',
     'persist-credentials: false', 'timeout-minutes: 30', '\npermissions:\n  contents: read\n',
     '    permissions:\n      pages: write\n      id-token: write\n', '--tag-do-disparo "$GITHUB_REF_NAME"',
     'node scripts/publicar.mjs --saida publicacao', 'conferir publicacao/versao.json', 'path: publicacao']) {

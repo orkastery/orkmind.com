@@ -145,6 +145,7 @@ test('cada desvio da árvore composta reprova a conferência', { skip: pular }, 
   const casos = [
     ['página da prévia sem noindex', d => trocar(join(previaEm(d), 'docs/index.html'), s => s.replace('<meta name="robots" content="noindex, nofollow">', '')), /sem noindex/],
     ['página da prévia sem a faixa', d => trocar(join(previaEm(d), 'en/index.html'), s => s.replace('data-previa=', 'data-outra=')), /sem a faixa/],
+    ['faixa da prévia com o SHA de outro commit', d => trocar(join(previaEm(d), 'es/index.html'), s => s.replace('data-sha="' + arvore.sha + '"', 'data-sha="' + 'c'.repeat(40) + '"')), /sem a faixa/],
     ['link da prévia para a raiz da produção', d => trocar(join(previaEm(d), 'index.html'), s => s.replace('</main>', '<a href="/docs/">raiz</a></main>')), /Fora da prévia/],
     ['link da prévia para a produção pela URL absoluta', d => trocar(join(previaEm(d), 'index.html'), s => s.replace('</main>', '<a href="https://' + catalogo.repository.split('/').at(-1) + '.com/docs/">raiz</a></main>')), /Fora da prévia/],
     ['link para o outro site com caminho de prévia', d => trocar(join(previaEm(d), 'index.html'), s => s.replace('</main>', '<a href="https://' + OUTRO_SITE + PREFIXO_DA_PREVIA + RELEASE + '/">outro</a></main>')), /outro site/],

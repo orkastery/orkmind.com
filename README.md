@@ -170,9 +170,10 @@ git push origin --delete validacao-<release>
 
 O apagamento dispara a publicação de novo, já sem a prévia (apagar mais de três tags
 de uma vez não dispara; nesse caso, rode à mão). Apague também a tag local
-(`git tag -d validacao-<release>`), senão um envio de todas as tags a traz de volta. Para recompor à mão, rode o workflow
-"Publicar" pela aba Actions, na `main`. Há também um teto: ficam no ar as 5 prévias mais
-novas pela ordem de versão (`git tag --sort=-v:refname`), ajustável por `PREVIAS_MAXIMO`
+(`git tag -d validacao-<release>`), senão um envio de todas as tags a traz de volta.
+Para recompor à mão, rode o workflow "Publicar" pela aba Actions, na `main`. Há também
+um teto: ficam no ar as 5 prévias mais novas pela ordem de versão
+(`git -c versionsort.suffix=- tag --sort=-v:refname`), ajustável por `PREVIAS_MAXIMO`
 no workflow.
 
 Só o dono promove para a raiz, criando `producao-AAAAMMDD-HHMM` no commit que validou
@@ -180,7 +181,9 @@ pela prévia. Uma prévia verde não é aprovação. A raiz é sempre a maior ta
 `producao-AAAAMMDD-HHMM` pelo nome; tag `producao-*` fora desse padrão é ignorada. Os nomes
 seguem o mesmo fuso das tags que já existem. No push de uma tag `producao-*` que não vira a
 raiz (nome menor que o da maior, ou fora do padrão), a execução reprova e nada muda no ar;
-o mesmo vale para uma tag `validacao-*` que fique fora do teto. Para reverter, crie uma tag
+o mesmo vale para uma tag `validacao-*` que fique fora do teto. As execuções esperam na
+fila do Pages, uma depois da outra, sem que uma descarte a outra; depois de corrigir uma
+tag recusada, rode o workflow à mão para recompor. Para reverter, crie uma tag
 `producao-*` nova no commit anterior. Apagar uma tag `producao-*` não republica sozinho: a
 raiz só muda na publicação seguinte, para a maior tag que restar. Promover ou reverter para
 um commit anterior a esta regra usa o workflow antigo daquele commit, que publica só a
@@ -211,5 +214,6 @@ ensaia o motor (`scripts/publicar.mjs`) num repositório Git temporário com tag
 verdade. As duas últimas usam as tags deste clone: `--ensaio` mostra o que seria
 publicado, e `--saida` monta e confere a árvore; o `npm ci` dos commits cujo
 `package-lock.json` difere do clone precisa de rede. Para iterar mais rápido,
-`SITE_TESTE_PREVIA=0 npm run build` pula o `test:previa`. O `check:visual` continua
-servindo só a build de produção; a prévia se confere pelo `test:previa` e abrindo a URL dela.
+`SITE_TESTE_PREVIA=0 npm run build` pula a árvore composta do `test:previa` (os testes da
+regra continuam). O `check:visual` continua servindo só a build de produção; a prévia se
+confere pelo `test:previa` e abrindo a URL dela.
