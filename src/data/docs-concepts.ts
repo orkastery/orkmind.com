@@ -62,33 +62,6 @@ export default [
             ]
           }
         ]
-      },
-      "es": {
-        "title": "Arquitectura de la memoria",
-        "description": "Separe contexto, gobernanza y persistencia para entender las garantías.",
-        "sections": [
-          {
-            "id": "fluxo",
-            "title": "Del contexto al almacenamiento",
-            "paragraphs": [
-              "La integración recibe el contexto. `SemanticLayer` valida la ontología, detecta etiquetas y organiza el presupuesto. `GovernedStore` aplica protección, acceso y ordenación. El backend persiste y consulta datos según sus capacidades declaradas."
-            ]
-          },
-          {
-            "id": "busca",
-            "title": "Etiquetas primero; semántica complementaria",
-            "paragraphs": [
-              "La búsqueda por etiquetas usa coincidencia exacta. La búsqueda semántica combina texto y vectores cuando está configurada, sin sustituir la recuperación de reglas. ACL, caducidad y riesgo de inyección filtran lo que puede entrar en el contexto."
-            ]
-          },
-          {
-            "id": "fronteiras",
-            "title": "Garantías con límites",
-            "paragraphs": [
-              "Las reglas llegan al prompt mediante integraciones que lo construyen. MCP y CLI ofrecen consultas bajo demanda. El backend `memory` es volátil y `qdrant` es experimental; la capa gobernada no elimina estas limitaciones del almacenamiento."
-            ]
-          }
-        ]
       }
     }
   },
@@ -225,71 +198,6 @@ export default [
             "title": "Priority, scope and source",
             "paragraphs": [
               "Priorities are `critical`, `high`, `medium` and `low`. Scopes are `global`, `project` and `session`. Source may be `human`, `agent` or `system`, but writing that label does not replace authentication. Portfolio links `product` → `project` → `initiative`; the hierarchy does not expand ACLs."
-            ]
-          }
-        ]
-      },
-      "es": {
-        "title": "Colecciones, etiquetas y portafolio",
-        "description": "Elija tipos y dimensiones sin confundir organización con permiso.",
-        "sections": [
-          {
-            "id": "colecoes",
-            "title": "Colecciones tipadas",
-            "paragraphs": [
-              "La colección describe la finalidad de la entrada. Las 23 colecciones siguientes proceden de la referencia de ontología; una colección de planificación no ejecuta el plan y una definición de DAG no promete ejecución automática."
-            ],
-            "items": [
-              "`rule`: Reglas",
-              "`instruction`: Procedimientos",
-              "`fact`: Hechos verificables",
-              "`learning`: Lecciones",
-              "`preference`: Preferencias",
-              "`decision`: Decisiones y contexto",
-              "`content`: Contenido de referencia",
-              "`agenda`: Agenda",
-              "`contacts`: Contactos",
-              "`handoff`: Transferencia de contexto",
-              "`roadmap`: Planificación",
-              "`files`: Referencias de archivos",
-              "`docs`: Referencias de documentación",
-              "`dags`: Definiciones de DAG",
-              "`tools`: Conocimiento de herramientas",
-              "`users`: Identidades y perfiles",
-              "`session`: Estado de sesión; requiere `session_id`",
-              "`artifact`: Artefactos; requiere `artifact_type`",
-              "`compliance`: Revisiones; requiere `compliance_type`",
-              "`semantic_log`: Paquetes de log; requiere `package_id`",
-              "`product`: Identidad de producto",
-              "`project`: Demanda de producto",
-              "`initiative`: Entrega delimitada"
-            ]
-          },
-          {
-            "id": "tags",
-            "title": "Dimensiones de etiquetas",
-            "paragraphs": [
-              "Las 11 dimensiones organizan contexto y acceso. `audience` controla la lectura; `editors` controla los cambios. `person` describe relevancia, no concede acceso. `project` identifica el workspace físico, mientras `prod`, `proj` e `init` organizan el portafolio."
-            ],
-            "items": [
-              "`skill`: Habilidad",
-              "`agent`: Agente",
-              "`domain`: Dominio técnico",
-              "`project`: Workspace físico",
-              "`situation`: Situación",
-              "`person`: Persona mencionada",
-              "`audience`: Quién puede leer",
-              "`editors`: Quién puede editar",
-              "`prod`: Producto",
-              "`proj`: Proyecto de producto",
-              "`init`: Iniciativa"
-            ]
-          },
-          {
-            "id": "prioridade",
-            "title": "Prioridad, alcance y origen",
-            "paragraphs": [
-              "Las prioridades son `critical`, `high`, `medium` y `low`. Los alcances son `global`, `project` y `session`. El origen puede ser `human`, `agent` o `system`, pero escribir esa etiqueta no sustituye la autenticación. El portafolio vincula `product` → `project` → `initiative`; la jerarquía no amplía las ACL."
             ]
           }
         ]

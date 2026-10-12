@@ -1,8 +1,15 @@
 # OrkMind: site e documentação
 
-Site estático Astro com português em `/`, inglês em `/en/` e espanhol em `/es/`.
-Todas as páginas HTML têm idioma, canonical, alternates recíprocos e seletor para
-a mesma página. Os slugs e IDs técnicos permanecem estáveis entre línguas.
+Site estático Astro com português em `/` e inglês em `/en/`. Todas as páginas HTML
+têm idioma, canonical, alternates recíprocos e seletor para a mesma página. Os slugs
+e IDs técnicos permanecem estáveis entre línguas.
+
+O espanhol saiu do site por decisão do dono. Cada URL `/es/` que existia (a home, o
+índice das docs e cada artigo) é uma página estática de redirecionamento para a mesma
+página em inglês: meta refresh, canonical na página em inglês, `noindex` e um script
+que mantém o fragmento. `check:redirecionamentos` confere cada uma no build, e
+`test:redirecionamentos` prova que um redirecionamento faltando, apontando para outro
+lugar, sem `noindex` ou com página de conteúdo sobrando em `/es/` reprova.
 
 ## Desenvolvimento e prova local
 
@@ -35,7 +42,7 @@ diretamente para os auditores de HTML, sem adicionar outro parser.
 ## Conteúdo e fontes
 
 `src/data/docs-catalog.ts` lista módulos editoriais. Cada artigo tem slug, grupo,
-fontes e texto explícito em PT, EN e ES. Não há fallback silencioso ou tradução
+fontes e texto explícito em PT e EN. Não há fallback silencioso ou tradução
 remota durante o build. `docs-schema.ts` descreve o formato; o verificador valida
 os módulos usados pelas rotas. Os arquivos `.ts` editoriais exportam dados JSON
 por default para permitir leitura pelo Astro e por Node sem executar conteúdo.
@@ -51,7 +58,7 @@ npm run docs:sync -- --source /caminho/do/orkmind --orkastery-source /caminho/do
 npm run docs:check -- --source /caminho/do/orkmind --orkastery-source /caminho/do/orkastery
 
 # Depois de revisar de fato as traduções e fontes afetadas:
-npm run docs:sync -- --source /caminho/do/orkmind --orkastery-source /caminho/do/orkastery --review pt,en,es --reviewer executor-editorial --articles contribuir
+npm run docs:sync -- --source /caminho/do/orkmind --orkastery-source /caminho/do/orkastery --review pt,en --reviewer executor-editorial --articles contribuir
 npm run build
 ```
 
@@ -75,7 +82,7 @@ um resumo mensal traduzido e um link para o repositório, sem cópia de tickets.
 
 ## Revisão mensal do roadmap
 
-Revise `src/data/roadmap.json`, atualize `updatedAt`, `nextReview` e os três resumos.
+Revise `src/data/roadmap.json`, atualize `updatedAt`, `nextReview` e os dois resumos (PT e EN).
 A página editorial `roadmap` contextualiza o mês em `docs-standards.ts` (Orkastery)
 ou `docs-retrieval.ts` (OrkMind): atualize-a na mesma revisão e registre os hashes.
 Uma intenção não é uma capacidade entregue. Datas de revisão não são prazos de entrega.
@@ -138,7 +145,7 @@ modo claro não significa que a home ofereça um tema claro.
 Os componentes demonstrativos legados permanecem no histórico de desenvolvimento,
 mas não são importados pelas rotas atuais. As páginas ativas usam HomePage,
 DocsArticle e DocsDiagram com os catálogos editoriais. Não reintroduza componentes
-com texto fixo em português sem revisão das três línguas.
+com texto fixo em português sem revisão das duas línguas.
 
 ## Prova visual sem rede
 
@@ -152,8 +159,8 @@ npm run check:visual -- --output /diretorio/privado/screenshots
 ```
 
 O verificador intercepta todas as requisições, serve somente `dist` em memória e
-bloqueia destinos externos. Exercita home, índice, arquitetura e Contribuir nos três
-idiomas, 1280/700/390/320 px e esquemas claro/escuro: 96 screenshots, overflow,
+bloqueia destinos externos. Exercita home, índice, arquitetura e Contribuir nos dois
+idiomas, 1280/700/390/320 px e esquemas claro/escuro: 64 screenshots, overflow,
 navegação por teclado e o diagrama do sistema. Em todas as páginas de cada idioma,
 nas mesmas larguras e esquemas, confere o código inline (não se parte entre
 linhas, não solta o que encosta nele, não passa da coluna, uma escala por bloco,

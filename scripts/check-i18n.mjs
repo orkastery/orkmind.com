@@ -1,12 +1,14 @@
 import {fileURLToPath} from 'node:url';
 import {pages,attrs,content,distArg,siteBase} from './check-links.mjs';
+// PT-BR em / e inglês em /en/. As páginas de redirecionamento das URLs /es/ antigas ficam de fora
+// daqui: scripts/check-redirecionamentos.mjs confere cada uma.
 export function checkI18n(dist=distArg(),base=siteBase()){
- const all=pages(dist),map=new Map(all.map(p=>[p.path,p]));const tags={pt:'pt-BR',en:'en',es:'es'};
- const unlocalize=path=>path.replace(/^\/(en|es)(?=\/)/,'');let groups=0;
+ const all=pages(dist).filter(p=>p.redirecionamento===null),map=new Map(all.map(p=>[p.path,p]));const tags={pt:'pt-BR',en:'en'};
+ const unlocalize=path=>path.replace(/^\/en(?=\/)/,'');let groups=0;
  // Caminho de uma URL deste site sem o base da prévia; canonical, alternates e seletor levam o base.
  const logical=path=>base&&(path===base||path.startsWith(base+'/'))?path.slice(base.length)||'/':path;
  for(const p of all){
-  const locale=p.path.match(/^\/(en|es)\//)?.[1]||'pt';
+  const locale=p.path.startsWith('/en/')?'en':'pt';
   if(attrs(p.nodes.find(n=>n.tagName==='html')).lang!==tags[locale])throw Error('Wrong html language: '+p.path);
   const canon=p.nodes.filter(n=>n.tagName==='link'&&attrs(n).rel==='canonical');
   if(canon.length!==1||new URL(attrs(canon[0]).href).pathname!==base+p.path)throw Error('Wrong canonical: '+p.path);
@@ -15,12 +17,15 @@ export function checkI18n(dist=distArg(),base=siteBase()){
   if(defaults.length!==1||attrs(defaults[0]).href!==new URL(base+unlocalize(p.path),canonical).href)throw Error('Wrong default alternate: '+p.path);
   for(const n of p.nodes.filter(n=>n.tagName==='a'&&attrs(n).href)){
    const url=new URL(attrs(n).href,canonical),path=logical(url.pathname);
-   if(url.origin===new URL(canonical).origin&&map.has(path)&&(path.match(/^\/(en|es)\//)?.[1]||'pt')!==locale&&!('hreflang' in attrs(n)))throw Error('Navigation loses locale: '+p.path);
+   if(url.origin===new URL(canonical).origin&&map.has(path)&&(path.startsWith('/en/')?'en':'pt')!==locale&&!('hreflang' in attrs(n)))throw Error('Navigation loses locale: '+p.path);
   }
   const selector=p.nodes.find(n=>n.tagName==='nav'&&'data-language-selector' in attrs(n));
   if(!selector)throw Error('Missing language selector: '+p.path);
   const anchors=(awaitNodes(selector)).filter(n=>n.tagName==='a');
-  if(anchors.length!==3)throw Error('Incomplete language selector: '+p.path);
+  if(anchors.length!==2)throw Error('Language selector must offer exactly PT and EN: '+p.path);
+  const hreflangs=p.nodes.filter(n=>n.tagName==='link'&&attrs(n).rel==='alternate').map(n=>attrs(n).hreflang).sort().join(',');
+  if(hreflangs!=='en,pt-BR,x-default')throw Error('Alternates must be pt-BR, en and x-default only: '+p.path);
+  if(p.nodes.some(n=>attrs(n).hreflang==='es'||attrs(n).lang==='es'))throw Error('Spanish left in the page: '+p.path);
   for(const [other,tag] of Object.entries(tags)){
    const expected=(other==='pt'?'':'/'+other)+unlocalize(p.path),peer=map.get(expected);
    if(!peer)throw Error('Missing translated route: '+expected);
@@ -44,7 +49,7 @@ export function checkI18n(dist=distArg(),base=siteBase()){
    if(/Pular para o conteúdo|Nesta página|Próxima revisão|Seu nome|Enviar mensagem|Fontes desta página/.test(visible))throw Error('Portuguese interface leaked: '+p.path);
   }else groups++;
  }
- return {pages:all.length,equivalentGroups:groups,locales:3,editorialReview:'required separately; structural parity is not language quality'};
+ return {pages:all.length,equivalentGroups:groups,locales:2,editorialReview:'required separately; structural parity is not language quality'};
 }
 function awaitNodes(n){return [n,...(n.childNodes||[]).flatMap(awaitNodes)];}
 if(process.argv[1]===fileURLToPath(import.meta.url)){try{console.log(JSON.stringify(checkI18n()));}catch(e){console.error(e.message);process.exitCode=1;}}

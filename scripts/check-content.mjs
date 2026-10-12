@@ -1,7 +1,7 @@
 import {fileURLToPath} from 'node:url';
 import {pages,attrs,content,distArg,siteBase} from './check-links.mjs';
 export function checkContent(dist=distArg(),base=siteBase()){
- const all=pages(dist);let diagrams=0;
+ const all=pages(dist).filter(p=>p.redirecionamento===null);let diagrams=0;
  for(const p of all){
   if(p.nodes.filter(n=>n.tagName==='main').length!==1||p.nodes.filter(n=>n.tagName==='h1').length!==1)throw Error('Expected one main and h1: '+p.path);
   for(const n of p.nodes){const a=attrs(n);
@@ -17,14 +17,14 @@ export function checkContent(dist=distArg(),base=siteBase()){
    }
   }
  }
- for(const locale of ['pt','en','es']) {
+ for(const locale of ['pt','en']) {
   const prefix=locale==='pt'?'':'/'+locale, home=all.find(p=>p.path===prefix+'/');
   if(!home)throw Error('Missing translated home: '+locale);
-  const required={"pt": ["Um Company Brain governado", "Uma fonte de verdade para o sistema inteiro", "Governança acima do adaptador"], "en": ["A governed Company Brain", "A shared source of truth for the whole system", "Governance above the adapter"], "es": ["Un Company Brain gobernado", "Una fuente de verdad compartida para todo el sistema", "Gobernanza por encima del adaptador"]}[locale];
+  const required={"pt": ["Um Company Brain governado", "Uma fonte de verdade para o sistema inteiro", "Governança acima do adaptador"], "en": ["A governed Company Brain", "A shared source of truth for the whole system", "Governance above the adapter"]}[locale];
   for(const heading of required)if(!home.nodes.some(n=>n.tagName==='h2'&&content(n).includes(heading)))throw Error('Missing restored home section: '+locale);
   const labels=home.nodes.filter(n=>'data-node-label' in attrs(n)).map(n=>content(n).trim());
   if(labels.length!==8||new Set(labels).size!==8)throw Error('Missing system diagram labels: '+locale);
-  const expected={pt:'Agentes temporários',en:'Temporary agents',es:'Agentes temporales'}[locale];
+  const expected={pt:'Agentes temporários',en:'Temporary agents'}[locale];
   if(!labels.includes(expected))throw Error('Untranslated system diagram: '+locale);
   const contribution=all.find(p=>p.path===prefix+'/docs/contribuir/');
   if(!contribution)throw Error('Missing contribution page: '+locale);

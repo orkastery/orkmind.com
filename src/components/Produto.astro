@@ -4,88 +4,71 @@ const locale=localeFor(Astro.url.pathname);
 const translations={
   "t0": {
     "pt": "Governança acima do backend",
-    "en": "Governance above the backend",
-    "es": "Gobernanza por encima del backend"
+    "en": "Governance above the backend"
   },
   "t1": {
     "pt": "Proteção de entradas, ACL e ordenação constitucional valem em qualquer backend, sem exceção.",
-    "en": "Entry protection, ACL and constitutional ordering apply above every backend.",
-    "es": "La protección de entradas, ACL y el orden constitucional se aplican por encima de cada backend."
+    "en": "Entry protection, ACL and constitutional ordering apply above every backend."
   },
   "t2": {
     "pt": "Histórico e escrita concorrente",
-    "en": "History and concurrent writes",
-    "es": "Historial y escritura concurrente"
+    "en": "History and concurrent writes"
   },
   "t3": {
     "pt": "Versões append-only e compare-and-swap impedem que uma edição obsoleta vença em silêncio.",
-    "en": "Append-only versions and compare-and-swap prevent stale edits from silently overwriting newer work.",
-    "es": "Las versiones append-only y compare-and-swap impiden que una edición obsoleta sobrescriba cambios en silencio."
+    "en": "Append-only versions and compare-and-swap prevent stale edits from silently overwriting newer work."
   },
   "t4": {
     "pt": "Criptografia seletiva",
-    "en": "Selective encryption",
-    "es": "Cifrado selectivo"
+    "en": "Selective encryption"
   },
   "t5": {
     "pt": "AES-256-GCM em repouso para coleções sensíveis como contatos, arquivos e docs.",
-    "en": "AES-256-GCM at rest for sensitive collections such as contacts, files and docs.",
-    "es": "AES-256-GCM en reposo para colecciones sensibles como contactos, archivos y docs."
+    "en": "AES-256-GCM at rest for sensitive collections such as contacts, files and docs."
   },
   "t6": {
     "pt": "Anti-injection",
-    "en": "Injection detection",
-    "es": "Detección de inyección"
+    "en": "Injection detection"
   },
   "t7": {
     "pt": "Detecção de conteúdo suspeito: entrada suspeita fica retida e fora da injeção automática.",
-    "en": "Suspicious content is held for review and excluded from automatic context injection.",
-    "es": "El contenido sospechoso queda retenido para revisión y fuera de la inyección automática de contexto."
+    "en": "Suspicious content is held for review and excluded from automatic context injection."
   },
   "t8": {
     "pt": "Snapshots globais",
-    "en": "Global snapshots",
-    "es": "Snapshots globales"
+    "en": "Global snapshots"
   },
   "t9": {
     "pt": "Commit, diff e restore da árvore de memória inteira, com embeddings preservados.",
-    "en": "Commit, diff and restore the memory tree while preserving embeddings.",
-    "es": "Commit, diff y restore del árbol de memoria, conservando embeddings."
+    "en": "Commit, diff and restore the memory tree while preserving embeddings."
   },
   "t10": {
     "pt": "Proveniência e receipts",
-    "en": "Provenance and receipts",
-    "es": "Procedencia y recibos"
+    "en": "Provenance and receipts"
   },
   "t11": {
     "pt": "Fonte, revisão e recibos permitem readback, reconciliação e rollback sem fabricar sucesso.",
-    "en": "Sources, revisions and receipts support readback, reconciliation and rollback with evidence.",
-    "es": "Fuentes, revisiones y recibos permiten readback, reconciliación y rollback con pruebas."
+    "en": "Sources, revisions and receipts support readback, reconciliation and rollback with evidence."
   },
   "t12": {
     "pt": "Um Company Brain governado",
-    "en": "A governed Company Brain",
-    "es": "Un Company Brain gobernado"
+    "en": "A governed Company Brain"
   },
   "t13": {
     "pt": "O core em Python governa identidade, histórico e acesso. Agentes e pessoas\n        chegam ao mesmo conhecimento pela CLI, pelo servidor MCP e pelos hosts que já usam.",
-    "en": "The Python core governs identity, history and access. Agents and people reach the same knowledge through the CLI, MCP server and their existing hosts.",
-    "es": "El núcleo en Python gobierna identidad, historial y acceso. Agentes y personas llegan al mismo conocimiento mediante el CLI, el servidor MCP y sus hosts habituales."
+    "en": "The Python core governs identity, history and access. Agents and people reach the same knowledge through the CLI, MCP server and their existing hosts."
   },
   "t14": {
     "pt": "A base que governa",
-    "en": "The foundation for governance",
-    "es": "La base que gobierna"
+    "en": "The foundation for governance"
   },
   "t15": {
     "pt": "Biblioteca Python com PostgreSQL e pgvector. Publicada no PyPI,\n          licenciada MIT.",
-    "en": "A Python library with PostgreSQL and pgvector. Published on PyPI under the MIT license.",
-    "es": "Una biblioteca Python con PostgreSQL y pgvector. Publicada en PyPI bajo la licencia MIT."
+    "en": "A Python library with PostgreSQL and pgvector. Published on PyPI under the MIT license."
   },
   "t16": {
     "pt": "Confira sua instalação, sem depender de uma contagem publicada.",
-    "en": "Inspect your own installation with these commands.",
-    "es": "Consulte su propia instalación con estos comandos."
+    "en": "Inspect your own installation with these commands."
   }
 };
 const t=(key:keyof typeof translations)=>translations[key][locale];

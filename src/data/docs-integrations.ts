@@ -68,36 +68,6 @@ export default [
             ]
           }
         ]
-      },
-      "es": {
-        "title": "Integre su runtime",
-        "description": "Elija entre consultas mediante herramientas y contexto construido por plugins.",
-        "sections": [
-          {
-            "id": "mcp",
-            "title": "MCP: consultas bajo demanda",
-            "paragraphs": [
-              "Ejecute el servidor stdio con el Python del entorno donde está instalado OrkMind. Configure el cliente MCP con `command` y `args` como se indica abajo; proporcione las credenciales mediante el entorno privado del proceso. Confirme que las herramientas aparecen en el cliente antes de depender de ellas.",
-              "`orkmind_query` y `orkmind_get_rules` consultan contexto y reglas; `add`, `update` y `delete` están sujetos a los permisos del almacenamiento. El servidor no construye el prompt del modelo."
-            ],
-            "code": "{\"mcpServers\":{\"orkmind\":{\"command\":\"python\",\"args\":[\"-m\",\"orkmind.mcp\"]}}}"
-          },
-          {
-            "id": "hermes",
-            "title": "Hermes: provider y plugin",
-            "paragraphs": [
-              "Instale el soporte Hermes y configure `memory_provider: orkmind` en el host. El provider ofrece `recall`, `store_memory` y `get_rules`. El plugin que participa en la construcción del prompt inyecta la gobernanza por turno; una llamada aislada al provider solo demuestra esa recuperación."
-            ],
-            "code": "pip install \"orkmind[hermes]\"\norkmind store info"
-          },
-          {
-            "id": "openclaw",
-            "title": "OpenClaw y límites de integración",
-            "paragraphs": [
-              "El plugin de memoria en `integrations/openclaw` conecta la capa semántica al prompt. Es distinto de un plugin para `NativeMemoryProvider`, cuya documentación indica que ese puente aún no se ha entregado. Consulte la fuente del mecanismo que desea usar."
-            ]
-          }
-        ]
       }
     }
   },
@@ -179,43 +149,6 @@ export default [
               "Content deduplication only considers what the scope reaches, and every update creates a new revision recorded in `ingested_by`. `suggest_documents` completes `[[link]]` only with what the scope sees."
             ],
             "code": "scope = MemoryScopeFilter.for_user(user_context)\nawait memory.ingest_document(request, writer=scope)"
-          }
-        ]
-      },
-      "es": {
-        "title": "`NativeMemoryProvider`",
-        "description": "Construya una vista de contexto limitada sobre un historial íntegro.",
-        "sections": [
-          {
-            "id": "camadas",
-            "title": "Core, Recall y Wiki",
-            "paragraphs": [
-              "El provider nativo usa PostgreSQL y pgvector directamente. Core mantiene bloques fijados; Recall proyecta turnos recientes con paginación de mensajes grandes; Wiki recupera fragmentos de documentos. El contexto del turno es una proyección limitada mientras la base conserva contenido y revisiones."
-            ],
-            "code": "pip install \"orkmind[memory-provider]\"\npython -m orkmind.memory_provider.mcp"
-          },
-          {
-            "id": "api",
-            "title": "APIs y autorización",
-            "paragraphs": [
-              "`assemble_turn_context` reúne las capas. `search_history` exige sesión o usuario; `search_wiki` y `get_document` comparten el filtro de alcance. `set_core_block` es una API de operador y no debe exponerse como herramienta del agente. La ausencia de personas e invariantes obligatorios produce un error."
-            ]
-          },
-          {
-            "id": "persistencia",
-            "title": "Historial e ingestión",
-            "paragraphs": [
-              "La base protege historial y revisiones mediante triggers append-only. La ingestión normaliza contenido para deduplicar, prepara chunks y embeddings y guarda el documento en una transacción. Se rechazan cambios incompatibles de dimensión vectorial o idioma de búsqueda. Los chunks son derivados y pueden reconstruirse; el documento íntegro sigue siendo la fuente."
-            ]
-          },
-          {
-            "id": "escrita",
-            "title": "Escritura en nombre de una persona",
-            "paragraphs": [
-              "La ingesta de sistema no tiene dueño. Cuando la escritura viene de una persona, pase su alcance como `writer`: solo se graba lo que esa persona podría leer. Una clasificación fuera de alcance lanza `ClassificationOutOfReachError` antes de fragmentar o generar embeddings; el slug de un documento que no puede leer lanza `SlugUnavailableError`, sin revelar nada del documento que lo ocupa. Ambos rechazos heredan de `WriteOutOfScopeError`.",
-              "La deduplicación por contenido solo considera lo que el alcance permite ver, y cada actualización crea una revisión nueva registrada en `ingested_by`. `suggest_documents` completa `[[link]]` solo con lo que el alcance ve."
-            ],
-            "code": "alcance = MemoryScopeFilter.for_user(user_context)\nawait memory.ingest_document(pedido, writer=alcance)"
           }
         ]
       }

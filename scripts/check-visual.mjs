@@ -5,7 +5,7 @@ const args=process.argv.slice(2);
 // --widths, --locales e --schemes recortam a matriz, para provar uma guarda contra uma mutação do
 // dist. Valor desconhecido reprova: recorte vazio não pode passar como aprovado.
 const list=(flag,all,valid)=>{if(!args.includes(flag))return all;const values=args[args.indexOf(flag)+1].split(',');const bad=values.filter(v=>!valid(v));if(bad.length||!values.length)throw Error(`Unknown ${flag} value: ${bad.join(',')||'(none)'}`);return values;};
-const widths=list('--widths',['1280','700','390','320'],v=>/^\d+$/.test(v)&&Number(v)>=200&&Number(v)<=3000).map(Number),schemes=list('--schemes',['light','dark'],v=>['light','dark'].includes(v)),locales=list('--locales',['pt','en','es'],v=>['pt','en','es'].includes(v));
+const widths=list('--widths',['1280','700','390','320'],v=>/^\d+$/.test(v)&&Number(v)>=200&&Number(v)<=3000).map(Number),schemes=list('--schemes',['light','dark'],v=>['light','dark'].includes(v)),locales=list('--locales',['pt','en'],v=>['pt','en'].includes(v));
 // Rotas com captura, teclado e interações; as guardas de código e de borda varrem todas as páginas.
 const routes=['/','/docs/','/docs/arquitetura/','/docs/contribuir/'];
 const checks=['overflow','keyboard','diagramLabels','systemSelection','inlineCodeAtomic','adjacentTextWithCode','codeWithinColumn','codeBreaksAtSeparators','oneCodeScalePerBlock','linkUnderlineOnCode','oneContentEdge'];

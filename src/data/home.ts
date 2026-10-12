@@ -70,41 +70,5 @@ export default {
         "href": "/docs/memory-provider/"
       }
     ]
-  },
-  "es": {
-    "title": "La memoria que acompaña al trabajo.",
-    "description": "Memoria tipada, recuperación determinista y gobernanza para sistemas agénticos.",
-    "lead": "OrkMind organiza memoria tipada y gobernada para agentes y personas. Recupere reglas, decisiones y documentos con procedencia, acceso e historial explícitos.",
-    "mechanism": "Cómo se conectan las piezas",
-    "mechanismText": "De la integración al almacenamiento: contexto, recuperación, gobernanza y persistencia tienen responsabilidades distintas.",
-    "install": "Empiece por el entorno",
-    "installText": "Instale el paquete y configure el backend. Las fuentes revisadas describen OrkMind 0.4.0, alpha, bajo licencia MIT.",
-    "command": "pip install \"orkmind>=0.4.0\"\norkmind store info",
-    "sections": [
-      {
-        "id": "memoria",
-        "title": "Tipos que describen qué es una memoria",
-        "text": "Reglas, hechos, decisiones y documentos tienen sus propias colecciones. Las etiquetas describen contexto y acceso; el portafolio conecta productos, proyectos e iniciativas sin ampliar permisos.",
-        "href": "/docs/ontologia/"
-      },
-      {
-        "id": "busca",
-        "title": "Recupere por contexto, con límites claros",
-        "text": "La búsqueda por etiquetas es determinista. La búsqueda semántica es complementaria. ACL, protección, caducidad y presupuesto determinan lo que puede llegar al agente.",
-        "href": "/docs/recuperacao/"
-      },
-      {
-        "id": "produto",
-        "title": "Integración con garantías explícitas",
-        "text": "Los plugins de construcción de prompts para Hermes y OpenClaw inyectan gobernanza por turno. MCP y CLI consultan bajo demanda. Elija la integración por el comportamiento que necesita.",
-        "href": "/docs/integracoes/"
-      },
-      {
-        "id": "armazenamento",
-        "title": "Historial duradero, contexto limitado",
-        "text": "El provider nativo mantiene Core, Recall y Wiki sobre PostgreSQL. La vista del turno es limitada; el historial íntegro sigue disponible para recuperación y auditoría.",
-        "href": "/docs/memory-provider/"
-      }
-    ]
   }
 };

@@ -6,7 +6,7 @@ import {localeFor} from '../../../data/i18n';
 export function getStaticPaths(){
  const modules=import.meta.glob('../../../data/docs-*.ts',{eager:true});
  const articles=catalog.modules.flatMap(file=>modules['../../../data/'+file].default);
- return ['en','es'].flatMap(lang=>articles.map(article=>({params:{lang,slug:article.slug},props:{article}})));
+ return ['en'].flatMap(lang=>articles.map(article=>({params:{lang,slug:article.slug},props:{article}})));
 }
 const {article}=Astro.props,locale=localeFor(Astro.url.pathname);
 const aliases={};

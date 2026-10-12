@@ -16,7 +16,8 @@ const widths=arg('--widths')?arg('--widths').split(',').map(Number):(()=>{const 
 const scheme=arg('--scheme')||'dark';
 if(!process.env.PLAYWRIGHT_MODULE||!process.env.CHROMIUM_EXECUTABLE)throw Error('Set PLAYWRIGHT_MODULE and CHROMIUM_EXECUTABLE');
 const htmlFiles=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?htmlFiles(resolve(dir,e.name)):e.name==='index.html'?[resolve(dir,e.name)]:[]);
-const routes=htmlFiles(dist).map(f=>'/'+relative(dist,f).replace(/index\.html$/,'')).sort();
+// As URLs /es/ antigas são só redirecionamentos para /en/: não têm texto para medir.
+const routes=htmlFiles(dist).map(f=>'/'+relative(dist,f).replace(/index\.html$/,'')).filter(p=>!p.startsWith('/es/')).sort();
 
 // Roda na página: medidas de layout do código e a prosa visível, com o código trocado por \u0001.
 const measure=()=>{

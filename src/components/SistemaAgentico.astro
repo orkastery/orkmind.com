@@ -4,133 +4,107 @@ const locale=localeFor(Astro.url.pathname);
 const translations={
   "t0": {
     "pt": "Orquestrador",
-    "en": "Orchestrator",
-    "es": "Orquestador"
+    "en": "Orchestrator"
   },
   "t1": {
     "pt": "Coordena o trabalho com contexto citável do Company Brain e devolve fases, decisões, claims e artefatos à memória empresarial.",
-    "en": "Coordinates work using citable Company Brain context and returns phases, decisions, claims and artifacts to shared memory.",
-    "es": "Coordina el trabajo con contexto citable del Company Brain y devuelve fases, decisiones, claims y artefactos a la memoria compartida."
+    "en": "Coordinates work using citable Company Brain context and returns phases, decisions, claims and artifacts to shared memory."
   },
   "t2": {
     "pt": "Lê contexto autorizado, devolve evidências",
-    "en": "Reads authorized context, returns evidence",
-    "es": "Lee contexto autorizado, devuelve pruebas"
+    "en": "Reads authorized context, returns evidence"
   },
   "t3": {
     "pt": "Sub-agentes",
-    "en": "Subagents",
-    "es": "Subagentes"
+    "en": "Subagents"
   },
   "t4": {
     "pt": "Executam tarefas especializadas. Recebem contexto sob medida pelas tags e devolvem aprendizados ao sistema.",
-    "en": "Run specialized tasks, receive context selected by tags and return lessons to the system.",
-    "es": "Ejecutan tareas especializadas, reciben contexto seleccionado por etiquetas y devuelven aprendizajes al sistema."
+    "en": "Run specialized tasks, receive context selected by tags and return lessons to the system."
   },
   "t5": {
     "pt": "Leem contexto, gravam aprendizados",
-    "en": "Read context, record lessons",
-    "es": "Leen contexto, registran aprendizajes"
+    "en": "Read context, record lessons"
   },
   "t6": {
     "pt": "Runtimes e sessões",
-    "en": "Runtimes and sessions",
-    "es": "Runtimes y sesiones"
+    "en": "Runtimes and sessions"
   },
   "t7": {
     "pt": "Cada sessão nasce e morre, mas o que ela descobriu fica. O estado de sessão é uma coleção tipada da ontologia.",
-    "en": "Sessions end, but their findings can remain. Session state is a typed collection in the ontology.",
-    "es": "Las sesiones terminan, pero sus hallazgos pueden permanecer. El estado de sesión es una colección tipada de la ontología."
+    "en": "Sessions end, but their findings can remain. Session state is a typed collection in the ontology."
   },
   "t8": {
     "pt": "Gravam estado e histórico de sessão",
-    "en": "Record session state and history",
-    "es": "Registran estado e historial de sesión"
+    "en": "Record session state and history"
   },
   "t9": {
     "pt": "Agentes temporários",
-    "en": "Temporary agents",
-    "es": "Agentes temporales"
+    "en": "Temporary agents"
   },
   "t10": {
     "pt": "Vivem minutos e desaparecem. Sem memória externa, tudo o que viram sumiria junto com eles.",
-    "en": "Short-lived agents can leave findings in external memory for later work.",
-    "es": "Los agentes de corta duración pueden dejar hallazgos en la memoria externa para trabajos posteriores."
+    "en": "Short-lived agents can leave findings in external memory for later work."
   },
   "t11": {
     "pt": "Herdam contexto, deixam registro",
-    "en": "Inherit context, leave a record",
-    "es": "Heredan contexto, dejan un registro"
+    "en": "Inherit context, leave a record"
   },
   "t12": {
     "pt": "Skills",
-    "en": "Skills",
-    "es": "Skills"
+    "en": "Skills"
   },
   "t13": {
     "pt": "Capacidades reutilizáveis do sistema. O conhecimento sobre quando e como usá-las mora na coleção de `tools`.",
-    "en": "Reusable capabilities. Knowledge about when and how to use them belongs in the `tools` collection.",
-    "es": "Capacidades reutilizables. El conocimiento sobre cuándo y cómo usarlas reside en la colección de `tools`."
+    "en": "Reusable capabilities. Knowledge about when and how to use them belongs in the `tools` collection."
   },
   "t14": {
     "pt": "Consultam instruções de uso",
-    "en": "Retrieve usage instructions",
-    "es": "Consultan instrucciones de uso"
+    "en": "Retrieve usage instructions"
   },
   "t15": {
     "pt": "Plugins",
-    "en": "Plugins",
-    "es": "Plugins"
+    "en": "Plugins"
   },
   "t16": {
     "pt": "Estendem os runtimes por dentro. Os plugins do OrkMind injetam regras mandatórias em todo turno de conversa.",
-    "en": "Extend runtimes. Configured OrkMind plugins inject mandatory rules into each conversation turn.",
-    "es": "Extienden los runtimes. Los plugins configurados de OrkMind inyectan reglas obligatorias en cada turno de conversación."
+    "en": "Extend runtimes. Configured OrkMind plugins inject mandatory rules into each conversation turn."
   },
   "t17": {
     "pt": "Injetam regras em cada turno",
-    "en": "Inject rules each turn",
-    "es": "Inyectan reglas en cada turno"
+    "en": "Inject rules each turn"
   },
   "t18": {
     "pt": "Integrações",
-    "en": "Integrations",
-    "es": "Integraciones"
+    "en": "Integrations"
   },
   "t19": {
     "pt": "MCP, provider de memória e API idempotente: caminhos oficiais para qualquer runtime falar com a memória.",
-    "en": "MCP, memory provider and idempotent API: official paths for runtimes to access memory.",
-    "es": "MCP, provider de memoria y API idempotente: vías oficiales para acceder a la memoria desde los runtimes."
+    "en": "MCP, memory provider and idempotent API: official paths for runtimes to access memory."
   },
   "t20": {
     "pt": "Transportam leitura e escrita",
-    "en": "Transport reads and writes",
-    "es": "Transportan lecturas y escrituras"
+    "en": "Transport reads and writes"
   },
   "t21": {
     "pt": "Ambiente",
-    "en": "Environment",
-    "es": "Entorno"
+    "en": "Environment"
   },
   "t22": {
     "pt": "Repositórios, serviços e infraestrutura. Fatos verificáveis sobre o ambiente viram memória consultável.",
-    "en": "Repositories, services and infrastructure. Verifiable environment facts become retrievable memory.",
-    "es": "Repositorios, servicios e infraestructura. Los hechos verificables del entorno se convierten en memoria consultable."
+    "en": "Repositories, services and infrastructure. Verifiable environment facts become retrievable memory."
   },
   "t23": {
     "pt": "Vira fatos e referências",
-    "en": "Provides facts and references",
-    "es": "Aporta hechos y referencias"
+    "en": "Provides facts and references"
   },
   "t24": {
     "pt": "Uma fonte de verdade para o sistema inteiro",
-    "en": "A shared source of truth for the whole system",
-    "es": "Una fuente de verdad compartida para todo el sistema"
+    "en": "A shared source of truth for the whole system"
   },
   "t25": {
     "pt": "Orquestrador, sub-agentes, sessões, documentos e integrações compartilham\n        identidades estáveis. O conhecimento sobrevive à sessão sem perder fonte ou permissão.",
-    "en": "Orchestrators, subagents, sessions, documents and integrations share stable identities. Knowledge outlives a session while retaining provenance and permissions.",
-    "es": "Orquestadores, subagentes, sesiones, documentos e integraciones comparten identidades estables. El conocimiento sobrevive a la sesión sin perder procedencia ni permisos."
+    "en": "Orchestrators, subagents, sessions, documents and integrations share stable identities. Knowledge outlives a session while retaining provenance and permissions."
   }
 };
 const t=(key:keyof typeof translations)=>translations[key][locale];

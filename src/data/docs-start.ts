@@ -65,35 +65,6 @@ export default [
             ]
           }
         ]
-      },
-      "es": {
-        "title": "Empiece con OrkMind",
-        "description": "Instale la memoria tipada y compruebe almacenamiento y recuperación.",
-        "sections": [
-          {
-            "id": "instalar",
-            "title": "Instalación y requisitos",
-            "paragraphs": [
-              "OrkMind es software abierto bajo licencia MIT. Las fuentes revisadas describen la versión 0.4.0, alpha. Use Python 3.11 o posterior y PostgreSQL con pgvector para el backend predeterminado. Configure `ORKMIND_DATABASE_URL` en el entorno protegido; no publique su valor."
-            ],
-            "code": "pip install \"orkmind>=0.4.0\"\norkmind store info\norkmind stats"
-          },
-          {
-            "id": "primeira-memoria",
-            "title": "Guarde y consulte una entrada",
-            "paragraphs": [
-              "Elija una colección según la finalidad del contenido y etiquetas según el contexto de recuperación. El ejemplo guarda una instrucción neutra; las reglas protegidas u obligatorias requieren identidad y autorización adecuadas. Confirme la respuesta del backend antes de afirmar que se persistió algo."
-            ],
-            "code": "orkmind add --collection instruction --content \"Run the project checks before delivery\" --tags '{\"skill\":[\"testing\"]}'\norkmind search --tags '{\"skill\":[\"testing\"]}'"
-          },
-          {
-            "id": "limite",
-            "title": "Recuperar no es inyectar",
-            "paragraphs": [
-              "El CLI y MCP devuelven memoria bajo demanda; no construyen el prompt del modelo. Los plugins de construcción de prompts para Hermes y OpenClaw realizan la inyección por turno. Habilitar un servidor MCP por sí solo no garantiza que el agente lo consulte antes de cada acción."
-            ]
-          }
-        ]
       }
     }
   }

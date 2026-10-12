@@ -64,34 +64,6 @@ export default [
             "code": "python scripts/orkmind_drain.py --status"
           }
         ]
-      },
-      "es": {
-        "title": "Protección y escritura fiable",
-        "description": "Conserve autoría, acceso e historial, incluso cuando falla el backend.",
-        "sections": [
-          {
-            "id": "acesso",
-            "title": "Protección antes del cambio",
-            "paragraphs": [
-              "Las entradas `protected` y `critical` rechazan edición o eliminación por agentes. Lectura y edición tienen dimensiones distintas; las etiquetas de portafolio no amplían el acceso. El contenido sospechoso de inyección se conserva para inspección, pero no entra automáticamente en el contexto."
-            ]
-          },
-          {
-            "id": "spool",
-            "title": "Primero la intención duradera",
-            "paragraphs": [
-              "El spool registra contenido y metadatos en disco antes de intentar escribir. Un drainer externo comprueba el hash, busca duplicados e intenta la API o el CLI. La indisponibilidad del backend deja el elemento pendiente; agotar los intentos exige revisión. Esto depende de disco disponible y un drainer configurado."
-            ]
-          },
-          {
-            "id": "recibo",
-            "title": "La confirmación exige un ID real",
-            "paragraphs": [
-              "`pending` indica intención registrada, `done` incluye el `entry_id` confirmado y `failed` conserva elementos para revisión. Ninguno de esos estados permite inventar un ID. Una respuesta `created` o `duplicate` de la API idempotente identifica la entrada persistida; un archivo local por sí solo no demuestra escritura en el backend."
-            ],
-            "code": "python scripts/orkmind_drain.py --status"
-          }
-        ]
       }
     }
   },
@@ -246,79 +218,6 @@ export default [
             "paragraphs": [
               "Only the service producer writes: `ingest` checks sequence, authorship, version and references and records projection, history and receipts in the same transaction; repeating the same event returns the same receipt. Administrative migration uses `orkmind brain migration`, with a hash-checked plan and rollback by compensation, never by restoring the whole database. The schema is created only by an explicit administrative operation; a query never migrates.",
               "In Orkastery, `ork brain context` requests the `context` mode, checks the whole package and adds freshness against the local portfolio. Against an OrkMind without this mode, it builds the package the earlier way, with `query` and `get`, and says so in the package."
-            ]
-          }
-        ]
-      },
-      "es": {
-        "title": "Company Brain gobernado",
-        "description": "Consulte el portafolio gobernado de la fábrica con citas, concesiones e historial append-only.",
-        "sections": [
-          {
-            "id": "o-que-e",
-            "title": "Una proyección exacta del portafolio",
-            "paragraphs": [
-              "El Company Brain es la proyección exacta y gobernada de lo que una fábrica de software sabe sobre su propio portafolio: productos (`prod`), proyectos (`proj`) e iniciativas (`init`). No es la memoria semántica de OrkMind, con colecciones, etiquetas y búsqueda: vive en tablas propias en PostgreSQL y solo responde lo que un productor autorizado registró, citando el origen de cada elemento.",
-              "El modo `context`, la operación `history` y esta documentación están en la rama `main` del repositorio, en la sección Unreleased del CHANGELOG. Todavía no forman parte de una versión publicada en PyPI."
-            ]
-          },
-          {
-            "id": "contrato",
-            "title": "Contrato y API separados",
-            "paragraphs": [
-              "El contrato `orkmind.company-brain/v1` es el mismo archivo en OrkMind y en Orkastery, byte a byte. Su `sha256` aparece en `capabilities` como `contract_hash`, y Orkastery rechaza un Brain con un hash distinto. Las llamadas usan el sobre de la API `orkmind.company-brain-api/v1`: las operaciones nuevas se añaden sin cambiar el `contract_hash`. El paquete de contexto y `history` pertenecen a esta API.",
-              "La validación es estricta: se rechaza cualquier campo desconocido, el `id` empieza por el `kind`, `proj` solo tiene padre `prod` e `init` solo tiene padre `proj`. El fallo sale como un código `brain.*`, sin repetir el contenido."
-            ]
-          },
-          {
-            "id": "identidade",
-            "title": "Identidad del login, concesiones explícitas",
-            "paragraphs": [
-              "La identidad viene solo del login autenticado en PostgreSQL, que el administrador de la base asigna a un principal humano o de servicio. Ningún campo de la solicitud, variable de entorno ni argumento de herramienta nombra a un principal. Las concesiones valen por tenant, principal y ACL, con acciones, recursos, instancias de origen, campos visibles y vigencia; la revocación vale desde la llamada siguiente."
-            ],
-            "items": [
-              "`get`, `query` y `history` son solo para principales humanos.",
-              "`ingest`, `migrate` y `rollback` son solo para principales de servicio.",
-              "Sin la concesión de la acción, la lectura responde como si la entidad no existiera."
-            ]
-          },
-          {
-            "id": "operacoes",
-            "title": "Operaciones por la CLI y por MCP",
-            "paragraphs": [
-              "`orkmind brain request` lee un sobre JSON en stdin y escribe la respuesta en stdout; la herramienta MCP `orkmind_brain` recibe el mismo sobre. La DSN viene de `ORKMIND_DATABASE_URL` y el tenant de `ORKMIND_BRAIN_TENANT`; ningún argumento elige la base ni la identidad. Las operaciones son `capabilities`, `get`, `query`, `history`, `receipts`, `head` e `ingest`. Los estados de respuesta son `ok`, `empty`, `unknown`, `withheld`, `forbidden`, `unavailable` y `conflict`."
-            ],
-            "code": "echo '{\"schema\":\"orkmind.company-brain-api/v1\",\"operation\":\"capabilities\"}' | orkmind brain request"
-          },
-          {
-            "id": "contexto",
-            "title": "Modo `context`: un paquete citable",
-            "paragraphs": [
-              "Una selección con `mode context` arma en el servidor el paquete `orkmind.company-brain-context/v1`: las entidades pedidas por `id` y los padres que la concesión deja ver, cada una con la cita completa de la fuente (autoridad, instancia, referencia, hash, versión y ubicación). Todo se ejecuta en una sola instantánea `REPEATABLE READ, READ ONLY`. Lo que no tiene la cita completa se convierte en una laguna tipada, sin contenido.",
-              "El digest es el `sha256` del JSON canónico del paquete, sin hora: el mismo estado da el mismo digest, y quien lo recibe lo recalcula. OrkMind cita; la frescura frente a la fuente la calcula quien tiene la fuente. Un OrkMind anterior a este modo responde `brain.selection.context-unsupported`."
-            ],
-            "items": [
-              "`entity.unknown`: ausente, eliminada o sin la concesión `get`.",
-              "`entity.withheld`: retenida por la ACL; solo aparece el `id`.",
-              "`citation.incomplete`: la cita visible no está completa y el elemento queda fuera.",
-              "`owner.unresolved`, `observed.unknown` y `recorded.unknown`: elemento citado sin responsable resuelto o sin hora."
-            ]
-          },
-          {
-            "id": "historico",
-            "title": "Historial append-only",
-            "paragraphs": [
-              "La operación `history` devuelve las versiones de una entidad en orden de secuencia, cada una con su origen: evento, productor, fuente citada, ciclo de la fábrica, hora de registro y la marca `rolled_back`. Nada borra ni reescribe estas versiones; en una entidad eliminada, el tombstone es la última.",
-              "Exige la acción `history`, solo para humanos; sin ella, la respuesta es `unknown`. Una concesión que no muestra el campo `source` recibe `forbidden`, porque una versión sin origen no es citable. Los campos del cuerpo siguen los campos de la concesión."
-            ],
-            "code": "echo '{\"schema\":\"orkmind.company-brain-api/v1\",\"operation\":\"history\",\"payload\":{\"tenant_id\":\"exemplo\",\"id\":\"proj-exemplo\",\"limit\":50}}' | orkmind brain request"
-          },
-          {
-            "id": "escrita",
-            "title": "Escritura, migración y uso por Orkastery",
-            "paragraphs": [
-              "Solo escribe el productor de servicio: `ingest` comprueba secuencia, autoría, versión y referencias y registra proyección, historial y recibos en la misma transacción; el mismo evento repetido devuelve el mismo recibo. La migración administrativa usa `orkmind brain migration`, con un plan verificado por hash y rollback por compensación, nunca restaurando la base entera. El schema solo se crea con una operación administrativa explícita; una consulta nunca migra.",
-              "En Orkastery, `ork brain context` pide el modo `context`, verifica el paquete entero y añade la frescura frente al portafolio local. Ante un OrkMind sin este modo, arma el paquete por el camino anterior, con `query` y `get`, y lo declara en el paquete."
             ]
           }
         ]

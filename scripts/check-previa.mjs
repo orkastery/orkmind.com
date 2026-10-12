@@ -14,7 +14,9 @@ export function checkPrevia(dist=distArg(),base=siteBase(),{excluir=[],robots=tr
   if(versao.release!==release)throw Error('versao.json da prévia sem a release '+release);
   if(!/^[0-9a-f]{40}$/.test(versao.sha||''))throw Error('versao.json da prévia sem o SHA do commit');
  }else if('release' in versao)throw Error('versao.json da produção com release');
- const all=pages(dist,excluir);
+ // As páginas de redirecionamento das URLs /es/ antigas têm noindex próprio e nenhuma faixa: quem
+ // as confere é scripts/check-redirecionamentos.mjs.
+ const all=pages(dist,excluir).filter(p=>p.redirecionamento===null);
  for(const p of all){
   const metas=p.nodes.filter(n=>n.tagName==='meta'&&(attrs(n).name||'').toLowerCase()==='robots');
   const faixas=p.nodes.filter(n=>'data-previa' in attrs(n));

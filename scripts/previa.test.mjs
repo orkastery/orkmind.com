@@ -131,11 +131,13 @@ test('árvore composta: raiz igual à produção e prévia no caminho, fora dos 
   assert.equal(versao.sha, arvore.sha);
   const daPrevia = pages(previaEm(arvore.saida));
   assert.equal(daPrevia.length, pages(arvore.producao).length);
-  for (const p of daPrevia) {
+  // As páginas de redirecionamento das URLs /es/ antigas têm noindex próprio e nenhuma faixa
+  // (scripts/check-redirecionamentos.mjs as confere); as demais seguem a regra da prévia.
+  for (const p of daPrevia.filter(p => p.redirecionamento === null)) {
     assert.ok(p.source.includes('<meta name="robots" content="noindex, nofollow">'), 'sem noindex: ' + p.path);
     assert.ok(p.source.includes('data-previa="' + RELEASE + '"') && p.source.includes(textoDaFaixa(RELEASE)), 'sem a faixa: ' + p.path);
   }
-  for (const p of pages(arvore.saida, [join(arvore.saida, PASTA_DAS_PREVIAS)])) {
+  for (const p of pages(arvore.saida, [join(arvore.saida, PASTA_DAS_PREVIAS)]).filter(p => p.redirecionamento === null)) {
     assert.ok(!p.source.includes('noindex') && !p.source.includes('data-previa'), 'marca de prévia na raiz: ' + p.path);
   }
   for (const nome of ['CNAME', 'robots.txt']) assert.equal(existsSync(join(previaEm(arvore.saida), nome)), false, nome);
@@ -146,7 +148,7 @@ test('cada desvio da árvore composta reprova a conferência', { skip: pular }, 
     ['página da prévia sem noindex', d => trocar(join(previaEm(d), 'docs/index.html'), s => s.replace('<meta name="robots" content="noindex, nofollow">', '')), /sem noindex/],
     ['página da prévia sem a faixa', d => trocar(join(previaEm(d), 'en/index.html'), s => s.replace('data-previa=', 'data-outra=')), /sem a faixa/],
     ['página da prévia com noindex sem nofollow', d => trocar(join(previaEm(d), 'docs/index.html'), s => s.replace('content="noindex, nofollow"', 'content="noindex"')), /sem noindex, nofollow/],
-    ['faixa da prévia com o SHA de outro commit', d => trocar(join(previaEm(d), 'es/index.html'), s => s.replace('data-sha="' + arvore.sha + '"', 'data-sha="' + 'c'.repeat(40) + '"')), /sem a faixa/],
+    ['faixa da prévia com o SHA de outro commit', d => trocar(join(previaEm(d), 'en/docs/index.html'), s => s.replace('data-sha="' + arvore.sha + '"', 'data-sha="' + 'c'.repeat(40) + '"')), /sem a faixa/],
     ['link da prévia para a raiz da produção', d => trocar(join(previaEm(d), 'index.html'), s => s.replace('</main>', '<a href="/docs/">raiz</a></main>')), /Fora da prévia/],
     ['link da prévia para a produção pela URL absoluta', d => trocar(join(previaEm(d), 'index.html'), s => s.replace('</main>', '<a href="https://' + catalogo.repository.split('/').at(-1) + '.com/docs/">raiz</a></main>')), /Fora da prévia/],
     ['link para o outro site com caminho de prévia', d => trocar(join(previaEm(d), 'index.html'), s => s.replace('</main>', '<a href="https://' + OUTRO_SITE + PREFIXO_DA_PREVIA + RELEASE + '/">outro</a></main>')), /outro site/],
