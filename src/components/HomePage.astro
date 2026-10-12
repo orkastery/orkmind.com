@@ -16,12 +16,12 @@ const aliasesFor=(id:string)=>legacy[id]||[];
 const diagram=Astro.props.diagram===false?null:'memory';
 ---
 <Base titulo={(Astro.props.product||'OrkMind')+' · '+plainText(copy.description)} descricao={plainText(copy.description)}>
- <section class="editorial-hero" id="topo"><div class="home-container">
+ <section class="editorial-hero" id="topo"><div class="container">
  <p class="home-kicker">{text.openSource} · {text.license}</p>
  {aliasesFor('topo').map(id=><span {id} aria-hidden="true"/>)}<h1><TechnicalText text={copy.title}/></h1><p class="home-lead"><TechnicalText text={copy.lead}/></p>
  <div class="home-actions"><a class="home-primary" href={localize('/docs/comecar/',locale)}>{text.start} →</a><a href={catalog.repository}>GitHub ↗</a></div>
  </div></section>
- <div class="home-container home-main">
+ <div class="container home-main">
  <div class="home-grid">{copy.sections.map(s=><section class="home-card" id={s.id==='produto'?'produto-resumo':s.id}>{aliasesFor(s.id).map(id=><span {id} aria-hidden="true"/>)}<h2><TechnicalText text={s.title}/></h2><p><TechnicalText text={s.text}/></p><a href={s.href.startsWith('https:')?s.href:localize(s.href,locale)}>{text.read} →</a></section>)}</div>
  <section class="home-mechanism" id="arquitetura-resumo"><div>{aliasesFor('arquitetura').map(id=><span {id} aria-hidden="true"/>)}<p class="home-kicker">{text.concepts}</p><h2><TechnicalText text={copy.mechanism}/></h2><p><TechnicalText text={copy.mechanismText}/></p><a href={localize('/docs/arquitetura/',locale)}>{text.read} →</a></div>{diagram&&<DocsDiagram name={diagram} {locale}/>}</section>
  <section class="home-install" id="instalar"><div>{aliasesFor('instalar').map(id=><span {id} aria-hidden="true"/>)}<h2><TechnicalText text={copy.install}/></h2><p><TechnicalText text={copy.installText}/></p><a href={localize('/docs/comecar/',locale)}>{text.docs} →</a></div><pre tabindex="0"><code>{copy.command}</code></pre></section>
@@ -30,7 +30,6 @@ const diagram=Astro.props.diagram===false?null:'memory';
  <Contato/>
 </Base>
 <style>
-.home-container{max-width:1160px;margin:auto;padding-inline:1.5rem;}
 .editorial-hero{padding:clamp(4rem,10vw,8rem) 0;background:radial-gradient(ellipse at 85% 95%,var(--latao-fraco,var(--verde-tinta)),transparent 60%);border-bottom:1px solid var(--linha-forte);}
 .home-kicker{color:var(--latao,var(--verde));font-size:.94rem;line-height:1.5;margin-bottom:1.5rem;}
 h1,h2{font-family:var(--f-display,var(--fonte-display));line-height:1.1;letter-spacing:-.035em;font-weight:500;text-transform:none;}

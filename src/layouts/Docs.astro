@@ -15,7 +15,7 @@ if(slug&&!article) throw Error('Unknown documentation slug: '+slug);
 const aliases=Astro.props.aliases||{};
 ---
 <Base titulo={plainText(article?.translations[locale].title||text.docs)+' · '+text.docs+' · '+(catalog.repository.endsWith('/orkmind')?'OrkMind':'Orkastery')} descricao={plainText(article?.translations[locale].description||text.indexDescription)}>
- <div class="docs-surface"><div class="docs-shell">
+ <div class="docs-surface"><div class="docs-shell container">
  <nav class="docs-breadcrumb" aria-label={text.navigation}><a href={localize('/',locale)}>{text.home}</a><span aria-hidden="true">/</span><a href={localize('/docs/',locale)}>{text.docs}</a>{article&&<><span aria-hidden="true">/</span><span aria-current="page"><TechnicalText text={article.translations[locale].title}/></span></>}</nav>
  <DocsNavigation {articles} {locale} current={slug}/>
  <div class="docs-reading">
