@@ -1,0 +1,71 @@
+/* Base da Partitura no site. Os valores vêm só dos tokens de partitura/partitura.css (gerado de
+   partitura/partitura.json); nenhum componente escreve cor solta. Regras do kit (DESIGN.md):
+   foco por anel, estado sempre com rótulo, alvo de 44 px, comando e código sempre em noite,
+   acento só no que espera você. Tema noite por data-tema="noite" em qualquer ancestral. */
+
+body{margin:0;background:var(--chao);color:var(--texto);font:var(--peso-texto) var(--t-corpo)/1.5 var(--f-texto);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+[data-tema="noite"]{background:var(--chao);color:var(--texto)}
+h1,h2,h3,h4{font-family:var(--f-titulo);font-weight:var(--peso-titulo);text-wrap:balance}
+p{text-wrap:pretty}
+a{color:inherit;text-decoration-color:var(--linha-forte);text-underline-offset:3px}
+a:hover{text-decoration-color:currentColor}
+::selection{background:color-mix(in srgb,var(--foco) 22%,transparent)}
+button{font:inherit;color:inherit}
+/* Rolagem suave nas âncoras, desligada com movimento reduzido. */
+@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
+
+/* Foco visível em todo interativo: anel de 2 px separado do chão por 2 px (regra dura 4). */
+:focus-visible{outline:none;box-shadow:var(--anel-foco)}
+:focus:not(:focus-visible){outline:none}
+
+/* Movimento andante: pulso de 2,8 s só no que está vivo; fluxo dos conectores tracejados. */
+@keyframes pulso{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes fluxo{to{background-position:0 9px}}
+@keyframes fluxoX{to{background-position:9px 0}}
+@property --giro{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes giro{to{--giro:360deg}}
+
+/* Raiz da página: altura mínima de uma tela e nenhuma sobra horizontal. */
+.pagina{min-height:100vh;overflow-x:clip}
+
+/* Contêiner da Partitura: o conteúdo para em --largura (1280 px) e a calha fica fora dele. */
+.container{max-width:var(--largura);margin:0 auto;padding:0 var(--calha)}
+
+/* Rótulo mono em caixa alta (t-rotulo): sobretítulos, cabeças de tabela, metadados. */
+.rotulo{font:var(--peso-destaque) var(--t-rotulo)/1.3 var(--f-mono);letter-spacing:var(--espaco-rotulo);text-transform:uppercase;color:var(--texto-3)}
+
+/* Pular para o conteúdo: fora da tela até receber foco. */
+.pular{position:fixed;z-index:1000;left:var(--e-4);top:var(--e-3);transform:translateY(-200%);padding:var(--e-3) var(--e-4);border-radius:var(--raio-botao);background:var(--acao);color:var(--sobre-acao);font:var(--peso-destaque) 15px/1 var(--f-texto);text-decoration:none}
+.pular:focus{transform:none}
+
+/* Texto só para leitor de tela. */
+.so-leitor{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* Código inline na prosa (regra do dono de 03/10): o comando, o caminho e o identificador saem em
+   mono, inteiros. Atômico: um código curto nunca se parte entre linhas; um maior que a coluna quebra
+   dentro do próprio chip, nos pontos que o renderizador marca. */
+:not(pre)>code{display:inline-block;max-width:100%;font-family:var(--f-mono);font-weight:var(--peso-texto);font-size:.86em;line-height:1.3;padding:.08em .38em;border-radius:var(--raio-segmento);background:color-mix(in srgb,currentColor 8%,transparent);white-space:normal;overflow-wrap:anywhere;vertical-align:baseline}
+/* Inline-block não herda o sublinhado do link: o código o aplica a si mesmo. */
+a>code,a .code-unit,a .code-unit>code{text-decoration:inherit}
+/* Unidade sem quebra: o que encosta no chip viaja com ele (parêntese, vírgula, sufixo colado). */
+.code-unit{white-space:nowrap}
+.code-unit>code{max-width:calc(100% - var(--folga,2ch) - 1px)}
+pre code{font:inherit;background:none;padding:0;border-radius:0;white-space:pre}
+/* Código sem chip: o comando ou identificador que já está numa linha mono (terminal, rótulo,
+   chip de estado) fica em <code> pela regra do código inteiro, com a letra de quem o contém. */
+.codigo-liso{display:inline;font:inherit;color:inherit;background:none;padding:0;border-radius:0;white-space:nowrap;vertical-align:baseline}
+
+/* Âncoras de versões anteriores da home: alvo de link antigo, sem ocupar espaço. */
+.ancora-antiga{position:absolute;width:0;height:0;overflow:hidden}
+[id]{scroll-margin-top:calc(64px + var(--e-4))}
+
+/* Brilho que segue o cursor (Partitura, Movimento): luz neutra, a cor do texto a 7%, raio de
+   320 px, nunca o acento; só em cartão de destaque e desligado em toque. O cartão recebe --mx e
+   --my de src/scripts/moldura.ts. Use background-color, nunca o atalho background, no cartão. */
+.holofote{background-image:radial-gradient(320px circle at var(--mx,-600px) var(--my,-600px),color-mix(in srgb,var(--texto) 7%,transparent),transparent 70%)}
+@media (hover: none){.holofote{background-image:none}}
+
+/* Entrada suave ao rolar (Partitura, Movimento): 600 ms, 16 px, 80 ms entre irmãos, uma vez,
+   quando 20% do bloco entra na tela. O estado inicial só vale com JS e sem movimento reduzido. */
+.revelar-pronto [data-reveal]:not(.revelado){opacity:0;transform:translateY(16px)}
+.revelar-pronto [data-reveal]{transition:opacity var(--dur-longa) var(--curva),transform var(--dur-longa) var(--curva);transition-delay:var(--atraso,0ms)}
