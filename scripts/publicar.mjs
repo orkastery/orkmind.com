@@ -155,7 +155,7 @@ export function resolverTags(repo,{maximo=PREVIAS_MAXIMO}={}){
  const previas=dePrevia.slice(0,maximo).map(tag=>({tag,release:tag.slice(PREFIXO_DA_TAG_DE_PREVIA.length),sha:commitDa(repo,tag)}));
  const semSuporte=previas.filter(p=>!temArquivo(repo,p.sha,'src/lib/previa.mjs'));
  if(semSuporte.length)throw Error('Commit de prévia sem suporte ao base (src/lib/previa.mjs ausente): '+semSuporte.map(p=>p.tag+' em '+p.sha.slice(0,7)).join(', ')+'. Marque um commit que já tenha a prévia de release.');
- return {raiz:{tag:tagDaRaiz,sha:commitDa(repo,tagDaRaiz)},previas,foraDoTeto:dePrevia.slice(maximo),ignoradas};
+ return {raiz:{tag:tagDaRaiz,sha:commitDa(repo,tagDaRaiz)},previas,foraDoTeto:dePrevia.slice(maximo),ignoradas,tagsDeProducao:deProducao};
 }
 
 function extrair(repo,sha,dir){
@@ -248,6 +248,7 @@ export function publicar({repo=root,saida=null,maximo=PREVIAS_MAXIMO,cache=null,
  */
 export function conferirTagDoDisparo(plano,tag,maximo){
  if(!tag)return;
+ if(tag.startsWith('producao-')&&!(plano.tagsDeProducao??[]).includes(tag))throw Error('A tag '+tag+' não existe neste clone. Nada foi publicado.');
  if(tag.startsWith('producao-')&&tag!==plano.raiz.tag)throw Error('A tag '+tag+' não vira a raiz: a raiz é a maior tag producao-AAAAMMDD-HHMM pelo nome, hoje '+plano.raiz.tag+(TAG_DE_PRODUCAO.test(tag)?'':', e esta tag está fora do padrão')+'. Nada foi publicado.');
  if(tag.startsWith(PREFIXO_DA_TAG_DE_PREVIA)&&!plano.previas.some(p=>p.tag===tag)){
   if(!plano.foraDoTeto.includes(tag))throw Error('A tag '+tag+' não existe neste clone. Nada foi publicado.');

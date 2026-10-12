@@ -172,6 +172,9 @@ test('a tag do disparo precisa entrar na publicação', { skip: pular }, () => {
   const inexistente = motor({ ensaio: true, extras: ['--tag-do-disparo', 'validacao-0.0.1'] });
   assert.equal(inexistente.code, 1);
   assert.match(inexistente.texto, /A tag validacao-0.0.1 não existe neste clone/);
+  const producaoInexistente = motor({ ensaio: true, extras: ['--tag-do-disparo', 'producao-20991231-2359'] });
+  assert.equal(producaoInexistente.code, 1);
+  assert.match(producaoInexistente.texto, /A tag producao-20991231-2359 não existe neste clone/);
 });
 
 test('o cache não reaproveita build que reprovou no postbuild', { skip: pular }, () => {
@@ -200,7 +203,13 @@ test('o workflow publica a árvore composta só por tag, com permissões por job
   const condicao = "github.event_name != 'delete' || (github.event.ref_type == 'tag' && startsWith(github.event.ref, 'validacao-'))";
   assert.ok(texto.includes('\n  group: $' + '{{ (' + condicao + ") && 'pages' || format('pages-ignorado-{0}', github.run_id) }}\n"), 'grupo de concurrency');
   assert.ok(texto.includes('\n    if: ' + condicao + '\n'), 'if do job compilar');
-  assert.ok(texto.includes('\n          if [ "$GITHUB_EVENT_NAME" = push ] && [ "$GITHUB_REF_TYPE" = tag ]; then\n'), 'if do passo Compor');
+  // O bloco inteiro do passo Compor: só o ramo do push de tag manda a tag do disparo ao motor.
+  const compor = '\n          if [ "$GITHUB_EVENT_NAME" = push ] && [ "$GITHUB_REF_TYPE" = tag ]; then\n'
+    + '            node scripts/publicar.mjs --saida publicacao --maximo "$PREVIAS_MAXIMO" --resumo "$RUNNER_TEMP/publicacao.json" --tag-do-disparo "$GITHUB_REF_NAME"\n'
+    + '          else\n'
+    + '            node scripts/publicar.mjs --saida publicacao --maximo "$PREVIAS_MAXIMO" --resumo "$RUNNER_TEMP/publicacao.json"\n'
+    + '          fi\n';
+  assert.ok(texto.includes(compor), 'bloco do passo Compor');
   for (const trecho of ["tags: ['producao-*', 'validacao-*']", '\n  delete:\n', '\n  workflow_dispatch:\n',
     "startsWith(github.event.ref, 'validacao-')", "format('pages-ignorado-{0}', github.run_id)", 'cancel-in-progress: false', '\n  queue: max\n',
     'persist-credentials: false', 'timeout-minutes: 30', '\npermissions:\n  contents: read\n',
