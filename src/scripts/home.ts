@@ -32,7 +32,7 @@ if (dados) {
    const el = $(`[data-no="${no++}"]`)[0]; if (!el) return;
    const est = $('[data-no-estado]', el)[0], ponto = $('[data-no-ponto]', el)[0], rotulo = $('[data-no-rotulo]', el)[0];
    pinta(est, {background: cor(n.sbg), color: cor(n.sfg)});
-   if (ponto) { pinta(ponto, {background: cor(n.dot)}); ponto.classList.toggle('pulso', n.recusou); }
+   pinta(ponto, {background: cor(n.dot)});
    if (rotulo) rotulo.textContent = n.state;
    $('[data-no-segs] > span', el).forEach((s, k) => pinta(s, {background: cor(n.segs[k])}));
   }));

@@ -18,7 +18,7 @@ const notas=p.demo.filter((d:any)=>!d.code);
   <CabecalhoSecao sobretitulo={p.eyebrow} titulo={p.title} lead={p.lead} medidaTitulo="18ch" medidaLead="62ch"/>
   <div class="prova-grade" data-reveal>
    <div class="numeros">
-    {p.proofs.map((n:any)=><div class="numero holofote" data-holofote>
+    {p.proofs.map((n:any)=><div class="numero">
      <div class="numero-n">{n.n}</div>
      <div class="numero-l">{n.l}</div>
      <div class="numero-c">$ <code class="codigo-liso">{n.c}</code></div>

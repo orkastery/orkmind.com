@@ -3,8 +3,8 @@
 // Hermes no início), se a regra chega em todo turno, a legenda, os dois cartões da escolhida e o
 // fecho. Bloco contínuo: a etapa acontece sozinha; tracejado: só quando alguém pede. Nenhum jade
 // aqui: integração não espera você. Os textos de cada integração saem prontos do build (só a
-// escolhida aparece), com o código formatado pelo TechnicalText. Abaixo de 900 px cada linha vira
-// um cartão, com os blocos um embaixo do outro e o "todo turno" escrito, sem rolagem lateral.
+// escolhida aparece), com o código formatado pelo TechnicalText. No estreito a matriz rola na
+// horizontal dentro do próprio cartão, como o kit manda para a matriz de modos.
 import CabecalhoSecao from '../ds/CabecalhoSecao.astro';
 import TechnicalText from '../TechnicalText.astro';
 import {integracoes,integracaoDetalhe,ESTADO_INICIAL,cor} from '../../lib/home-state.mjs';
@@ -86,15 +86,4 @@ const m=t.integrations,linhas=integracoes(t,ESTADO_INICIAL.integration);
 .integracoes-texto{margin-top:var(--e-3);font:var(--tipo-destaque);text-wrap:pretty}
 .integracoes-fecho{margin:var(--e-7) 0 0;font:var(--tipo-titulo-1);letter-spacing:var(--trk-titulo-1);max-width:24ch;text-wrap:balance}
 .integracoes-fecho span{display:block;color:var(--verificado-texto)}
-@media (max-width:899.98px){
- .matriz-rolagem{overflow:visible}
- .matriz-tabela{min-width:0}
- .matriz-cabeca{display:none}
- .integracao{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'tag turno' 'blocos blocos';gap:var(--e-3)}
- .integracao-tag{grid-area:tag}
- .integracao-turno{grid-area:turno;font:var(--peso-destaque) var(--t-rotulo)/1.3 var(--f-mono)}
- .integracao-turno-rotulo{position:static;width:auto;height:auto;margin:0;overflow:visible;clip:auto;white-space:normal;color:var(--texto-3)}
- .integracao-blocos{grid-area:blocos;display:flex;flex-direction:column;gap:6px}
- .integracao-faixa{height:auto;min-height:34px;padding:var(--e-2) var(--e-3);white-space:normal;line-height:1.3}
-}
 </style>

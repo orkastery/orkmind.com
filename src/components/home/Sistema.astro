@@ -44,13 +44,13 @@ let no=0;
    </div>
    <div class="centro ligacao-simples" aria-hidden="true"><span class="fluxo-v fluxo-curto"></span></div>
    <div class="grupos">
-    {v.groups.map(g=><div class="grupo holofote" data-holofote>
+    {v.groups.map(g=><div class="grupo">
      <div class="grupo-topo"><span class="quadrado" style={`background:${cor(g.color)}`}></span><span class="grupo-nome">{g.name}</span><span class="estica"></span><span class="grupo-amb">{g.env}</span></div>
      {g.nodes.map(n=>{const id=no++;return <div class="no" data-no={id}>
       <button type="button" class="no-botao" aria-expanded="false" aria-controls={'no-'+id+'-desc'} data-no-botao>
        <span class="no-topo">
         <span class="no-nome" data-node-label>{n.n}</span>
-        <span class="no-estado" data-no-estado style={`background:${cor(n.sbg)};color:${cor(n.sfg)}`}><span class:list={['no-ponto',n.recusou&&'pulso']} data-no-ponto style={`background:${cor(n.dot)}`} aria-hidden="true"></span><span data-no-rotulo>{n.state}</span></span>
+        <span class="no-estado" data-no-estado style={`background:${cor(n.sbg)};color:${cor(n.sfg)}`}><span class="no-ponto" data-no-ponto style={`background:${cor(n.dot)}`} aria-hidden="true"></span><span data-no-rotulo>{n.state}</span></span>
        </span>
        <span class="no-linha"><span class="no-aresta">{n.edge}</span><span class="no-mais" aria-hidden="true"></span></span>
        <span class="segmentos" data-no-segs aria-hidden="true">{n.segs.map(sg=><span style={`background:${cor(sg)}`}></span>)}</span>
@@ -88,7 +88,7 @@ let no=0;
    <ul class="colecoes-itens">{v.collections.map((c,i)=><li data-colecao={i} style={`background:${cor(c.bg)};color:${cor(c.fg)};border:1px ${c.bs} ${cor(c.bd)}`}><code class="codigo-liso">{c.id}</code></li>)}</ul>
   </div>
   <div class="escala" data-reveal>
-   {s.scale.map((c,i)=><div class="escala-cartao holofote" data-holofote id={ancoras[i][0]}>
+   {s.scale.map((c,i)=><div class="escala-cartao" id={ancoras[i][0]}>
     {ancoras[i].slice(1).map(id=><span {id} class="ancora-antiga" aria-hidden="true"></span>)}
     <h3 class="escala-titulo">{c.t}</h3>
     <p class="escala-texto"><TechnicalText text={c.d}/></p>

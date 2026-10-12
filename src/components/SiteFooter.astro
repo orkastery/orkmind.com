@@ -13,7 +13,7 @@ const destino=(alvo:string)=>alvo.startsWith('/')?localize(alvo,locale):destinoE
   </div>
   {m.columns.map((col,i)=><nav class="rodape-coluna" aria-labelledby={'rodape-'+i}>
    <span class="rotulo rodape-titulo" id={'rodape-'+i}>{col.title}</span>
-   {col.links.map(([label,alvo])=><a href={destino(alvo)}>{label}</a>)}
+   {col.links.map(([label,alvo])=><a href={destino(alvo)}>{label}{!alvo.startsWith('/')&&alvo!=='mailto'&&<span aria-hidden="true"> ↗</span>}</a>)}
   </nav>)}
  </div>
  <div class="rodape-base"><div class="rodape-base-linha"><span>{m.rights}</span><span>{m.maintainer}</span></div></div>
