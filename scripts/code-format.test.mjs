@@ -1,6 +1,10 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {codeParts,plainText,technicalUnits,technicalHtml,technicalSvg,codeSegments,codeHtml} from '../src/lib/technical-text.mjs';
+import {violations,scaleViolations,glueViolations,cssCanaries,checkCode,proseExceptions,productNames} from './check-code.mjs';
+import {mkdtempSync,writeFileSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 
 test('a backtick span becomes code and the prose around it stays escaped text',()=>{
  assert.equal(technicalHtml('Configure `ORKMIND_DATABASE_URL` no ambiente protegido'),'Configure <code>ORKMIND_<wbr>DATABASE_URL</code> no ambiente protegido');
@@ -53,4 +57,69 @@ test('code inside the SVG becomes a monospace tspan; the rest stays text',()=>{
  assert.equal(technicalSvg('Lê e grava'),'Lê e grava');
  assert.equal(technicalSvg('`<x>` & y'),'<tspan class="code">&lt;x&gt;</tspan> &amp; y');
  assert.throws(()=>technicalSvg('`aberto'),/backtick/);
+});
+
+test('identifiers left in PT, EN and ES prose fail the code audit',()=>{
+ for(const sentence of ['Configure ORKMIND_DATABASE_URL no ambiente.','A GovernedStore aplica a ACL.','The orkmind.company-brain/v1 contract.','Consulte docs/contribuir hoje.','El paquete queda en .ork-ci/<thread>.json.','Use --tags agora.','Rode orkmind store info.','Usar o ork é opcional.','Sai em contract_hash.','Completa [[link]] sozinho.','Canal em SECURITY.md.','Código brain.* sem eco.','Chama assembleTurn aqui.','No ruff nem no mypy.']){
+  assert.ok(violations(`<p>${sentence}</p>`).length,sentence);
+ }
+});
+test('the same identifiers rendered as code pass the audit',()=>{
+ for(const text of ['Configure `ORKMIND_DATABASE_URL` no ambiente.','A `GovernedStore` aplica a ACL.','The `orkmind.company-brain/v1` contract.','Consulte `docs/contribuir` hoje.','El paquete queda en `.ork-ci/<thread>.json`.','Use `--tags` agora.','Rode `orkmind store info`.','Usar o `ork` é opcional.','Sai em `contract_hash`.','Completa `[[link]]` sozinho.','Canal em `SECURITY.md`.','Código `brain.*` sem eco.']){
+  assert.deepEqual(violations(`<p>${technicalHtml(text)}</p>`),[],text);
+ }
+});
+test('product names, domains, acronyms, versions and the breadcrumb stay prose',()=>{
+ for(const html of ['<p>OrkMind, OpenClaw e GitHub sobre PostgreSQL com pgvector, no PyPI.</p>','<p>maestro@orkastery.com · orkmind.com</p>','<p>MCP, CLI, ACL, RRF, TTL, AES-256-GCM, append-only e compare-and-swap.</p>','<p>OrkMind 0.4.0, Python 3.11 e Node.js.</p>','<nav><a href="/">Início</a><span aria-hidden="true">/</span><a href="/docs/">Documentação</a><span aria-hidden="true">/</span><span>Coleções, tags e portfólio</span></nav>','<p>Entrada e/ou saída.</p>']){
+  assert.deepEqual(violations(html),[],html);
+ }
+});
+test('inline tags and entities never hide an identifier; separate items never join into one',()=>{
+ assert.deepEqual(violations('<p>A Govern<b>ed</b>Store aplica.</p>'),['GovernedStore']);
+ assert.deepEqual(violations('<p>ORKMIND&#95;DATABASE&#95;URL</p>'),['ORKMIND_DATABASE_URL']);
+ assert.deepEqual(violations('<p>Rode <em>orkmind</em> <code>stats</code>.</p>'),['orkmind']);
+ assert.deepEqual(violations('<nav><a href="/">Home</a><a href="/docs/">Documentation</a><a href="/c/">Concepts</a></nav>'),[]);
+ assert.deepEqual(violations('<a rel="next" href="/x/"><small>Next</small>Memory architecture</a>'),[]);
+ // Painel escondido e aria-hidden não isentam: podem aparecer.
+ assert.deepEqual(violations('<div hidden><p aria-hidden="true">Use contract_hash.</p></div>'),['contract_hash']);
+});
+test('SVG: tspan.code is code, title and desc take no markup, other SVG text is audited',()=>{
+ assert.deepEqual(violations('<svg><title>GovernedStore</title><desc>A GovernedStore aplica.</desc><text><tspan class="code">GovernedStore</tspan><tspan x="1" class="node-detail">acesso</tspan></text></svg>'),[]);
+ assert.deepEqual(violations('<svg><text><tspan>GovernedStore</tspan></text></svg>'),['GovernedStore']);
+ // Rótulo e detalhe em linhas diferentes do SVG não se juntam num identificador falso.
+ assert.deepEqual(violations('<svg><text><tspan>Integração</tspan><tspan x="75">Contexto</tspan></text></svg>'),[]);
+});
+test('every prose exception is exact and cannot hide a neighbouring identifier',()=>{
+ assert.equal(new Set(proseExceptions).size,proseExceptions.length);
+ for(const phrase of [...proseExceptions,...productNames]){
+  assert.deepEqual(violations(`<p>${phrase}</p>`),[],phrase);
+  assert.deepEqual(violations(`<p>${phrase} com contract_hash</p>`),['contract_hash'],phrase);
+ }
+});
+test('inline code keeps the shared scale of its paragraph and a unit glues at most 12 characters',()=>{
+ assert.deepEqual(scaleViolations('<p>Com <code>get</code> e <code class="mono">query</code>.</p>'),['<code class="mono">']);
+ assert.deepEqual(scaleViolations('<p>Com <code>get</code> e <code>query</code>.</p>'),[]);
+ const longa=technicalHtml('Veja `a`'+'b'.repeat(30)+' depois.');
+ assert.equal(glueViolations(`<p>${longa}</p>`).length,1);
+ assert.deepEqual(glueViolations(`<p>${technicalHtml('Estados `ok`, `empty` e (`init`).')}</p>`),[]);
+});
+test('generated CSS must keep the atomic chip, the unit without breaks and the link underline',()=>{
+ const css=':not(pre)>code{display:inline-block;max-width:100%}.code-unit{white-space:nowrap}a>code,a .code-unit,a .code-unit>code{text-decoration:inherit}';
+ assert.equal(cssCanaries(css),true);
+ assert.throws(()=>cssCanaries(css.replace('display:inline-block;','')),/split across lines/);
+ assert.throws(()=>cssCanaries(css.replace('white-space:nowrap','white-space:normal')),/detach/);
+ assert.throws(()=>cssCanaries(css.replace('a .code-unit>code{','a .code-unit>span{')),/underline/);
+});
+test('rendered-directory audit rejects a regression and accepts the repair',()=>{
+ const dir=mkdtempSync(join(tmpdir(),'site-code-'));
+ const css=':not(pre)>code{display:inline-block;max-width:100%}.code-unit{white-space:nowrap}a>code,a .code-unit,a .code-unit>code{text-decoration:inherit}';
+ try{
+  writeFileSync(join(dir,'site.css'),css);
+  writeFileSync(join(dir,'index.html'),'<p>A <strong>Governed</strong>Store e ORKMIND_DATABASE_URL.</p>');
+  assert.throws(()=>checkCode(dir),/Technical text outside code/);
+  writeFileSync(join(dir,'index.html'),`<p>${technicalHtml('A `GovernedStore` e `ORKMIND_DATABASE_URL`.')}</p>`);
+  assert.equal(checkCode(dir).unformatted,0);
+  writeFileSync(join(dir,'site.css'),css.replace('.code-unit{white-space:nowrap}',''));
+  assert.throws(()=>checkCode(dir),/detach/);
+ }finally{rmSync(dir,{recursive:true,force:true});}
 });
