@@ -7,7 +7,7 @@ import "@fontsource/geist-mono/500.css";
 import "../styles/global.css";
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import {localeFor,localize,locales,languageTag,ui} from '../data/i18n';
+import {localeFor,localize,locales,languageTag,ui,withBase} from '../data/i18n';
 interface Props { titulo?: string; descricao?: string; }
 const locale=localeFor(Astro.url.pathname),text=ui(locale);
 const {titulo='OrkMind',descricao=text.indexDescription}=Astro.props;
@@ -28,13 +28,13 @@ const origin='https://orkmind.com';
  <meta property="og:type" content="website" />
  <meta property="og:url" content={origin+Astro.url.pathname} />
  <meta property="og:locale" content={{pt:'pt_BR',en:'en_US',es:'es_ES'}[locale]} />
- <meta property="og:image" content={origin+'/og.png'} />
+ <meta property="og:image" content={origin+withBase('/og.png')} />
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="theme-color" content="#07090e" />
- <link rel="icon" href="/favicon.ico" sizes="32x32" />
- <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
- <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
- <link rel="manifest" href="/site.webmanifest" />
+ <link rel="icon" href={withBase('/favicon.ico')} sizes="32x32" />
+ <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+ <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
+ <link rel="manifest" href={withBase('/site.webmanifest')} />
 
 </head>
 <body>
