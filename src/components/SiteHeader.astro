@@ -56,7 +56,9 @@ const navegacao=locale==='en'?'Main navigation':'Navegação principal';
 @media (max-width:767px){
  .cabecalho-linha{flex-wrap:wrap;gap:0 var(--e-3)}
  .cabecalho-menu{display:inline-flex}
- .cabecalho-painel{flex-basis:100%;flex-direction:column;align-items:stretch;gap:var(--e-3);padding:0 0 var(--e-4)}
+ /* O painel aberto rola dentro de si quando passa da janela (janela baixa, zoom): o fim dele nunca
+    fica fora de alcance embaixo do cabeçalho fixo. */
+ .cabecalho-painel{flex-basis:100%;flex-direction:column;align-items:stretch;gap:var(--e-3);padding:4px 4px var(--e-4);max-height:calc(100vh - var(--altura-cabecalho));max-height:calc(100dvh - var(--altura-cabecalho));overflow-y:auto;overscroll-behavior:contain;box-sizing:border-box}
  .cabecalho-nav{flex-direction:column;justify-content:flex-start;gap:0}
  .cabecalho-nav a{justify-content:flex-start;border-top:1px solid var(--linha);padding:0 var(--e-1)}
  .cabecalho-acoes{flex-wrap:wrap}

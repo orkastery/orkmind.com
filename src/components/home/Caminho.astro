@@ -25,7 +25,7 @@ const saidaLang=localeFor(Astro.url.pathname)==='pt'?undefined:'pt-BR';
    </button>)}
   </div>
   <div class="caminho-detalhe" id="caminho-painel" role="tabpanel" aria-labelledby={'etapa-'+ESTADO_INICIAL.stage} aria-live="polite">
-   {c.stages.map((_:string,i:number)=>{const d=etapaDetalhe(t,i);return <div class="caminho-par" data-detalhe={i} hidden={i!==ESTADO_INICIAL.stage}>
+   {c.stages.map((_:string,i:number)=>{const d=etapaDetalhe(t,i);return <div class:list={['caminho-par',i===ESTADO_INICIAL.stage&&'ativo']} data-detalhe={i}>
     <div class="caminho-cartao">
      <div class="caminho-rotulo">{d.gives}</div>
      <div class="caminho-texto"><TechnicalText text={d.givesText}/></div>
@@ -49,7 +49,9 @@ const saidaLang=localeFor(Astro.url.pathname)==='pt'?undefined:'pt-BR';
 .etapa-nome{display:block;margin-top:var(--e-5);font:var(--tipo-titulo-3);letter-spacing:var(--trk-titulo-3);line-height:1}
 .caminho-detalhe{margin-top:var(--e-3)}
 .caminho-par{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:var(--e-3)}
-.caminho-par[hidden]{display:none}
+/* Sem JavaScript as seis etapas ficam abertas, uma embaixo da outra; com ele, só a escolhida. */
+.caminho-par+.caminho-par{margin-top:var(--e-3)}
+:global(.js) .caminho-par:not(.ativo){display:none}
 .caminho-cartao{padding:var(--e-5);border-radius:var(--raio-cartao);background:var(--superficie-2)}
 .caminho-exige{background:color-mix(in srgb,var(--verificado) 6%,var(--superficie));border:1px solid color-mix(in srgb,var(--verificado) 18%,var(--superficie))}
 .caminho-rotulo{font:var(--tipo-rotulo);letter-spacing:var(--espaco-rotulo);text-transform:uppercase;color:var(--texto-3)}

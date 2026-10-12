@@ -47,19 +47,28 @@ if (dados) {
    if (nome) nome.textContent = h.nome;
    pinta(el, {background: cor(h.bg), color: cor(h.fg)});
   });
-  v.collections.forEach((c: any, i: number) => pinta($(`[data-colecao="${i}"]`)[0], {background: cor(c.bg), color: cor(c.fg), border: `1px ${c.bs} ${cor(c.bd)}`}));
+  v.collections.forEach((c: any, i: number) => {
+   const el = $(`[data-colecao="${i}"]`)[0]; if (!el) return;
+   pinta(el, {background: cor(c.bg), color: cor(c.fg), border: `1px ${c.bs} ${cor(c.bd)}`});
+   // Quem leu a coleção também em texto (para leitor de tela), não só pelo tom do cinza.
+   const quem = $('[data-colecao-quem]', el)[0]; if (quem) quem.textContent = ', ' + (c.fora ? t.system.free : v.legend[c.grupo].n);
+  });
  }
- // Cada nó do diagrama abre e fecha a própria descrição.
- $<HTMLButtonElement>('[data-no-botao]').forEach(botao => botao.addEventListener('click', () => {
-  const aberto = botao.getAttribute('aria-expanded') !== 'true', desc = document.getElementById(botao.getAttribute('aria-controls') || '');
-  botao.setAttribute('aria-expanded', String(aberto));
-  if (desc) desc.hidden = !aberto;
- }));
+ // Cada nó do diagrama abre e fecha a própria descrição (sem JavaScript, todas ficam abertas).
+ $<HTMLButtonElement>('[data-no-botao]').forEach(botao => {
+  botao.setAttribute('aria-expanded', 'false');
+  botao.addEventListener('click', () => {
+   const aberto = botao.getAttribute('aria-expanded') !== 'true', desc = document.getElementById(botao.getAttribute('aria-controls') || '');
+   botao.setAttribute('aria-expanded', String(aberto));
+   desc?.classList.toggle('aberta', aberto);
+  });
+ });
  // orkmind list pelo relógio.
  function pintaEntradas(tick: number) {
   entradas(t, tick).forEach((l: any, i: number) => {
    const linha = $(`[data-entrada="${i}"]`)[0]; if (!linha) return;
    pinta(linha, {background: cor(l.rowBg)});
+   linha.toggleAttribute('data-espera', l.estado === 'hold');
    const barra = $('[data-entrada-barra]', linha)[0];
    if (barra) { barra.setAttribute('aria-label', l.barra); $(':scope > span', barra).forEach((s, k) => pinta(s, {background: cor(l.segs[k])})); }
    const etapa = $('[data-entrada-etapa]', linha)[0]; if (etapa) etapa.textContent = l.phase;
@@ -92,7 +101,7 @@ if (dados) {
    pinta(linha, {background: cor(l.bg)});
    $('.integracao-faixa', linha).forEach((f, k) => pinta(f, {background: cor(l.blocks[k].bg), color: cor(l.blocks[k].fg), 'border-color': cor(l.blocks[k].bd)}));
   });
-  $('[data-integracao-texto]').forEach(el => { el.hidden = Number(el.dataset.integracaoTexto) !== estado.integration; });
+  $('[data-integracao-texto]').forEach(el => el.classList.toggle('ativo', Number(el.dataset.integracaoTexto) === estado.integration));
  }
  $('[data-integracao]').forEach(el => el.addEventListener('click', () => { estado.integration = Number(el.dataset.integracao); pintaIntegracoes(); }));
 
@@ -105,7 +114,7 @@ if (dados) {
    pinta(aba, {background: cor(f.bg), 'border-color': cor(f.bd), color: cor(f.fg)});
    if (f.on && foco) aba.focus();
   });
-  $('[data-detalhe]').forEach(el => { el.hidden = Number(el.dataset.detalhe) !== estado.stage; });
+  $('[data-detalhe]').forEach(el => el.classList.toggle('ativo', Number(el.dataset.detalhe) === estado.stage));
   document.getElementById('caminho-painel')?.setAttribute('aria-labelledby', 'etapa-' + estado.stage);
  }
  abas.forEach(aba => {

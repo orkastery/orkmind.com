@@ -38,14 +38,14 @@ const m=t.integrations,linhas=integracoes(t,ESTADO_INICIAL.integration);
   </ul>
   <div class="integracoes-detalhe" id="integracoes-detalhe" aria-live="polite">
    <div class="integracoes-cartao">
-    {m.list.map((_:any,i:number)=>{const d=integracaoDetalhe(t,i);return <div data-integracao-texto={i} hidden={i!==ESTADO_INICIAL.integration}>
+    {m.list.map((_:any,i:number)=>{const d=integracaoDetalhe(t,i);return <div class:list={['integracoes-item',i===ESTADO_INICIAL.integration&&'ativo']} data-integracao-texto={i}>
      <div class="integracoes-rotulo">{d.when}</div>
      <div class="integracoes-texto"><TechnicalText text={d.use}/></div>
     </div>;})}
    </div>
    <div class="integracoes-cartao">
-    {m.list.map((_:any,i:number)=>{const d=integracaoDetalhe(t,i);return <div data-integracao-texto={i} hidden={i!==ESTADO_INICIAL.integration}>
-     <div class="integracoes-rotulo">{m.aboutLabel}</div>
+    {m.list.map((it:any,i:number)=>{const d=integracaoDetalhe(t,i);return <div class:list={['integracoes-item',i===ESTADO_INICIAL.integration&&'ativo']} data-integracao-texto={i}>
+     <div class="integracoes-rotulo">{it.tag} · {m.aboutLabel}</div>
      <div class="integracoes-texto"><TechnicalText text={d.about}/></div>
     </div>;})}
    </div>
@@ -84,6 +84,9 @@ const m=t.integrations,linhas=integracoes(t,ESTADO_INICIAL.integration);
 .integracoes-cartao{padding:var(--e-5);border-radius:var(--raio-cartao);background:var(--superficie);border:1px solid var(--linha)}
 .integracoes-rotulo{font:var(--tipo-rotulo);letter-spacing:var(--espaco-rotulo);text-transform:uppercase;color:var(--texto-3)}
 .integracoes-texto{margin-top:var(--e-3);font:var(--tipo-destaque);text-wrap:pretty}
+/* Sem JavaScript os textos das quatro integrações ficam um embaixo do outro; com ele, só os da escolhida. */
+.integracoes-item+.integracoes-item{margin-top:var(--e-5)}
+:global(.js) .integracoes-item:not(.ativo){display:none}
 .integracoes-fecho{margin:var(--e-7) 0 0;font:var(--tipo-titulo-1);letter-spacing:var(--trk-titulo-1);max-width:24ch;text-wrap:balance}
 .integracoes-fecho span{display:block;color:var(--verificado-texto)}
 </style>

@@ -23,7 +23,7 @@ const locale=localeFor(Astro.url.pathname),t=home[locale];
 // O navegador recebe só o que recalcula; o resto da página já sai pronto do build.
 const s=t.system;
 const runtime={hero:{names:t.hero.names,waitTag:t.hero.waitTag},path:{stages:t.path.stages},
- system:{fns:s.fns,groups:s.groups,active:s.active,refused:s.refused,foot:s.foot,versions:s.versions,collections:s.collections},
+ system:{fns:s.fns,groups:s.groups,active:s.active,refused:s.refused,foot:s.foot,versions:s.versions,collections:s.collections,free:s.free},
  governance:{entries:t.governance.entries,states:t.governance.states,stageWords:t.governance.stageWords},
  integrations:{list:t.integrations.list,whenLabel:t.integrations.whenLabel},night:{events:t.night.events}};
 ---

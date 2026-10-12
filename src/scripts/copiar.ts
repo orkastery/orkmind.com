@@ -7,9 +7,13 @@ for (const botao of document.querySelectorAll<HTMLButtonElement>('[data-copiar]'
  const rotulo = botao.querySelector<HTMLElement>('[data-rotulo-visivel]');
  const status = botao.parentElement?.querySelector<HTMLElement>('[data-status]');
  const mostrar = (estado: 'ok' | 'falha' | null) => {
+  const texto = (estado === 'ok' ? botao.dataset.rotuloOk : estado === 'falha' ? botao.dataset.rotuloFalha : botao.dataset.rotulo || '')?.replace('{atalho}', atalho) || '';
   if (rotulo) {
-   rotulo.textContent = (estado === 'ok' ? botao.dataset.rotuloOk : estado === 'falha' ? botao.dataset.rotuloFalha : botao.dataset.rotulo || '')?.replace('{atalho}', atalho) || '';
+   rotulo.textContent = texto;
    if (estado) rotulo.dataset.estado = estado; else delete rotulo.dataset.estado;
+  } else {
+   // Sem pílula (o comando do cabeçalho): o resultado aparece por cima do próprio comando.
+   if (estado) { botao.dataset.aviso = texto; botao.dataset.estado = estado; } else { delete botao.dataset.aviso; delete botao.dataset.estado; }
   }
   if (status) status.textContent = estado === 'ok' ? botao.dataset.msgOk || '' : estado === 'falha' ? (botao.dataset.msgFalha || '').replace('{atalho}', atalho) : '';
  };

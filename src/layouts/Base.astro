@@ -1,6 +1,8 @@
 ---
 // Moldura de toda página na Partitura do OrkMind (kit do dono): as fontes com os nomes do kit, os
-// tokens gerados de partitura/partitura.json, a base, o cabeçalho, o rodapé e a faixa da prévia.
+// tokens gerados de partitura/partitura.json, a base, o cabeçalho, o rodapé e a faixa da prévia. O
+// script inline do <head> marca a página com a classe js antes da primeira pintura: sem
+// JavaScript, o conteúdo que os botões abrem e fecham sai todo aberto.
 import '../styles/fonts.css';
 import '../../partitura/partitura.css';
 import '../styles/base.css';
@@ -22,6 +24,7 @@ const release=releaseDaBase(import.meta.env.BASE_URL),sha=release?versaoDaBuild(
 <head>
  <meta charset="utf-8" />
  <meta name="viewport" content="width=device-width, initial-scale=1" />{release&&<meta name="robots" content="noindex, nofollow" />}
+ <script is:inline>document.documentElement.classList.add('js')</script>
  <title>{titulo}</title>
  <meta name="description" content={descricao} />
  <link rel="canonical" href={origin+Astro.url.pathname} />
